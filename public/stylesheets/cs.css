@@ -1,3 +1,9 @@
+.nav {
+	background-color: #ccc;
+	width: 100%;
+	top: 0;
+}
+
 #map {
 	width: 100%;
 	height: 100%;
@@ -13,6 +19,18 @@
 .list {
 	border:1px solid black;
 	height: 100px;
+}
+.result {
+	border:1px solid black;
+}
+.result-img {
+	width: 50px;
+	height: 50px;
+	background-color: orange;
+}
+.results {
+	overflow-x: hidden;
+	overflow-y: scroll;
 }
 
 // Small devices (landscape phones, 576px and up)

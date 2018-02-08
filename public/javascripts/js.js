@@ -51,7 +51,7 @@ function resizeWindow(){
 	let window_height = $(window).height();
 	let window_width = $(window).width();
 	$('#map').height(window_height*.6);
-	$('#map').width(window_width*.6);
+	//$('#map').width(window_width*.6);
 	
 	$('.trip-list').height(window_height*.6);
 	//$('.trip-list').width(window_width*.6);
