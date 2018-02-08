@@ -31,8 +31,31 @@ $('#custom_query_submit').on('click', function(event){
 		type: ['store']
 	}, callback);
 });
+$('#show_user_list').on('click', event=>{
+	event.preventDefault();
+	//let results = uesrData.saved_list
+});
 
+function firstLoad(){
+	//let window_height = $(window).height();
+	resizeWindow();
+}
 
+$(window).on('resize', function(){
+	//console.log("resizing");
+	//let window_height = $(window).height();
+	resizeWindow();
+});
+
+function resizeWindow(){
+	let window_height = $(window).height();
+	let window_width = $(window).width();
+	$('#map').height(window_height*.6);
+	$('#map').width(window_width*.6);
+	
+	$('.trip-list').height(window_height*.6);
+	//$('.trip-list').width(window_width*.6);
+}
 
 let userData = {
 	"saved_list": [
@@ -60,21 +83,23 @@ let userData = {
 			"id": "2",
 			"entries": [
 				{
-					"name": "skate"
+					"name": "skate",
 					"img": "img url",
 					"coord": {"alt": 2, "lnt":1}
 				},
 				{
-					"name": "fish and chips"
+					"name": "fish and chips",
 					"img": "img url",
 					"coord": {"alt": 2, "lnt":2}
 				},
 				{
-					"name": "helicopter ride"
+					"name": "helicopter ride",
 					"img": "img url",
 					"coord": {"alt": 2, "lnt":3}
 				}
 			]
 		}
-	];
+	]
 };
+
+$(firstLoad);
