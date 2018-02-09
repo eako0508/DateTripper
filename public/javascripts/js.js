@@ -33,29 +33,43 @@ $('#custom_query_submit').on('click', function(event){
 });
 $('#show_user_list').on('click', event=>{
 	event.preventDefault();
-	//let results = uesrData.saved_list
 });
+$(window).on('resize', function(){
+	resizeWindow();
+});
+
+
 
 function firstLoad(){
-	//let window_height = $(window).height();
 	resizeWindow();
+	//$('#body')[0].style.paddingRight = $('#body')[0].offsetWidth - $('#body')[0].clientWidth + "px";
+	
 }
-
-$(window).on('resize', function(){
-	//console.log("resizing");
-	//let window_height = $(window).height();
-	resizeWindow();
-});
 
 function resizeWindow(){
 	let window_height = $(window).height();
 	let window_width = $(window).width();
 	$('#map').height(window_height*.6);
-	//$('#map').width(window_width*.6);
-	
 	$('.trip-list').height(window_height*.6);
-	//$('.trip-list').width(window_width*.6);
 }
+
+function requestList(id){
+	//send request to user endpoint '/get:id'
+	//receive respond
+	let res = userData;
+
+}
+
+
+
+
+
+
+
+
+
+
+$(firstLoad);
 
 let userData = {
 	"saved_list": [
@@ -102,4 +116,3 @@ let userData = {
 	]
 };
 
-$(firstLoad);

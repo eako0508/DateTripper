@@ -14,7 +14,8 @@ app.use(function (req, res, next) {
 });
 
 app.use('/', express.static('public'));
-app.use('/users', userRouter);
+app.use('/users', express.static('public/user.html'));
+//app.use('/users', userRouter);
 app.listen(process.env.PORT || 8080);
 
 module.exports = {app};

@@ -28,9 +28,9 @@
 	height: 50px;
 	background-color: orange;
 }
-.results {
-	overflow-x: hidden;
-	overflow-y: scroll;
+html::-webkit-scrollbar {
+	width: 0px;
+	background: red;
 }
 
 // Small devices (landscape phones, 576px and up)
