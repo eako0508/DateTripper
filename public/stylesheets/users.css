@@ -1,16 +1,8 @@
-html {
-	overflow: scroll;
-	overflow-x: hidden;
+.nav {
+	background-color: #ccc;
+	width: 100%;
+	top: 0;
 }
-::-webkit-scrollbar {
-	width: 0px;
-	background: transparent;
-}
-::webkit-scrollbar-thumb{
-	background: #ff0000;
-}
-
-
 // Small devices (landscape phones, 576px and up)
 @media (min-width: 576px) { 
 

@@ -37,13 +37,22 @@ $('#show_user_list').on('click', event=>{
 $(window).on('resize', function(){
 	resizeWindow();
 });
-
+/**
+	LOGIN LIGHTBOX
+**/
+let lightbox;
+$('.login-btn').on('click', event=>{
+	lightbox = lity($('.login-page'));
+});
+$('.login-submit').on('click', event=>{
+	event.preventDefault();
+	lightbox.close();
+	//go to user.html
+});
 
 
 function firstLoad(){
 	resizeWindow();
-	//$('#body')[0].style.paddingRight = $('#body')[0].offsetWidth - $('#body')[0].clientWidth + "px";
-	
 }
 
 function resizeWindow(){
@@ -56,7 +65,7 @@ function resizeWindow(){
 function requestList(id){
 	//send request to user endpoint '/get:id'
 	//receive respond
-	let res = userData;
+	//let res = userData;
 
 }
 
@@ -70,49 +79,3 @@ function requestList(id){
 
 
 $(firstLoad);
-
-let userData = {
-	"saved_list": [
-		{
-			"id": "1",
-			"entries": [
-				{
-					"name": "ice cream",
-					"img": "img url",
-					"coord": {"alt": 1, "lnt":1}
-				},
-				{
-					"name": "movie theater",
-					"img": "img url",
-					"coord": {"alt": 1, "lnt":2}
-				},
-				{
-					"name": "restaurant",
-					"img": "img url",
-					"coord": {"alt": 1, "lnt":3}
-				}
-			]
-		},
-		{
-			"id": "2",
-			"entries": [
-				{
-					"name": "skate",
-					"img": "img url",
-					"coord": {"alt": 2, "lnt":1}
-				},
-				{
-					"name": "fish and chips",
-					"img": "img url",
-					"coord": {"alt": 2, "lnt":2}
-				},
-				{
-					"name": "helicopter ride",
-					"img": "img url",
-					"coord": {"alt": 2, "lnt":3}
-				}
-			]
-		}
-	]
-};
-

@@ -12,26 +12,42 @@
 	<div class='nav'>
 		<div class='container'>
 			<div class='row justify-content-end'>
-				<input type="button" class='col-1 btn btn-primary' value='Login'>
+				<input type="button" class='btn btn-primary' value='Login'>
 			</div>
 		</div>
 	</div>
-	<section class='user-info'>
-		<div class='user-saved-lists'>
-			<div class='row'>
-				<div class=''>
-					
-				</div>
-				
-			</div>
+	<section id='user-info' class='card'>
+		<div id='user-saved-lists1' class='card-header'>
+	        <button class="btn btn-primary" data-toggle="collapse" data-target="#saved-list-1">Saved list 1</button>
+		    <div id="saved-list-1" class="collapse" data-parent="#user-info">
+			    <div class="card-body">list of items</div>
+		    </div>
 		</div>
 		
+		<div id='user-saved-lists2' class='card-header'>
+			<button class="btn btn-primary" data-toggle="collapse" data-target="#saved-list-2">Saved list 2</button>
+		    <div id="saved-list-2" class="collapse" data-parent="#user-info">
+			    <div class="card-body">list of items</div>
+		    </div>	
+		</div>
+
+		<div id='user-saved-lists3' class='card-header'>
+			<button class="btn btn-primary" data-toggle="collapse" data-target="#saved-list-3">Saved list 3</button>
+		    <div id="saved-list-3" class="collapse" data-parent="#user-info">
+			    <div class="card-body">list of items</div>
+		    </div>	
+		</div>
+
+		
+		
+
 	</section>
 
 </body>
 
 <script type="text/javascript" src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script type="text/javascript" src='javascripts/user.js'></script>
 
 
 </html>
