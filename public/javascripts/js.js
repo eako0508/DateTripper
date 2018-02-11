@@ -37,19 +37,11 @@ $('#show_user_list').on('click', event=>{
 $(window).on('resize', function(){
 	resizeWindow();
 });
-/**
-	LOGIN LIGHTBOX
-**/
-let lightbox;
-$('.login-btn').on('click', event=>{
-	lightbox = lity($('.login-page'));
-});
 $('.login-submit').on('click', event=>{
 	event.preventDefault();
-	lightbox.close();
+	//authenticate
 	//go to user.html
 });
-
 
 function firstLoad(){
 	resizeWindow();
@@ -63,10 +55,7 @@ function resizeWindow(){
 }
 
 function requestList(id){
-	//send request to user endpoint '/get:id'
-	//receive respond
-	//let res = userData;
-
+	//
 }
 
 

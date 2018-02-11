@@ -25,6 +25,9 @@
 .list-btn {
 	text-align: right;
 }
+.card {
+	width: 18rem;
+}
 .result {
 	border:1px solid black;
 }
