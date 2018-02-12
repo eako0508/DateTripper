@@ -4,70 +4,40 @@
 	<title>Date Tripper - User info</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<link rel="stylesheet" type="text/css" href="stylesheets/users.css">
-	<!--
-	<link rel="stylesheet" type="text/css" href="stylesheets/cs.css">
-	-->
+	
 </head>
 <body>
 	<div class='nav'>
 		<div class='container'>
 			<div class='row justify-content-end'>
-				<input type="button" class='btn btn-primary' value='Login'>
+				<button type='button' class='btn btn-primary' data-toggle='modal' data-target='#login-page'>Login</button>
 			</div>
 		</div>
 	</div>
 	<section id='user-info' class='card'>
-		<!--
-		<div id='user-saved-lists1' class='card-header'>
-	        <button class="btn btn-primary" data-toggle="collapse" data-target="#saved-list-1">Saved list 1</button>
-		    <div id="saved-list-1" class="collapse" data-parent="#user-info">
-			    <div class="card-body">
-			    	<div class='row'>
-			    		<div class='col-4'>
-			    			<div class='list-group'>
-			    				<a class="list-group-item list-group-item-action" data-toggle="list" href="#list-1">Ice Cream</a>
-			    				<a class="list-group-item list-group-item-action" data-toggle="list" href="#list-2">Movie Theater</a>
-			    				<a class="list-group-item list-group-item-action" data-toggle="list" href="#list-3">Restaurant</a>
-			    			</div>
-			    		</div>
-			    		<div class='col-8'>
-			    			<div class='tab-content'>
-			    				<div class="tab-pane fade" id="list-1" >
-			    					<div class='position'>alt: 1, lnt: 1</div>
-			    				</div>
-			    				<div class="tab-pane fade" id="list-2" >
-			    					<div class='position'>alt: 1, lnt: 2</div>
-			    				</div>
-			    				<div class="tab-pane fade" id="list-3" >
-			    					<div class='position'>alt: 1, lnt: 3</div>
-			    				</div>
-			    			</div>
-			    		</div>
-			    	</div>
-			    </div>
-		    </div>
-		</div>
-		<div id='user-saved-lists2' class='card-header'>
-			<button class="btn btn-primary" data-toggle="collapse" data-target="#saved-list-2">Saved list 2</button>
-		    <div id="saved-list-2" class="collapse" data-parent="#user-info">
-			    <div class="card-body">list of items</div>
-		    </div>	
-		</div>
-
-		<div id='user-saved-lists3' class='card-header'>
-			<button class="btn btn-primary" data-toggle="collapse" data-target="#saved-list-3">Saved list 3</button>
-		    <div id="saved-list-3" class="collapse" data-parent="#user-info">
-			    <div class="card-body">list of items</div>
-		    </div>	
-		</div>
-		-->
 		
-		
-
 	</section>
 
 </body>
-
+<div id='login-page' class='modal fade login-page' tabindex='-1'>
+	<div class='modal-dialog'>
+		<div class='modal-content'>
+			<div class='modal-body'>
+				<form class='js-form'>
+					<div class='form-group'>
+						<label for='userid'>Username</label>
+						<input type="text" class='form-control' id='user_id' name='userid'>
+					</div>
+					<div class='form-group'>
+						<label for='userpw'>Password</label>
+						<input type="password" class='form-control' id='user_pw' name='userpw'>
+					</div>
+					<button type='submit' class='login-submit btn btn-primary' data-dismiss='modal'>Submit</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
 <script type="text/javascript" src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script type="text/javascript" src='javascripts/user.js'></script>
