@@ -43,6 +43,10 @@
 	padding-left:0;
 	padding-right:0;
 }
+.card-img-top{
+	max-width: 100%;
+	max-height: 100%;
+}
 html::-webkit-scrollbar {
 	width: 0px;
 	background: red;

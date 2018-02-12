@@ -9,6 +9,7 @@ function initMap() {
 		zoom: 12
 	});
 	service = new google.maps.places.PlacesService(map);
+
 }
 /**
 	GOOGLE PLACE
@@ -18,41 +19,70 @@ function initMap() {
 //service.nearbySearch(request, callback);
 function callback(results, status){
 	if(status === google.maps.places.PlacesServiceStatus.OK){
-		console.log(results[0]);
+		//console.log(results);
 		renderPlaces(results);
 	}
 }
 let test1;
 function renderPlaces(data){
+	/*
 	test1 = data[0].photos[0];
 	console.log(test1);
+	*/
+	test1 = data[0].place_id;
 	const myPlaces = data.map((item,index)=>{
 		return renderSinglePlace(item, index);
 	});
+	//console.log(data[0].photos[0].getUrl({maxHeight:300}));
 	$('.results').html(myPlaces);
+	//getSingleDetail(test1, detailcallback);
 }
 //<div class='card-img-top' src='${item.photos[0].html_attributions[0]}'></div>
+function getSingleDetail(input, callback){
+	let request = {
+		"placeId": input
+	}
+	service.getDetails(request, callback);
+}
 
-function renderSinglePlace(item, index){
-	//console.log(item.photos[0].html_attributions[0]);
-
-	return `
-		<div class='card border-primary res'>
-
-			<div class='card-body'>
-				<h5 class='card-title'>${item.name}</h5>
-				<p class='card-text'>
-					id: ${item.id},
-					place_id: ${item.place_id},
-					location: ${item.geometry.location}
-				</p>
-				<input type='button' class='btn btn-primary' value='ADD'>
-			</div>
-		</div>
-	`;
+function detailcallback(place, status) {
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+    //createMarker(place);
+    console.log(place);
+    console.log(place.photos[1].getUrl({maxHeight:300}));
+  }
 }
 
 
+
+
+
+function renderSinglePlace(item, index){
+	
+	let result = `
+		<div class='card border-primary res'>`;
+	
+	if(item.photos!=undefined) {
+		result+= `
+		<img class='card-img-top' src='${item.photos[0].getUrl({maxHeight:300})}' alt='card img'>
+		`;
+	}
+	
+	result += `	
+		<div class='card-body'>
+
+			<h5 class='card-title'>${item.name}</h5>
+			<p class='card-text'>
+				id: ${item.id},
+				place_id: ${item.place_id},
+				location: ${item.geometry.location}
+			</p>
+			<input type='button' class='btn btn-primary' value='ADD'>
+		</div>
+	</div>
+	`;
+	return result;
+}
 
 
 
@@ -70,6 +100,13 @@ $('#custom_query_submit').on('click', function(event){
 		type: ['store']
 	}, callback);
 });
+
+
+
+
+
+
+
 $('#show_user_list').on('click', event=>{
 	event.preventDefault();
 });
