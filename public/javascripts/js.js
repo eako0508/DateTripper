@@ -12,80 +12,83 @@ function initMap() {
 
 }
 /**
-	GOOGLE PLACE
+	GOOGLE PLACE - START
 **/
 
 //let service = new google.maps.places.PlacesService(map);
 //service.nearbySearch(request, callback);
 function callback(results, status){
 	if(status === google.maps.places.PlacesServiceStatus.OK){
-		//console.log(results);
 		renderPlaces(results);
 	}
 }
-let test1;
+const resultDB = [];
+const listDB = [];
 function renderPlaces(data){
-	/*
-	test1 = data[0].photos[0];
-	console.log(test1);
-	*/
-	test1 = data[0].place_id;
+	while(resultDB.length) resultDB.pop();
 	const myPlaces = data.map((item,index)=>{
 		return renderSinglePlace(item, index);
 	});
-	//console.log(data[0].photos[0].getUrl({maxHeight:300}));
 	$('.results').html(myPlaces);
-	//getSingleDetail(test1, detailcallback);
 }
-//<div class='card-img-top' src='${item.photos[0].html_attributions[0]}'></div>
-function getSingleDetail(input, callback){
-	let request = {
-		"placeId": input
+function renderSinglePlace(item, index){	
+	const element = {
+		name: item.name,
+		id: item.id,
+		place_id: item.place_id,
+		location: item.geometry.location
 	}
-	service.getDetails(request, callback);
-}
-
-function detailcallback(place, status) {
-  if (status == google.maps.places.PlacesServiceStatus.OK) {
-    //createMarker(place);
-    console.log(place);
-    console.log(place.photos[1].getUrl({maxHeight:300}));
-  }
-}
-
-
-
-
-
-function renderSinglePlace(item, index){
-	
 	let result = `
 		<div class='card border-primary res'>`;
-	
 	if(item.photos!=undefined) {
+		const imgUrl = item.photos[0].getUrl({maxHeight:300});
 		result+= `
-		<img class='card-img-top' src='${item.photos[0].getUrl({maxHeight:300})}' alt='card img'>
+		<img class='card-img-top' src='${imgUrl}' alt='card img'>
 		`;
+		element.photos = imgUrl;
 	}
-	
 	result += `	
 		<div class='card-body'>
-
 			<h5 class='card-title'>${item.name}</h5>
 			<p class='card-text'>
 				id: ${item.id},
 				place_id: ${item.place_id},
 				location: ${item.geometry.location}
 			</p>
-			<input type='button' class='btn btn-primary' value='ADD'>
+			<input type='button' class='btn btn-primary btn-add' result-index='${index}' value='ADD'>
 		</div>
 	</div>
 	`;
+	//console.log(element);
+	resultDB[index] = element;
 	return result;
 }
+/**
+	GOOGLE PLACE - END
+**/
 
 
 
+/**
+	Single place Detail - START
+**/
+function getSingleDetail(input, callback){
+	let request = {
+		"placeId": input
+	}
+	service.getDetails(request, callback);
+}
+function detailcallback(place, status) {
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+    /*
+    console.log(place);
+    console.log(place.photos[1].getUrl({maxHeight:300}));
+	*/
+  }
+}
+/**
+	Single place Detail - END
+**/
 
 
 
@@ -101,9 +104,28 @@ $('#custom_query_submit').on('click', function(event){
 	}, callback);
 });
 
+$('.results').on('click', '.btn-add', event=>{
+	event.preventDefault();
+	const index = $(event.currentTarget).attr('result-index');
+	const item = resultDB[index];
+	console.log(item);
+});
 
 
-
+function renderAddedList(data){
+	//
+}
+/*
+	<div class='list row align-items-center'>
+		<div class='list-name col'>
+			<div>Name</div>
+			<div>Time</div>
+		</div>
+		<div class='list-btn col'>
+			<input type='button' id='list-1-btn' class='btn' value='delete'>
+		</div>
+	</div>
+*/
 
 
 
