@@ -140,12 +140,16 @@ $('#show_user_list').on('click', event=>{
 $(window).on('resize', function(){
 	resizeWindow();
 });
+/*
 $('.login-submit').on('click', event=>{
 	event.preventDefault();
 	//authenticate
 	//go to user.html
 });
-
+*/
+$('#register-btn').on('click', ()=>{
+	$('#login-page').modal('hide');
+});
 function firstLoad(){
 	resizeWindow();
 }

@@ -55,18 +55,50 @@
 				<form class='js-form'>
 					<div class='form-group'>
 						<label for='userid'>Username</label>
-						<input type="text" class='form-control' id='user_id' name='userid'>
+						<input type="text" class='form-control' id='user_id' name='userid' required>
 					</div>
 					<div class='form-group'>
 						<label for='userpw'>Password</label>
-						<input type="password" class='form-control' id='user_pw' name='userpw'>
+						<input type="password" class='form-control' id='user_pw' name='userpw' required>
 					</div>
-					<button type='submit' class='login-submit btn btn-primary' data-dismiss='modal'>Submit</button>
+					<div class='row justify-content-around'>
+						<button type='submit' class='login-submit btn btn-primary' data-dismiss='modal'>Submit</button>
+						<button type='button' class='btn btn-primary' id='register-btn' data-toggle='modal' data-target='#register-page'>Register</button>
+					</div>
 				</form>
 			</div>
 		</div>
 	</div>
 </div>
+
+<div id='register-page' class='modal fade register-page' tabindex="-1">
+	<div class='modal-dialog'>
+		<div class='modal-content'>
+			<div class='modal-body'>
+				<form class='js-register-form'>
+					<div class='form-group'>
+						<label for='reg-userid'>Username</label>
+						<input type='text' class='form-control' id='reg-userid' name='reg-userid' required>
+					</div>
+					<div class='form-group'>
+						<label for='reg-userpw'>Password</label>
+						<input type='password' class='form-control' id='reg-userpw' name='reg-userpw' required>
+					</div>
+					<div class='form-group'>
+						<label for='reg-userFirstname'>First Name</label>
+						<input type='text' class='form-control' id='reg-userFirstname' name='reg-userFirstname'>
+					</div>
+					<div class='form-group'>
+						<label for='reg-userLastname'>Last Name</label>
+						<input type='text' class='form-control' id='reg-userLastname' name='reg-userLastname'>
+					</div>
+					<button type='submit' class='reg-submit btn btn-primary' data-dismiss='modal'>Register</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
 
 <script type="text/javascript" src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
 <script type="text/javascript" src='javascripts/jquery-ui.min.js'></script>
