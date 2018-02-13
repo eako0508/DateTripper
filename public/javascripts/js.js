@@ -103,34 +103,39 @@ $('#custom_query_submit').on('click', function(event){
 		type: ['store']
 	}, callback);
 });
-
+//add result item to place list
 $('.results').on('click', '.btn-add', event=>{
 	event.preventDefault();
 	const index = $(event.currentTarget).attr('result-index');
 	const item = resultDB[index];
-	console.log(item);
+	//console.log(item);
+	addItem(item);
 });
-
-
-function renderAddedList(data){
-	//
-}
-/*
+function addItem(item){
+	const place = `
 	<div class='list row align-items-center'>
 		<div class='list-name col'>
-			<div>Name</div>
+			<div>${item.name}</div>
 			<div>Time</div>
 		</div>
 		<div class='list-btn col'>
-			<input type='button' id='list-1-btn' class='btn' value='delete'>
+			<input type='button' class='btn btn-delete' 
+			place-list-id='${item.id}' value='delete'>
 		</div>
 	</div>
-*/
+	`;
+	$('#place-list-list').append(place);
+
+}
+$('#place-list-list').on('click', '.btn-delete', event=>{
+	$(event.currentTarget).closest('.list').remove();
+});
 
 
-
+//add result item to place list
 $('#show_user_list').on('click', event=>{
 	event.preventDefault();
+
 });
 $(window).on('resize', function(){
 	resizeWindow();
@@ -149,20 +154,13 @@ function resizeWindow(){
 	let window_height = $(window).height();
 	let window_width = $(window).width();
 	$('#map').height(window_height*.6);
-	$('.trip-list').height(window_height*.6);
+	$('.place-list').height(window_height*.6);
 }
 
 function requestList(id){
 	//
 }
 
-
-
-
-
-
-
-
-
+$('#place-list-list').on('sortable', '')
 
 $(firstLoad);
