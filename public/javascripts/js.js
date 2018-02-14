@@ -11,6 +11,20 @@ function initMap() {
 	service = new google.maps.places.PlacesService(map);
 
 }
+$('#search-nearby').on('click', function(event){
+	event.preventDefault();
+	service.nearbySearch({
+		location: map.getCenter(),
+		radius: 500,
+		type: ['store']
+	}, callback);
+});
+$('#custom_query_submit').on('click', event=>{
+	event.preventDefault();
+	const query = $('#custom_query').val();
+	$('#custom_query').val('');
+	//hhhhhhhhhh
+});
 /**
 	GOOGLE PLACE - START
 **/
@@ -95,14 +109,7 @@ function detailcallback(place, status) {
 
 
 //event handler
-$('#custom_query_submit').on('click', function(event){
-	event.preventDefault();
-	service.nearbySearch({
-		location: {lat:40.727141, lng: -73.907959},
-		radius: 500,
-		type: ['store']
-	}, callback);
-});
+
 //add result item to place list
 $('.results').on('click', '.btn-add', event=>{
 	event.preventDefault();
@@ -221,6 +228,8 @@ $('#logout-btn').on('click', ()=>{
 $('.js-form-go').on('submit', event=>{
 	event.preventDefault();
 });
+
+
 
 
 function firstLoad(){
