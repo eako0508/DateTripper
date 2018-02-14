@@ -140,13 +140,36 @@ $('#show_user_list').on('click', event=>{
 $(window).on('resize', function(){
 	resizeWindow();
 });
-/*
+let localToken;
 $('.login-submit').on('click', event=>{
 	event.preventDefault();
-	//authenticate
+	const url = 'localhost:8080/api/auth/login';
+	const item = {
+		username: $('#user_id').val(),
+		password: $('#user_pw').val()
+	}
+	$.ajax(url, {
+		url: url,
+		method: "POST",
+		contentType: 'application/javascript',
+		crossDomain: true,
+		dataType: "JSON",
+		data: item,
+		success: function(data){
+			localToken = data.authToken;
+			console(localToken);
+		},
+		failure: function(errMsg){
+			console.log(errMsg);
+		}
+	});
 	//go to user.html
 });
-*/
+
+
+
+
+
 $('#register-btn').on('click', ()=>{
 	$('#login-page').modal('hide');
 });
