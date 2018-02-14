@@ -145,6 +145,7 @@ $(window).on('resize', function(){
 
 //login
 let localToken;
+//$('js-form-login').on('submit', event=>{
 $('.login-submit').on('click', event=>{
 	event.preventDefault();
 	const item = {
@@ -172,10 +173,12 @@ function logmein(data){
 	localToken = data.authToken;
 	console.log(localToken);
 	$('#login-btn').hide();
+	$('#savedlist-btn').show();
 	$('#logout-btn').show();
 	//display 'saved places' btn for user page
 }
 //register
+//$('.js-register-form').on('submit', event=>{
 $('#register-submit').on('click', event=>{
 	event.preventDefault();
 	const item = {
@@ -211,15 +214,19 @@ $('#register-btn').on('click', ()=>{
 $('#logout-btn').on('click', ()=>{
 	localToken = '';
 	$('#logout-btn').hide();
+	$('#savedlist-btn').hide();
 	$('#login-btn').show();
 });
 
-
+$('.js-form-go').on('submit', event=>{
+	event.preventDefault();
+});
 
 
 function firstLoad(){
 	resizeWindow();
 	$('#logout-btn').hide();
+	$('#savedlist-btn').hide();
 }
 
 function resizeWindow(){

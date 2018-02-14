@@ -22,6 +22,13 @@
 	<section class='trip container'>
 		<div class='row'>
 			<div id='trip-map' class='col-8 no-gutters'>
+				<div id='div-form-go'>
+					<form class='js-form-go'>
+						<label for='goto-text'>Goto:</label>
+						<input type="text" id='input-text-go' name='goto-text'>
+						<button type='submit' id='submit-go'>Go</button>
+					</form>
+				</div>
 				<div id='map'></div>
 				
 				<div class='trip-map-btn'>
@@ -54,7 +61,7 @@
 	<div class='modal-dialog'>
 		<div class='modal-content'>
 			<div class='modal-body'>
-				<form class='js-form'>
+				<form class='js-form-login'>
 					<div class='form-group'>
 						<label for='userid'>Username</label>
 						<input type="text" class='form-control' id='user_id' name='userid' required>
