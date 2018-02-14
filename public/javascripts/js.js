@@ -157,7 +157,7 @@ $('.login-submit').on('click', event=>{
 
 function ajaxlogin(item){
 	$.ajax({
-		url: 'http://localhost:8080/api/auth/login',
+		url: 'http://192.168.2.199:8080/api/auth/login',
 		method: "POST",
 		contentType: 'application/json',
 		dataType: 'json',

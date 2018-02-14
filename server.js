@@ -14,6 +14,7 @@ const passport = require('passport');
 // console.log(bobby); // De Niro - the variable name is bobby, not robert
 const { router: usersRouter } = require('./users');
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
+const { router: databaseRouter } = require('./databases');
 
 mongoose.Promise = global.Promise;
 
@@ -48,11 +49,21 @@ const jwtAuth = passport.authenticate('jwt', { session: false });
 
 // A protected endpoint which needs a valid JWT to access it
 app.get('/api/protected', jwtAuth, (req, res) => {
+  /*
   return res.json({
     data: 'rosebud'
   });
+  */
 });
 
+
+app.use('users', jwtAuth, databaseRouter);
+/*
+app.get('users/', jwtAuth, (req,res)=>{
+	//get user db from server
+	//app.use('/users')
+});
+*/
 app.use('*', (req, res) => {
   return res.status(404).json({ message: 'Not Found' });
 });
