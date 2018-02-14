@@ -12,7 +12,9 @@
 	<div class='nav'>
 		<div class='container'>
 			<div class='row justify-content-end'>
-				<button type='button' class='btn btn-primary' data-toggle='modal' data-target='#login-page'>Login</button>
+				<button type='button' class='btn btn-primary' id='savedlist-btn'>Saved Lists</button>
+				<button type='button' class='btn btn-primary' id='login-btn' data-toggle='modal' data-target='#login-page'>Login</button>
+				<button type='button' class='btn btn-primary' id='logout-btn'>Logout</button>
 			</div>
 		</div>
 	</div>
@@ -92,7 +94,7 @@
 						<label for='reg-userLastname'>Last Name</label>
 						<input type='text' class='form-control' id='reg-userLastname' name='reg-userLastname'>
 					</div>
-					<button type='submit' class='reg-submit btn btn-primary' data-dismiss='modal'>Register</button>
+					<button type='submit' id='register-submit' class='reg-submit btn btn-primary' data-dismiss='modal'>Register</button>
 				</form>
 			</div>
 		</div>

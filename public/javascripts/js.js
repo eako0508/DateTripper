@@ -140,41 +140,86 @@ $('#show_user_list').on('click', event=>{
 $(window).on('resize', function(){
 	resizeWindow();
 });
+
+
+
+//login
 let localToken;
 $('.login-submit').on('click', event=>{
 	event.preventDefault();
-	const url = 'localhost:8080/api/auth/login';
 	const item = {
 		username: $('#user_id').val(),
 		password: $('#user_pw').val()
 	}
-	$.ajax(url, {
-		url: url,
+	ajaxlogin(item);
+});
+
+function ajaxlogin(item){
+	$.ajax({
+		url: 'http://localhost:8080/api/auth/login',
 		method: "POST",
-		contentType: 'application/javascript',
-		crossDomain: true,
-		dataType: "JSON",
-		data: item,
+		contentType: 'application/json',
+		dataType: 'json',
+		data: JSON.stringify(item),
+		success: logmein,
+		failure: function(errMsg){
+			console.log(errMsg);
+		}
+	});
+}
+
+function logmein(data){
+	localToken = data.authToken;
+	console.log(localToken);
+	$('#login-btn').hide();
+	$('#logout-btn').show();
+	//display 'saved places' btn for user page
+}
+//register
+$('#register-submit').on('click', event=>{
+	event.preventDefault();
+	const item = {
+		username: $('#reg-userid').val(),
+		password: $('#reg-userpw').val(),
+		firstName: $('#reg-userFirstname').val(),
+		lastName: $('#reg-userLastname').val()
+	}
+	const loginItem = {
+		username: item.username,
+		password: item.password
+	}
+	$.ajax({
+		url: 'http://localhost:8080/api/users',
+		method: 'POST',
+		contentType: 'application/json',
+		dataType: 'json',
+		data: JSON.stringify(item),
 		success: function(data){
-			localToken = data.authToken;
-			console(localToken);
+			ajaxlogin(loginItem);
 		},
 		failure: function(errMsg){
 			console.log(errMsg);
 		}
 	});
-	//go to user.html
 });
-
-
 
 
 
 $('#register-btn').on('click', ()=>{
 	$('#login-page').modal('hide');
 });
+$('#logout-btn').on('click', ()=>{
+	localToken = '';
+	$('#logout-btn').hide();
+	$('#login-btn').show();
+});
+
+
+
+
 function firstLoad(){
 	resizeWindow();
+	$('#logout-btn').hide();
 }
 
 function resizeWindow(){
