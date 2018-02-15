@@ -1,29 +1,134 @@
+
+
+
+
+
+/**
+		G L O B A L   V A R I A B L E S
+**/
+
+var map;				//maps
+let service;			//google places
+let markers = [];		//array of markers
+const resultDB = [];	//list of search results below
+const listDB = [];		//list of added items to the right
+
 /**
 	GOOGLE MAP
 **/
-var map;
-let service;
+
+
+
+
+
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
 		center: {lat:40.727141, lng: -73.907959},
 		zoom: 12
 	});
-	service = new google.maps.places.PlacesService(map);
 
+	const myStyle = [
+		{
+			"featureType": "administrative",
+			"elementType": "all",
+			"stylers": [
+				{
+					"visibility": "off"
+				}
+			]
+		},
+		{
+			"featureType": "landscape",
+			"elementType": "all",
+			"stylers": [
+				{
+					"visibility": "off"
+				}
+			]
+		},
+		{
+			"featureType": "poi.government",
+			"elementType": "all",
+			"stylers": [
+				{
+					"visibility": "off"
+				}
+			]
+		},
+		{
+			"featureType": "poi.place_of_worship",
+			"elementType": "all",
+			"stylers": [
+				{
+					"visibility": "off"
+				}
+			]
+		},
+		{
+			"featureType": "poi.school",
+			"elementType": "all",
+			"stylers": [
+				{
+					"visibility": "off"
+				}
+			]
+		},
+		{
+			"featureType": "poi.medical",
+			"elementType": "all",
+			"stylers": [
+				{
+					"visibility": "off"
+				}
+			]
+		}
+	];
+	map.set('styles', myStyle);
+
+	service = new google.maps.places.PlacesService(map);
 }
+function clearMarkers(){
+	let pop;
+	while(markers.length){
+		pop = markers.pop();
+		pop.setMap(null);
+	}
+	return;
+}
+function callback(results, status) {
+	//console.log(status);
+	let marker;
+	clearMarkers();
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+    //save entries with attributes and add to 
+    //renderPlaces(results);
+    saveToResultDB(results);
+    renderPlaces();
+    for (var i = 0; i < results.length; i++) {
+      const place = results[i];
+      
+      const place_lat = place.geometry.location.lat();
+      const place_lng = place.geometry.location.lng();
+      
+      marker = new google.maps.Marker({
+      	position: new google.maps.LatLng(place_lat, place_lng),
+      	map: map
+      });
+      markers.push(marker);
+    }
+  }
+}
+		//SEARCH NEARBY
 $('#search-nearby').on('click', function(event){
 	event.preventDefault();
 	service.nearbySearch({
 		location: map.getCenter(),
 		radius: 500,
 		type: ['store']
-	//}, callback);
-}, callback);
-
+	}, callback);
 });
-
-let markers = [];
-$('.form-map').on('submit', event=>{	
+		//SEARCH KEYWORD
+$('#custom_query_submit').on('click', event=>{	
 	event.preventDefault();
 	const keyword = $('#custom_query').val();
 	$('#custom_query').val('');
@@ -38,42 +143,13 @@ $('.form-map').on('submit', event=>{
 	//let example = new google.maps.LatLng(40.727141, -73.907959);
 	//map.panTo(example);
 });
+$('.submit-go').on('submit', event=>{
+	event.preventDefault();
+	
+});
 
-function clearMarkers(){
-	let pop;
-	while(markers.length){
-		pop = markers.pop();
-		pop.setMap(null);
-	}
-	return;
-}
 
-function callback(results, status) {
-	//console.log(status);
-	let marker;
-	clearMarkers();
-  if (status == google.maps.places.PlacesServiceStatus.OK) {
-    //save entries with attributes and add to 
-    renderPlaces(results);
-    for (var i = 0; i < results.length; i++) {
-      const place = results[i];
-      //console.log(place);
-      //const img_url = place.photos[0].getUrl({'maxWidth':200, 'maxHeight': 200});
-      //console.log('img url: ' + img_url);
-      
-      const place_lat = place.geometry.location.lat();
-      const place_lng = place.geometry.location.lng();
-      
-      marker = new google.maps.Marker({
-      	position: new google.maps.LatLng(place_lat, place_lng),
-      	map: map
-      });
-      markers.push(marker);
-    }
-  }
-  //if(markers.length) map.panTo(markers[0]);
-  
-}
+
 
 /**
 	GOOGLE PLACE - START
@@ -81,65 +157,69 @@ function callback(results, status) {
 
 //let service = new google.maps.places.PlacesService(map);
 //service.nearbySearch(request, callback);
-/*
-function callback(results, status){
-	if(status === google.maps.places.PlacesServiceStatus.OK){
-		renderPlaces(results);
-	}
-	//add markers
 
-}
-*/
-
-const resultDB = [];
-const listDB = [];
-function renderPlaces(data){
-	//clear result lists
+function saveToResultDB(data){
+	//clear DB
 	while(resultDB.length) resultDB.pop();
 
-
-	const myPlaces = data.map((item,index)=>{
-		return renderSinglePlace(item, index);
-		//rendering single item to list..
-		//change to array
+	data.forEach((item,index)=>{
+		const element = {
+			name: item.name,
+			id: item.id,
+			place_id: item.place_id,
+			location: item.geometry.location
+		}
+		if(item.photos!=undefined) {
+			element.photos = item.photos[0].getUrl({
+				'maxHeight':200, 
+				'minWidth':300
+			});
+		}
+		resultDB[index] = element;
 	});
-	$('.results').html(myPlaces);
+	return;
 }
 
 
+/**
+	RENDERING
+**/
+
+
+function renderPlaces(){
+	//display array to places
+	const myPlaces = resultDB.map((item,index)=>{
+		return renderSinglePlace(item, index);
+	});
+	
+	$('.results').html(myPlaces);
+	return;	
+}
 
 function renderSinglePlace(item, index){	
-	const element = {
-		name: item.name,
-		id: item.id,
-		place_id: item.place_id,
-		location: item.geometry.location
-	}
+	
 	let result = `
 		<div class='card border-primary res'>`;
 	if(item.photos!=undefined) {
-		const imgUrl = item.photos[0].getUrl({'maxHeight':200, minWidth: 300});
 		result+= `
-		<img class='card-img-top' src='${imgUrl}' alt='card img'>
+		<img class='card-img-top' src='${item.photos}' alt='card img'>
 		`;
-		element.photos = imgUrl;
-	}
+	}	
 	result += `	
 		<div class='card-body'>
 			<h5 class='card-title'>${item.name}</h5>
 			<p class='card-text'>
 				id: ${item.id},
 				place_id: ${item.place_id},
-				location: ${item.geometry.location}
+				location: ${item.location}
 			</p>
 			<input type='button' class='btn btn-primary btn-add' result-index='${index}' value='ADD'>
 		</div>
-	</div>
-	`;
-	
-	resultDB[index] = element;
+	</div>`;
 	return result;
 }
+	
+
 /**
 	GOOGLE PLACE - END
 **/
@@ -178,10 +258,10 @@ $('.results').on('click', '.btn-add', event=>{
 	event.preventDefault();
 	const index = $(event.currentTarget).attr('result-index');
 	const item = resultDB[index];
-	//console.log(item);
 	addItem(item);
 });
 function addItem(item){
+	listDB.push(item);
 	const place = `
 	<div class='list row align-items-center'>
 		<div class='list-name col'>
@@ -195,18 +275,12 @@ function addItem(item){
 	</div>
 	`;
 	$('#place-list-list').append(place);
-
 }
+
 $('#place-list-list').on('click', '.btn-delete', event=>{
 	$(event.currentTarget).closest('.list').remove();
 });
 
-
-//add result item to place list
-$('#show_user_list').on('click', event=>{
-	event.preventDefault();
-
-});
 $(window).on('resize', function(){
 	resizeWindow();
 });
@@ -248,10 +322,8 @@ function logmein(data){
 	$('#login-btn').hide();
 	$('#savedlist-btn').show();
 	$('#logout-btn').show();
-	//display 'saved places' btn for user page
 }
-//register
-//$('.js-register-form').on('submit', event=>{
+
 $('#register-submit').on('click', event=>{
 	event.preventDefault();
 	const item = {
@@ -290,12 +362,6 @@ $('#logout-btn').on('click', ()=>{
 	$('#savedlist-btn').hide();
 	$('#login-btn').show();
 });
-
-$('.js-form-go').on('submit', event=>{
-	event.preventDefault();
-});
-
-
 
 
 function firstLoad(){
