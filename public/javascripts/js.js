@@ -13,6 +13,20 @@ let markers = [];		//array of markers
 const resultDB = [];	//list of search results below
 const listDB = [];		//list of added items to the right
 
+//array of options for search nearby
+const arr_options = [
+	{ id: "amusement_park", name: "Amusement Park" },
+	{ id: "aquarium", name: "Aquarium" },
+	{ id: "cafe", name: "Cafe" },
+	{ id: "department_store", name: "Department Store" },
+	{ id: "lodging", name: "Lodging" },
+	{ id: "movie_theater", name: "Movie Theater" },
+	{ id: "museum", name: "Museum" },
+	{ id: "night_club", name: "Night Club" },
+	{ id: "restaurant", name: "Restaurant" },
+	{ id: "shopping_mall", name: "Shopping Mall" },
+	{ id: "zoo", name: "Zoo" }
+];
 /**
 	GOOGLE MAP
 **/
@@ -118,15 +132,34 @@ function callback(results, status) {
     }
   }
 }
+
+
 		//SEARCH NEARBY
+const checked_options = [];
 $('#search-nearby').on('click', function(event){
 	event.preventDefault();
-	service.nearbySearch({
+	
+	const query = {
 		location: map.getCenter(),
 		radius: 500,
-		type: ['store']
-	}, callback);
+		type: checked_options
+	}
+	//console.log(query);
+	service.nearbySearch(query, callback);
 });
+
+$('#search-options').on('click', 'input', event=>{
+	const checked_id = $(event.currentTarget).attr('id');
+	const temp = checked_options.find(item=>{
+		return item===checked_id;
+	});
+	if($(event.currentTarget).is(':checked')){
+		if(!temp) checked_options.push(checked_id);
+	} else{
+		if(temp) checked_options.pop(checked_id);
+	}
+});
+
 		//SEARCH KEYWORD
 $('#custom_query_submit').on('click', event=>{	
 	event.preventDefault();
@@ -145,8 +178,9 @@ $('#custom_query_submit').on('click', event=>{
 });
 $('.submit-go').on('submit', event=>{
 	event.preventDefault();
-	
+
 });
+
 
 
 
@@ -218,7 +252,23 @@ function renderSinglePlace(item, index){
 	</div>`;
 	return result;
 }
-	
+
+function renderOptions(arr){
+
+	const items = arr.map((item, index)=>{
+		return `
+			<div class='form-check-inline'>
+				<input class='form-check-input' type='checkbox' value='' id=${item.id}>
+				<label class='form-check-label' for='${item.id}'>
+					${item.name}
+				</label>
+			</div>
+		`;
+	});
+	$('#search-options').html(items);
+}
+
+
 
 /**
 	GOOGLE PLACE - END
@@ -366,6 +416,7 @@ $('#logout-btn').on('click', ()=>{
 
 function firstLoad(){
 	resizeWindow();
+	renderOptions(arr_options);
 	$('#logout-btn').hide();
 	$('#savedlist-btn').hide();
 }
