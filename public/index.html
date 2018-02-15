@@ -37,10 +37,12 @@
 				
 				<div class='trip-map-btn'>
 					
-					<div id='search-options' class='col-sm-4 d-inline'>
+					<div id='search-options' class='col-sm-8 float-left'>
+						<!-- list of options -->
 					</div>
-					<div class='col-sm-4 d-inline'>
-						<input type="button" id='search-nearby' class='btn btn-primary' value="Search Nearby">
+					<div class='col-sm-4 float-right'>
+						<input type="button" id='search-nearby' class='btn btn-primary float-right' value="Search Nearby">
+						<button class='btn btn-primary' style='float:right'>Clear Search</button>
 					</div>
 					
 
@@ -55,14 +57,13 @@
 			</div>
 			<div class='place-list col-4'>
 				<div id='place-list-list'>
-					
+					<!--
+						list of places added for date
+					-->
 				</div>
-				<!--
-					<input type="button" id='custom_query_submit' value="search">
-				<div id='place-list-list'>
-					list of places
+				<div>
+					<button type='button' class='btn btn-outline-secondary'>Date save</button>
 				</div>
-				-->
 			</div>
 		</div>
 	</section>

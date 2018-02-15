@@ -36,11 +36,23 @@
 	height: 50px;
 	background-color: orange;
 }
+.card {
+	width: 33.33333%;
+	float: left;
+	height: 450px;
+}
 /*
 .login-container {
 	background: white;
 }
 */
+.list-name {
+	overflow: hidden;
+	height: 80%;
+}
+.list-img {
+	max-width: 100px;
+}
 .results {
 	padding-left:0;
 	padding-right:0;

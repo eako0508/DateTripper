@@ -204,9 +204,13 @@ function saveToResultDB(data){
 			location: item.geometry.location
 		}
 		if(item.photos!=undefined) {
-			element.photos = item.photos[0].getUrl({
+			element.photos_large = item.photos[0].getUrl({
 				'maxHeight':200, 
 				'minWidth':300
+			});
+			element.photos_small = item.photos[0].getUrl({
+				'maxHeight':100, 
+				'minWidth':150
 			});
 		}
 		resultDB[index] = element;
@@ -234,18 +238,21 @@ function renderSinglePlace(item, index){
 	
 	let result = `
 		<div class='card border-primary res'>`;
-	if(item.photos!=undefined) {
+	if(item.photos_large!=undefined) {
 		result+= `
-		<img class='card-img-top' src='${item.photos}' alt='card img'>
+		<img class='card-img-top' src='${item.photos_large}' alt='card img'>
 		`;
 	}	
+	/*
+	id: ${item.id},
+	place_id: ${item.place_id},
+	location: ${item.location}
+	*/
 	result += `	
 		<div class='card-body'>
 			<h5 class='card-title'>${item.name}</h5>
 			<p class='card-text'>
-				id: ${item.id},
-				place_id: ${item.place_id},
-				location: ${item.location}
+				
 			</p>
 			<input type='button' class='btn btn-primary btn-add' result-index='${index}' value='ADD'>
 		</div>
@@ -312,9 +319,18 @@ $('.results').on('click', '.btn-add', event=>{
 });
 function addItem(item){
 	listDB.push(item);
-	const place = `
-	<div class='list row align-items-center'>
-		<div class='list-name col'>
+	let place = `
+	<div class='list row align-items-center'>`;
+
+	if(item.photos_small) {
+		place += `
+		<div>
+			<img class='list-img' src='${item.photos_small}'/>
+		</div>
+		`;
+	}
+	place +=`
+			<div class='list-name col'>
 			<div>${item.name}</div>
 			<div>Time</div>
 		</div>
