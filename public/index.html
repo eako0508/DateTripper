@@ -26,15 +26,17 @@
 					<form class='js-form-go'>
 						<label for='goto-text'>Goto:</label>
 						<input type="text" id='input-text-go' name='goto-text'>
-						<button type='submit' id='submit-go'>Go</button>
+						<button type='submit' class='btn btn-primary' id='submit-go'>Go</button>
 					</form>
 				</div>
 				<div id='map'></div>
 				
 				<div class='trip-map-btn'>
-					<input type="button" id='search-nearby' value="Search Nearby">
-					<input type="text" id="custom_query">
-					<input type="button" id='custom_query_submit' value="search">
+					<input type="button" id='search-nearby' class='btn btn-primary' value="Search Nearby">
+					<form class='form-map'>
+						<input type="text" id="custom_query">
+						<button type='submit' id='custom_query_submit' class='btn btn-primary'>search</button>
+					</form>
 				</div>
 				
 			</div>
@@ -43,6 +45,7 @@
 					
 				</div>
 				<!--
+					<input type="button" id='custom_query_submit' value="search">
 				<div id='place-list-list'>
 					list of places
 				</div>

@@ -17,34 +17,97 @@ $('#search-nearby').on('click', function(event){
 		location: map.getCenter(),
 		radius: 500,
 		type: ['store']
-	}, callback);
+	//}, callback);
+}, callback);
+
 });
-$('#custom_query_submit').on('click', event=>{
+
+let markers = [];
+$('.form-map').on('submit', event=>{	
 	event.preventDefault();
-	const query = $('#custom_query').val();
+	const keyword = $('#custom_query').val();
 	$('#custom_query').val('');
-	//hhhhhhhhhh
+
+	const search_query = {
+		location: map.getCenter(),
+		radius: 500,
+		query: keyword
+	}
+	service.textSearch(search_query, callback);
+
+	//let example = new google.maps.LatLng(40.727141, -73.907959);
+	//map.panTo(example);
 });
+
+function clearMarkers(){
+	let pop;
+	while(markers.length){
+		pop = markers.pop();
+		pop.setMap(null);
+	}
+	return;
+}
+
+function callback(results, status) {
+	//console.log(status);
+	let marker;
+	clearMarkers();
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+    //save entries with attributes and add to 
+    renderPlaces(results);
+    for (var i = 0; i < results.length; i++) {
+      const place = results[i];
+      //console.log(place);
+      //const img_url = place.photos[0].getUrl({'maxWidth':200, 'maxHeight': 200});
+      //console.log('img url: ' + img_url);
+      
+      const place_lat = place.geometry.location.lat();
+      const place_lng = place.geometry.location.lng();
+      
+      marker = new google.maps.Marker({
+      	position: new google.maps.LatLng(place_lat, place_lng),
+      	map: map
+      });
+      markers.push(marker);
+    }
+  }
+  //if(markers.length) map.panTo(markers[0]);
+  
+}
+
 /**
 	GOOGLE PLACE - START
 **/
 
 //let service = new google.maps.places.PlacesService(map);
 //service.nearbySearch(request, callback);
+/*
 function callback(results, status){
 	if(status === google.maps.places.PlacesServiceStatus.OK){
 		renderPlaces(results);
 	}
+	//add markers
+
 }
+*/
+
 const resultDB = [];
 const listDB = [];
 function renderPlaces(data){
+	//clear result lists
 	while(resultDB.length) resultDB.pop();
+
+
 	const myPlaces = data.map((item,index)=>{
 		return renderSinglePlace(item, index);
+		//rendering single item to list..
+		//change to array
 	});
 	$('.results').html(myPlaces);
 }
+
+
+
 function renderSinglePlace(item, index){	
 	const element = {
 		name: item.name,
@@ -55,7 +118,7 @@ function renderSinglePlace(item, index){
 	let result = `
 		<div class='card border-primary res'>`;
 	if(item.photos!=undefined) {
-		const imgUrl = item.photos[0].getUrl({maxHeight:300});
+		const imgUrl = item.photos[0].getUrl({'maxHeight':200, minWidth: 300});
 		result+= `
 		<img class='card-img-top' src='${imgUrl}' alt='card img'>
 		`;
@@ -73,7 +136,7 @@ function renderSinglePlace(item, index){
 		</div>
 	</div>
 	`;
-	//console.log(element);
+	
 	resultDB[index] = element;
 	return result;
 }
@@ -151,7 +214,10 @@ $(window).on('resize', function(){
 
 
 //login
-let localToken;
+let localToken; //token
+
+
+
 //$('js-form-login').on('submit', event=>{
 $('.login-submit').on('click', event=>{
 	event.preventDefault();
@@ -164,7 +230,7 @@ $('.login-submit').on('click', event=>{
 
 function ajaxlogin(item){
 	$.ajax({
-		url: 'http://192.168.2.199:8080/api/auth/login',
+		url: 'http://localhost:8080/api/auth/login',
 		method: "POST",
 		contentType: 'application/json',
 		dataType: 'json',
