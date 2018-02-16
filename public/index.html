@@ -21,7 +21,8 @@
 
 	<section class='trip container'>
 		<div class='row'>
-			<div id='trip-map' class='col-8 no-gutters'>
+			<div id='trip-map' class='col-8 no-paddings'>
+				<!--
 				<div id='div-form-go'>
 					<label for='goto-text'>Goto:</label>
 
@@ -33,14 +34,28 @@
 					</div>
 
 				</div>
+				-->
 				<div id='map'></div>
 				
-				<div class='trip-map-btn'>
-					
-					<div id='search-options' class='col-sm-8 float-left'>
+				
+				
+			</div>
+			<div class='place-list col-4'>
+				<div id='place-list-list'>
+					<!--
+						list of places added for date
+					-->
+				</div>
+				
+			</div>
+		</div>
+		<div id='map-btn-control'>
+			<div class='row'>
+				<div class='trip-map-btn col-8 no-paddings'>
+					<div id='search-options' class='col-sm-8 float-left no-paddings'>
 						<!-- list of options -->
 					</div>
-					<div class='col-sm-4 float-right'>
+					<div class='col-sm-4 float-right no-paddings'>
 						<input type="button" id='search-nearby' class='btn btn-primary float-right' value="Search Nearby">
 						<button class='btn btn-primary' style='float:right'>Clear Search</button>
 					</div>
@@ -53,18 +68,14 @@
 						</div>
 					</div>
 				</div>
-				
-			</div>
-			<div class='place-list col-4'>
-				<div id='place-list-list'>
-					<!--
-						list of places added for date
-					-->
+				<div class='col-4 no-paddings'>				
+					<button type='button' class='btn btn-outline-secondary' id='date-btn-save'>Save the Date</button>
+					<button type='button' class='btn btn-outline-secondary' id='date-btn-clear'>Clear Date</button>
+					<!--ask are you sure??-->
 				</div>
-				<div>
-					<button type='button' class='btn btn-outline-secondary'>Date save</button>
-				</div>
+
 			</div>
+
 		</div>
 	</section>
 	

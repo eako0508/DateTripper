@@ -1,6 +1,41 @@
 
+	/**
+							TODO 
+			(important)
+		- Find out the way to re-order the destinations from the list.
 
 
+
+			(misc.)
+		- add location's website & phone number
+		- display opening hours.
+		- click item from results and display detailed info in lightbox.
+		- click item from results to show place on the map.
+		- From cards, move card-contents to the bottom.
+		
+	**/
+
+
+		/** 
+			PROCESS: RENDERING SEARCH RESULTS
+			global: 
+				resultDB[]
+				listDB[]
+				markers[]
+		**/
+
+//$('search-nearby').click->callback
+//$('custom_query_submit').click->callback
+
+//callback(saveToResults)->renderPlaces->renderSinglePlace->$('.results').html
+
+
+		/**
+			PROCESS: RENDERING ADDED LIST ON DESTINATIONS
+			global: listDB[]
+		**/
+
+//$('.results').click -> renderItem(render)
 
 
 /**
@@ -9,9 +44,9 @@
 
 var map;				//maps
 let service;			//google places
-let markers = [];		//array of markers
-const resultDB = [];	//list of search results below
-const listDB = [];		//list of added items to the right
+let markers = [];		//array of markers objects(lat, lng)
+const resultDB = [];	//list of search results objects(name, imgUrl(small&large), id, place_id)
+const listDB = [];		//list of added items of objects (same as above)
 
 //array of options for search nearby
 const arr_options = [
@@ -27,14 +62,18 @@ const arr_options = [
 	{ id: "shopping_mall", name: "Shopping Mall" },
 	{ id: "zoo", name: "Zoo" }
 ];
+
+
+
+
+
+
+
+
+
 /**
 	GOOGLE MAP
 **/
-
-
-
-
-
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
 		center: {lat:40.727141, lng: -73.907959},
@@ -109,13 +148,13 @@ function clearMarkers(){
 	}
 	return;
 }
+
+
+
 function callback(results, status) {
-	//console.log(status);
 	let marker;
 	clearMarkers();
   if (status == google.maps.places.PlacesServiceStatus.OK) {
-    //save entries with attributes and add to 
-    //renderPlaces(results);
     saveToResultDB(results);
     renderPlaces();
     for (var i = 0; i < results.length; i++) {
@@ -223,7 +262,7 @@ function saveToResultDB(data){
 	RENDERING
 **/
 
-
+//renderPlaces->renderSinglePlace->$('.results').html
 function renderPlaces(){
 	//display array to places
 	const myPlaces = resultDB.map((item,index)=>{
@@ -315,9 +354,9 @@ $('.results').on('click', '.btn-add', event=>{
 	event.preventDefault();
 	const index = $(event.currentTarget).attr('result-index');
 	const item = resultDB[index];
-	addItem(item);
+	renderItem(item);
 });
-function addItem(item){
+function renderItem(item){
 	listDB.push(item);
 	let place = `
 	<div class='list row align-items-center'>`;
