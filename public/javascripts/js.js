@@ -3,7 +3,10 @@
 							TODO 
 			(important)
 		- Find out the way to re-order the destinations from the list.
-
+			= every items are displayed in the order the items are added
+			= make up and down arrow for each items
+			= swap items from the array (let temp = a , a = b, b = temp)
+			= swap from the list without loading the whole list(just like above with the content)
 
 
 			(misc.)
@@ -343,10 +346,6 @@ function detailcallback(place, status) {
 	Single place Detail - END
 **/
 
-
-
-
-
 //event handler
 
 //add result item to place list
@@ -358,27 +357,30 @@ $('.results').on('click', '.btn-add', event=>{
 });
 function renderItem(item){
 	listDB.push(item);
+	
 	let place = `
 	<div class='list row align-items-center'>`;
 
 	if(item.photos_small) {
 		place += `
-		<div>
-			<img class='list-img' src='${item.photos_small}'/>
-		</div>
-		`;
+		<img class='list-img' src='${item.photos_small}'/>`;
 	}
 	place +=`
-			<div class='list-name col'>
+		<div class='list-name col'>
 			<div>${item.name}</div>
 			<div>Time</div>
 		</div>
-		<div class='list-btn col'>
-			<input type='button' class='btn btn-delete' 
-			place-list-id='${item.id}' value='delete'>
+		<div class='col list-btn'>
+			<div class='row justify-content-end' id='updown'>
+				<button id='up-${item.id}' class='btn btn-primary'>up</button>
+				<button id='down-${item.id}' class='btn btn-secondary'>dn</button>	
+			</div>
+		
+			<input type="button" class="btn btn-delete btn-danger" place-list-id='${item.id}' value="delete">
 		</div>
-	</div>
-	`;
+	</div>`;
+	//change id for every items?? what happens when the order changes?
+	//
 	$('#place-list-list').append(place);
 }
 
