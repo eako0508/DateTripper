@@ -7,6 +7,7 @@
 			= make up and down arrow for each items
 			= swap items from the array (let temp = a , a = b, b = temp)
 			= swap from the list without loading the whole list(just like above with the content)
+			= ...or re-render the whole array to destinations...
 
 
 			(misc.)
@@ -25,31 +26,51 @@
 				resultDB[]
 				listDB[]
 				markers[]
+
+		$('search-nearby').click->callback
+		$('custom_query_submit').click->callback
+
+		callback(saveToResults)
+		-> renderPlaces
+		-> renderSinglePlace
+		-> $('.results').html
+
 		**/
-
-//$('search-nearby').click->callback
-//$('custom_query_submit').click->callback
-
-//callback(saveToResults)->renderPlaces->renderSinglePlace->$('.results').html
 
 
 		/**
 			PROCESS: RENDERING ADDED LIST ON DESTINATIONS
 			global: listDB[]
+		
+
+		$('.results').click 
+		-> renderItem(render)
+
 		**/
-
-//$('.results').click -> renderItem(render)
-
 
 /**
 		G L O B A L   V A R I A B L E S
 **/
 
-var map;				//maps
-let service;			//google places
+//maps, used for map and markers
+var map;
+
+//google places, used for nearby search(with or w/o text)
+let service;			
+
+
 let markers = [];		//array of markers objects(lat, lng)
-const resultDB = [];	//list of search results objects(name, imgUrl(small&large), id, place_id)
-const listDB = [];		//list of added items of objects (same as above)
+
+//array of objects(name, imgUrl(small&large), id, place_id)
+const resultDB = [];	//for search results
+const listDB = [];		//for added destinations
+
+
+let rank = 0;
+//remove rank
+
+//list of options to append for 'search nearby query'
+const checked_options = [];
 
 //array of options for search nearby
 const arr_options = [
@@ -65,12 +86,6 @@ const arr_options = [
 	{ id: "shopping_mall", name: "Shopping Mall" },
 	{ id: "zoo", name: "Zoo" }
 ];
-
-
-
-
-
-
 
 
 
@@ -139,9 +154,11 @@ function initMap() {
 			]
 		}
 	];
+
 	map.set('styles', myStyle);
 
 	service = new google.maps.places.PlacesService(map);
+
 }
 function clearMarkers(){
 	let pop;
@@ -151,42 +168,65 @@ function clearMarkers(){
 	}
 	return;
 }
-
-
-
+let info = [];
 function callback(results, status) {
-	let marker;
+	//let marker;
 	clearMarkers();
-  if (status == google.maps.places.PlacesServiceStatus.OK) {
-    saveToResultDB(results);
-    renderPlaces();
-    for (var i = 0; i < results.length; i++) {
-      const place = results[i];
-      
-      const place_lat = place.geometry.location.lat();
-      const place_lng = place.geometry.location.lng();
-      
-      marker = new google.maps.Marker({
-      	position: new google.maps.LatLng(place_lat, place_lng),
-      	map: map
-      });
-      markers.push(marker);
-    }
-  }
+	if (status == google.maps.places.PlacesServiceStatus.OK) {
+	    saveToResultDB(results);
+	    renderPlaces();
+	    for (var i = 0; i < results.length; i++) {
+		    const place = results[i];
+		      
+		    const place_lat = place.geometry.location.lat();
+		    const place_lng = place.geometry.location.lng();
+
+		    let marker = new google.maps.Marker({
+			    position: new google.maps.LatLng(place_lat, place_lng),
+			    map: map
+		    });
+		    
+		    let infowindow = new google.maps.InfoWindow();
+		    infowindow.setContent('hi');
+		    marker.addListener('click', function(){
+		    	infowindow.open(map, marker);
+		    });
+		    info.push(infowindow);
+		    
+	    	markers.push(marker);
+	    }
+	}
 }
+
+/*
+		    marker.addListener('click', function(){
+		    	infowindow.open(map, marker);
+		    });
+		    
+		    let content = 'hi';
+		    google.maps.event.addListener(marker, 'click', function(content){
+		      return function(){
+		        infowindow.setContent(content);
+		      }
+		    }(content));
+		    
+		    google.maps.event.addListener(marker, 'click', function(content){
+		    	return function(){
+		    		infowindow.setContent(content);
+		    	}
+		    }(content));
+		    */
+
 
 
 		//SEARCH NEARBY
-const checked_options = [];
+
 $('#search-nearby').on('click', function(event){
-	event.preventDefault();
-	
 	const query = {
 		location: map.getCenter(),
 		radius: 500,
 		type: checked_options
 	}
-	//console.log(query);
 	service.nearbySearch(query, callback);
 });
 
@@ -204,7 +244,6 @@ $('#search-options').on('click', 'input', event=>{
 
 		//SEARCH KEYWORD
 $('#custom_query_submit').on('click', event=>{	
-	event.preventDefault();
 	const keyword = $('#custom_query').val();
 	$('#custom_query').val('');
 
@@ -223,7 +262,11 @@ $('.submit-go').on('submit', event=>{
 
 });
 
-
+$('#date-btn-save').on('click', event=>{
+	let temp = JSON.stringify(listDB);
+	console.log(temp);
+	//send it to logged-in user's database
+});
 
 
 
@@ -237,7 +280,7 @@ $('.submit-go').on('submit', event=>{
 function saveToResultDB(data){
 	//clear DB
 	while(resultDB.length) resultDB.pop();
-
+	console.log(data[0]);
 	data.forEach((item,index)=>{
 		const element = {
 			name: item.name,
@@ -338,8 +381,9 @@ function detailcallback(place, status) {
   if (status == google.maps.places.PlacesServiceStatus.OK) {
     /*
     console.log(place);
+    */
     console.log(place.photos[1].getUrl({maxHeight:300}));
-	*/
+	
   }
 }
 /**
@@ -347,14 +391,7 @@ function detailcallback(place, status) {
 **/
 
 //event handler
-
-//add result item to place list
-$('.results').on('click', '.btn-add', event=>{
-	event.preventDefault();
-	const index = $(event.currentTarget).attr('result-index');
-	const item = resultDB[index];
-	renderItem(item);
-});
+/*backup
 function renderItem(item){
 	listDB.push(item);
 	
@@ -383,8 +420,105 @@ function renderItem(item){
 	//
 	$('#place-list-list').append(place);
 }
+*/
+//add result item to place list
+$('.results').on('click', '.btn-add', event=>{
+	event.preventDefault();
+	const index = $(event.currentTarget).attr('result-index');
+	const item = resultDB[index];
+	listDB.push(item);
+	renderItem(item);
+});
+
+
+function renderItem(item){
+	
+	let place = `
+	<div class='list' id='rank-${rank}'>
+		<div class='rank-container row align-items-center'>`;
+	rank++;
+	if(item.photos_small) {
+		place += `
+			<img class='list-img' src='${item.photos_small}'/>`;
+	}
+	place +=`
+			<div class='list-name col'>
+				<div>${item.name}</div>
+				<div>Time</div>
+			</div>
+			<div class='col list-btn'>
+				<div class='row justify-content-end' id='updown'>
+					<button id='up-${item.id}' class='btn-up btn btn-primary'>up</button>
+					<button id='dn-${item.id}' class='btn-dn btn btn-secondary'>dn</button>	
+				</div>
+			
+				<input type="button" class="btn btn-delete btn-danger" place-list-id='${item.id}' value="delete">
+			</div>
+		</div>
+	</div>`;
+	//change id for every items?? what happens when the order changes?
+	//
+	$('#place-list-list').append(place);
+}
+let tests = '123456';
+$('#place-list-list').on('click', '.btn-up', event=>{
+	let targetID = $(event.currentTarget).attr('id');
+	targetID = targetID.substring(3,targetID.length);
+	let temp;
+	if(listDB.length<2){
+		return;
+	}
+	for(let i=1;i<listDB.length;i++){
+		if(targetID === listDB[i].id){
+			temp = listDB.splice(i,1);
+			listDB.splice(i-1,0,temp[0]);
+			break;
+		}
+	}
+	renderDestination();
+});
+
+$('#place-list-list').on('click', '.btn-dn', event=>{
+	let targetID = $(event.currentTarget).attr('id');
+	targetID = targetID.substring(3,targetID.length);
+	let temp;
+	if(listDB.length<2){
+		return;
+	}
+	for(let i=0;i<listDB.length-1;i++){
+		if(targetID === listDB[i].id){
+			temp = listDB.splice(i,1);
+			listDB.splice(i+1,0,temp[0]);
+			break;
+		}
+	}
+	renderDestination();
+});
+
+function clearListDB(){
+	while(listDB.length) listDB.pop();
+	$('#place-list-list').html('');
+}
+
+$('#date-btn-clear').on('click', event=>{
+	clearListDB();
+});
+
+function renderDestination(){
+	$('#place-list-list').html('');	
+	for(let i=0;i<listDB.length;i++){
+		renderItem(listDB[i]);
+	}
+}
+
 
 $('#place-list-list').on('click', '.btn-delete', event=>{
+	let targetID = $(event.currentTarget).attr('place-list-id');
+	for(let i=0;i<listDB.length;i++){
+		if(targetID === listDB[i].id){
+			listDB.splice(i, 1);
+		}
+	}
 	$(event.currentTarget).closest('.list').remove();
 });
 
@@ -471,6 +605,7 @@ $('#logout-btn').on('click', ()=>{
 });
 
 
+//INITIALIZATION
 function firstLoad(){
 	resizeWindow();
 	renderOptions(arr_options);
@@ -485,10 +620,10 @@ function resizeWindow(){
 	$('.place-list').height(window_height*.6);
 }
 
+/*	experiments
 function requestList(id){
 	//
 }
-
 $('#place-list-list').on('sortable', '')
-
+*/
 $(firstLoad);
