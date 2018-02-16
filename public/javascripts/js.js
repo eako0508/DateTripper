@@ -175,26 +175,6 @@ function callback(results, status) {
 	if (status == google.maps.places.PlacesServiceStatus.OK) {
 	    saveToResultDB(results);
 	    renderPlaces();
-	    for (var i = 0; i < results.length; i++) {
-		    const place = results[i];
-		      
-		    const place_lat = place.geometry.location.lat();
-		    const place_lng = place.geometry.location.lng();
-
-		    let marker = new google.maps.Marker({
-			    position: new google.maps.LatLng(place_lat, place_lng),
-			    map: map
-		    });
-		    
-		    let infowindow = new google.maps.InfoWindow();
-		    infowindow.setContent('hi');
-		    marker.addListener('click', function(){
-		    	infowindow.open(map, marker);
-		    });
-		    info.push(infowindow);
-		    
-	    	markers.push(marker);
-	    }
 	}
 }
 
@@ -280,8 +260,9 @@ $('#date-btn-save').on('click', event=>{
 function saveToResultDB(data){
 	//clear DB
 	while(resultDB.length) resultDB.pop();
-	console.log(data[0]);
+	//console.log(data[0]);
 	data.forEach((item,index)=>{
+		//console.log(item);
 		const element = {
 			name: item.name,
 			id: item.id,
@@ -299,6 +280,46 @@ function saveToResultDB(data){
 			});
 		}
 		resultDB[index] = element;
+		
+
+		const place_lat = item.geometry.location.lat();
+	    const place_lng = item.geometry.location.lng();
+
+	    let marker = new google.maps.Marker({
+		    position: new google.maps.LatLng(place_lat, place_lng),
+		    map: map
+	    });
+	    
+	    let request = {
+			"placeId": item.place_id
+		};
+		
+		service.getDetails(request, function(place,status){
+			//if (status == google.maps.places.PlacesServiceStatus.OK) {
+				//console.log(place);
+				//console.log(place.opening_hours==null);
+				if(place=!null) {
+					if(place.opening_hours!=null){
+						let arr_hours = place.opening_hours.weekday_text;
+						element.hours = arr_hours;
+						console.log(arr_hours);
+						console.log(element.hours);
+					}
+				
+				//console.log(place);
+				}
+				
+			//}
+		});
+		
+
+	    let infowindow = new google.maps.InfoWindow();
+	    infowindow.setContent('hi');
+	    marker.addListener('click', function(){
+	    	infowindow.open(map, marker);
+	    });
+	    info.push(infowindow);
+	    markers.push(marker);
 	});
 	return;
 }
@@ -379,11 +400,11 @@ function getSingleDetail(input, callback){
 }
 function detailcallback(place, status) {
   if (status == google.maps.places.PlacesServiceStatus.OK) {
-    /*
+    
     console.log(place);
-    */
+    /*
     console.log(place.photos[1].getUrl({maxHeight:300}));
-	
+	*/
   }
 }
 /**
