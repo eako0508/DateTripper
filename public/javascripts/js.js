@@ -262,26 +262,6 @@ function saveToResultDB(data){
 	while(resultDB.length) resultDB.pop();
 	//console.log(data[0]);
 	data.forEach((item,index)=>{
-		//console.log(item);
-		const element = {
-			name: item.name,
-			id: item.id,
-			place_id: item.place_id,
-			location: item.geometry.location
-		}
-		if(item.photos!=undefined) {
-			element.photos_large = item.photos[0].getUrl({
-				'maxHeight':200, 
-				'minWidth':300
-			});
-			element.photos_small = item.photos[0].getUrl({
-				'maxHeight':100, 
-				'minWidth':150
-			});
-		}
-		resultDB[index] = element;
-		
-
 		const place_lat = item.geometry.location.lat();
 	    const place_lng = item.geometry.location.lng();
 
@@ -293,28 +273,46 @@ function saveToResultDB(data){
 	    let request = {
 			"placeId": item.place_id
 		};
+
+		const element = {
+			name: item.name,
+			id: item.id,
+			place_id: item.place_id,
+			location: item.geometry.location
+		}
+		let content = '<div>';
+		if(item.photos!=undefined) {
+			element.photos_large = item.photos[0].getUrl({
+				'maxHeight':200, 
+				'minWidth':300
+			});
+			element.photos_small = item.photos[0].getUrl({
+				'maxHeight':100, 
+				'minWidth':150
+			});
+			content += `
+				
+				<img src='${element.photos_small}'/>
+				`;
+		}
 		
 		service.getDetails(request, function(place,status){
-			//if (status == google.maps.places.PlacesServiceStatus.OK) {
-				//console.log(place);
-				//console.log(place.opening_hours==null);
-				if(place=!null) {
-					if(place.opening_hours!=null){
-						let arr_hours = place.opening_hours.weekday_text;
-						element.hours = arr_hours;
-						console.log(arr_hours);
-						console.log(element.hours);
-					}
-				
-				//console.log(place);
+			if (status == google.maps.places.PlacesServiceStatus.OK) {
+				if(place.opening_hours!=null){
+					let arr_hours = place.opening_hours.weekday_text;
+					element.hours = arr_hours;
+					let append_hours = renderHours(arr_hours);
+					content += append_hours;
+					console.log(content);
 				}
-				
-			//}
+			}
 		});
-		
+		content += '</div>';
+		resultDB[index] = element;
 
 	    let infowindow = new google.maps.InfoWindow();
-	    infowindow.setContent('hi');
+	    
+	    infowindow.setContent(content);
 	    marker.addListener('click', function(){
 	    	infowindow.open(map, marker);
 	    });
@@ -324,6 +322,17 @@ function saveToResultDB(data){
 	return;
 }
 
+function renderHours(arr){
+	//let temp = '<div>'
+	let temp = ''
+	for(let i=0;i<arr.length;i++){
+		//temp += `<div>${arr[i]}</div>`;
+		temp += arr[i];
+	}
+	temp += '';
+	//temp += '</div>';
+	return temp;
+}
 
 /**
 	RENDERING
@@ -387,61 +396,8 @@ function renderOptions(arr){
 	GOOGLE PLACE - END
 **/
 
-
-
-/**
-	Single place Detail - START
-**/
-function getSingleDetail(input, callback){
-	let request = {
-		"placeId": input
-	}
-	service.getDetails(request, callback);
-}
-function detailcallback(place, status) {
-  if (status == google.maps.places.PlacesServiceStatus.OK) {
-    
-    console.log(place);
-    /*
-    console.log(place.photos[1].getUrl({maxHeight:300}));
-	*/
-  }
-}
-/**
-	Single place Detail - END
-**/
-
 //event handler
-/*backup
-function renderItem(item){
-	listDB.push(item);
-	
-	let place = `
-	<div class='list row align-items-center'>`;
 
-	if(item.photos_small) {
-		place += `
-		<img class='list-img' src='${item.photos_small}'/>`;
-	}
-	place +=`
-		<div class='list-name col'>
-			<div>${item.name}</div>
-			<div>Time</div>
-		</div>
-		<div class='col list-btn'>
-			<div class='row justify-content-end' id='updown'>
-				<button id='up-${item.id}' class='btn btn-primary'>up</button>
-				<button id='down-${item.id}' class='btn btn-secondary'>dn</button>	
-			</div>
-		
-			<input type="button" class="btn btn-delete btn-danger" place-list-id='${item.id}' value="delete">
-		</div>
-	</div>`;
-	//change id for every items?? what happens when the order changes?
-	//
-	$('#place-list-list').append(place);
-}
-*/
 //add result item to place list
 $('.results').on('click', '.btn-add', event=>{
 	event.preventDefault();
@@ -481,7 +437,7 @@ function renderItem(item){
 	//
 	$('#place-list-list').append(place);
 }
-let tests = '123456';
+
 $('#place-list-list').on('click', '.btn-up', event=>{
 	let targetID = $(event.currentTarget).attr('id');
 	targetID = targetID.substring(3,targetID.length);
