@@ -178,27 +178,6 @@ function callback(results, status) {
 	}
 }
 
-/*
-		    marker.addListener('click', function(){
-		    	infowindow.open(map, marker);
-		    });
-		    
-		    let content = 'hi';
-		    google.maps.event.addListener(marker, 'click', function(content){
-		      return function(){
-		        infowindow.setContent(content);
-		      }
-		    }(content));
-		    
-		    google.maps.event.addListener(marker, 'click', function(content){
-		    	return function(){
-		    		infowindow.setContent(content);
-		    	}
-		    }(content));
-		    */
-
-
-
 		//SEARCH NEARBY
 
 $('#search-nearby').on('click', function(event){
@@ -397,6 +376,22 @@ function renderOptions(arr){
 **/
 
 //event handler
+
+function clearResultDB(){
+	while(resultDB.length) resultDB.pop();
+	return;
+}
+
+$('#clear-search').on('click', function(){
+	
+	
+	//clear markers
+	clearMarkers();
+	//clear resultDB
+	clearResultDB();
+	//cear result html
+	$('.results').html('');
+});
 
 //add result item to place list
 $('.results').on('click', '.btn-add', event=>{
