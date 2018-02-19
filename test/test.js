@@ -1,9 +1,14 @@
 'use strict'
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const faker = require('faker');
+const mongoose = require('mongoose');
+
 const expect = chai.expect;
 chai.use(chaiHttp);
+
 const {app} = require('../server.js');
+
 
 describe('GET /', function(){
 	it('should display index.html with status 200', function(){
@@ -80,7 +85,7 @@ describe('GET /destination/find/:userID', function(){
 	**/
 });
 
-describe('POST /destination/add', function(){
+describe('POST /destination/addDate', function(){
 	/**
 	Create a new list of destinations for a single user
 	

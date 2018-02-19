@@ -68,6 +68,7 @@ let markers = [];		//array of markers objects(lat, lng)
 const resultDB = [];	//for search results
 const listDB = [];		//for added destinations
 
+let info = []; //array of infowindow
 
 let rank = 0;
 //remove rank
@@ -90,7 +91,9 @@ const arr_options = [
 	{ id: "zoo", name: "Zoo" }
 ];
 
-
+//let base_url = 'http://100.33.50.170:8080/';
+let base_url = 'http://192.168.2.199:8080/'
+//let localhost_url = 'http://localhost:8080';
 
 /**
 	GOOGLE MAP
@@ -171,7 +174,7 @@ function clearMarkers(){
 	}
 	return;
 }
-let info = [];
+
 function callback(results, status) {
 	//let marker;
 	clearMarkers();
@@ -230,11 +233,16 @@ let localToken; //token
 let isLogged = false;
 let username = '';
 **/
-$('#date-btn-save').on('click', event=>{
+
+//$('#date-btn-save').on('click', event=>{
+$('#save-form').on('click', event=>{
+
+	event.preventDefault();
 	//let temp = JSON.stringify(listDB);
 	//console.log(temp);
 	//send it to logged-in user's database
-	if(!isLogged) {
+	//if(!isLogged) {
+	if(!localStorage.token) {	
 		alert('Login first!');
 		return;
 	}
@@ -242,12 +250,15 @@ $('#date-btn-save').on('click', event=>{
 		alert('Need at least 2 places!');
 		return;
 	}
+	if($('#date-title').val()===''){
+		alert('Please enter title.');
+		return;
+	}
 	const item = {
 		"title": "some title",
 		"destinations": listDB
 	}
-	console.log('title: '+item.title);
-	let post_url = 'http://localhost:8080/destination/add/' + username;
+	let post_url = base_url+'destination/addDate/' + localStorage.username;
 	$.ajax({
 		url: post_url,
 		method: "POST",
@@ -256,7 +267,7 @@ $('#date-btn-save').on('click', event=>{
 		data: JSON.stringify(item),
 		success: saveSuccess,
 		failure: function(errMsg){
-			console.log(errMsg);
+			console.log(errMsg.message);
 		},
 		beforeSend: function(xhr, settings) { 
 			xhr.setRequestHeader('Authorization','Bearer ' + localToken); 
@@ -559,8 +570,9 @@ $('.login-submit').on('click', event=>{
 });
 
 function ajaxlogin(item){
+
 	$.ajax({
-		url: 'http://localhost:8080/api/auth/login',
+		url: base_url+'api/auth/login',
 		method: "POST",
 		contentType: 'application/json',
 		dataType: 'json',
@@ -597,7 +609,7 @@ $('#register-submit').on('click', event=>{
 		password: item.password
 	}
 	$.ajax({
-		url: 'http://localhost:8080/api/users',
+		url: base_url+'api/users',
 		method: 'POST',
 		contentType: 'application/json',
 		dataType: 'json',
@@ -625,7 +637,7 @@ $('#logout-btn').on('click', ()=>{
 });
 $('#savedlist-btn').on('click', function(){
 	window.location.href = 
-		'http://localhost:8080/api/users/saved_list/'+localStorage.username;
+		base_url+'api/users/saved_list/'+localStorage.username;
 });
 /*	redirect to user's saved dates
 $('#savedlist-btn').on('click', function(){

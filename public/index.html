@@ -68,10 +68,14 @@
 						</div>
 					</div>
 				</div>
-				<div class='col-4 no-paddings'>				
-					<button type='button' class='btn btn-outline-secondary' id='date-btn-save'>Save the Date</button>
-					<button type='button' class='btn btn-outline-secondary' id='date-btn-clear'>Clear Date</button>
-					<!--ask are you sure??-->
+				<div class='col-4 no-paddings'>
+					<form id='save-form' action='#'>
+						<label for='date_title'>Title: </label>
+						<input type='text' id='date-title' name='date_title' required>
+						<button type='submit' class='btn btn-outline-secondary' id='date-btn-save'>Save the Date</button>
+						<button type='button' class='btn btn-outline-secondary' id='date-btn-clear'>Clear Date</button>
+						<!--ask are you sure??-->
+					</form>
 				</div>
 
 			</div>
