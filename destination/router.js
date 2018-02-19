@@ -5,6 +5,17 @@ const config = require('../config');
 const router = express.Router();
 
 
+router.route('/')
+  .get((req,res)=>{
+  	DestModels.find({})
+  	.then(entries=>{
+  		res.status(200).json(entries);
+  	}).catch((err)=>{
+  		console.error(err);
+  		res.status(500).send('Server error');
+  	});
+  });
+
 router.route('/:username')
   .get((req,res)=>{
   	DestModels.find({

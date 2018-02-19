@@ -249,9 +249,9 @@ $('#date-btn-save').on('click', event=>{
 		failure: function(errMsg){
 			console.log(errMsg);
 		},
-		beforeSend( function(xhr, settings){
-			xhrsetRequestHeader('Authorization', 'Bearer ' + localToken);
-		})
+		beforeSend: function(xhr, settings) { 
+			xhr.setRequestHeader('Authorization','Bearer ' + localToken); 
+		}
 	});
 });
 

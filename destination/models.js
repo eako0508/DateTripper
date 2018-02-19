@@ -1,6 +1,7 @@
 //models.js
 
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 /*
 let destinationSchema = new mongoose.Schema({
 	name: {type: String, required: true},
@@ -26,4 +27,4 @@ destinationSchema.methods.serialize = function() {
 };
 
 
-const User = mongoose.model('Database', destinationSchema);
+const User = mongoose.model('DestModels', destinationSchema);
