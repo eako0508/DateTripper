@@ -51,7 +51,10 @@
 /**
 		G L O B A L   V A R I A B L E S
 **/
+let localToken; //token
 
+let isLogged = false;
+let username = '';
 //maps, used for map and markers
 var map;
 
@@ -232,20 +235,26 @@ $('#date-btn-save').on('click', event=>{
 	//console.log(temp);
 	//send it to logged-in user's database
 	if(!isLogged) {
+		alert('Login first!');
+		return;
+	}
+	if(listDB.length<2){
+		alert('Need at least 2 places!');
 		return;
 	}
 	const item = {
-		username: username,
-		title: 'some title',
-		destinations: listDB
+		"title": "some title",
+		"destinations": listDB
 	}
+	console.log('title: '+item.title);
+	let post_url = 'http://localhost:8080/destination/add/' + username;
 	$.ajax({
-		url: 'http://localhost:8080',
+		url: post_url,
 		method: "POST",
 		contentType: 'application/json',
 		dataType: 'json',
 		data: JSON.stringify(item),
-		success: logmein,
+		success: saveSuccess,
 		failure: function(errMsg){
 			console.log(errMsg);
 		},
@@ -255,7 +264,11 @@ $('#date-btn-save').on('click', event=>{
 	});
 });
 
-
+function saveSuccess(data){
+	console.log('success!');
+	console.log(data);
+	return;
+}
 
 /**
 	GOOGLE PLACE - START
@@ -321,7 +334,7 @@ function saveToResultDB(data){
 		resultDB[index] = element;
 
 	    let infowindow = new google.maps.InfoWindow();
-	    console.log(content);
+	    //console.log(content);
 	    infowindow.setContent(content);
 	    marker.addListener('click', function(){
 	    	infowindow.open(map, marker);
@@ -532,10 +545,7 @@ $(window).on('resize', function(){
 
 
 //login
-let localToken; //token
 
-let isLogged = false;
-let username = '';
 
 //$('js-form-login').on('submit', event=>{
 $('.login-submit').on('click', event=>{
@@ -564,9 +574,11 @@ function ajaxlogin(item){
 
 function logmein(data){
 	localToken = data.authToken;
-	username = user_id;
+	localStorage.setItem('token', data.authToken);
+	username = $('#user_id').val();
+	localStorage.setItem('username', username);
 	isLogged = true;
-	console.log(localToken);
+	//console.log(localToken);
 	$('#login-btn').hide();
 	$('#savedlist-btn').show();
 	$('#logout-btn').show();
@@ -609,10 +621,31 @@ $('#logout-btn').on('click', ()=>{
 	$('#logout-btn').hide();
 	$('#savedlist-btn').hide();
 	$('#login-btn').show();
+	localStorage.clear();
 });
-
-
-
+$('#savedlist-btn').on('click', function(){
+	window.location.href = 
+		'http://localhost:8080/api/users/saved_list/'+localStorage.username;
+});
+/*	redirect to user's saved dates
+$('#savedlist-btn').on('click', function(){
+	let saved_url = 'http://localhost:8080/users/saved_list/' + localStorage.username;
+	$.ajax({
+		url: saved_url,
+		method: 'POST',
+		contentType: 'application/json',
+		dataType: 'json',
+		data: JSON.stringify(item),
+		success: function(data){
+			console.log(data);
+			//work on redirecting
+		},
+		failure: function(errMsg){
+			console.error(errMsg);
+		}
+	});
+});
+*/
 
 //INITIALIZATION
 function firstLoad(){
@@ -620,6 +653,12 @@ function firstLoad(){
 	renderOptions(arr_options);
 	$('#logout-btn').hide();
 	$('#savedlist-btn').hide();
+
+	if(localStorage.token){
+		$('#login-btn').hide();
+		$('#savedlist-btn').show();
+		$('#logout-btn').show();
+	}
 }
 
 function resizeWindow(){

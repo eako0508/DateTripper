@@ -58,7 +58,8 @@ app.get('/api/protected', jwtAuth, (req, res) => {
 });
 */
 
-app.use('/destination', jwtAuth, destinationRouter);
+//app.use('/destination', jwtAuth, destinationRouter);
+app.use('/destination/', destinationRouter);
 /*
 app.use('*', (req, res) => {
   return res.status(404).json({ message: 'Not Found' });

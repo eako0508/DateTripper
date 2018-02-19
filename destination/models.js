@@ -2,16 +2,7 @@
 
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-/*
-let destinationSchema = new mongoose.Schema({
-	name: {type: String, required: true},
-	place_id: {type: String, required: true},
-	username: {type: String, required: true}
-	photos_large: {type: String, default: ''},
-	photos_small: {type: String, default: ''},
-	hours: {type: Array, default: []}
-});
-*/
+
 let destinationSchema = new mongoose.Schema({
 	username: {type: String, required: true},
 	title: {type: String, required: true},
@@ -21,10 +12,12 @@ let destinationSchema = new mongoose.Schema({
 
 destinationSchema.methods.serialize = function() {
   return {
-  	id: _id,
+  	id: this._id,
     username: this.username
   };
 };
 
 
-const User = mongoose.model('DestModels', destinationSchema);
+const Destination = mongoose.model('destination', destinationSchema);
+
+module.exports = Destination;

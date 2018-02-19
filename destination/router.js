@@ -1,13 +1,15 @@
 'use strict';
 const express = require('express');
-const DestModels = require('./models');
+const Destination = require('./models');
 const config = require('../config');
 const router = express.Router();
+const bodyParser = require('body-parser');
 
+router.use(bodyParser.json());
 
-router.route('/')
+router.route('/find')
   .get((req,res)=>{
-  	DestModels.find({})
+  	Destination.find({})
   	.then(entries=>{
   		res.status(200).json(entries);
   	}).catch((err)=>{
@@ -16,9 +18,9 @@ router.route('/')
   	});
   });
 
-router.route('/:username')
+router.route('/find/:username')
   .get((req,res)=>{
-  	DestModels.find({
+  	Destination.find({
   		username: req.params.username
   	}).then(entries=>{
   		res.status(200).json(entries);
@@ -27,12 +29,12 @@ router.route('/:username')
   		res.status(500).send('Server error');
   	});
   });
-  
-router.route('/')
+
+router.route('/add/:username')
   .post((req,res)=>{
-  	DestModels
+  	Destination
 	  	.create({
-	  		username: req.body.username,
+	  		username: req.params.username,
 	  		title: req.body.title,
 	  		destinations: req.body.destinations
 	  	})
@@ -43,7 +45,12 @@ router.route('/')
 	  	});
   });
 
-router.route('/')
+/*
+router.route('/:username').post(function(req,res){
+	console.log(req.body.title);
+	//console.log('hello');
+});
+*/
 
 
 module.exports = {router};

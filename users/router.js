@@ -144,8 +144,17 @@ router.get('/', (req, res) => {
     .then(users => res.json(users.map(user => user.serialize())))
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
+//'http://localhost:8080/users/saved_list/'+localStorage.username;
+
+router.get('/saved_list/:userID', (req,res)=>{
+  //res.redirect('.../../../public/user.html');
+  express.static('public/user.html');
+});
+
 
 module.exports = {router};
+
+
 
 
 /*
