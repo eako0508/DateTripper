@@ -221,10 +221,38 @@ $('.submit-go').on('submit', event=>{
 
 });
 
+
+/**
+let localToken; //token
+let isLogged = false;
+let username = '';
+**/
 $('#date-btn-save').on('click', event=>{
-	let temp = JSON.stringify(listDB);
-	console.log(temp);
+	//let temp = JSON.stringify(listDB);
+	//console.log(temp);
 	//send it to logged-in user's database
+	if(!isLogged) {
+		return;
+	}
+	const item = {
+		username: username,
+		title: 'some title',
+		destinations: listDB
+	}
+	$.ajax({
+		url: 'http://localhost:8080',
+		method: "POST",
+		contentType: 'application/json',
+		dataType: 'json',
+		data: JSON.stringify(item),
+		success: logmein,
+		failure: function(errMsg){
+			console.log(errMsg);
+		},
+		beforeSend( function(xhr, settings){
+			xhrsetRequestHeader('Authorization', 'Bearer ' + localToken);
+		})
+	});
 });
 
 
@@ -259,6 +287,7 @@ function saveToResultDB(data){
 			place_id: item.place_id,
 			location: item.geometry.location
 		}
+		//put name, pic, and hours
 		let content = '<div>';
 		if(item.photos!=undefined) {
 			element.photos_large = item.photos[0].getUrl({
@@ -270,27 +299,29 @@ function saveToResultDB(data){
 				'minWidth':150
 			});
 			content += `
-				
 				<img src='${element.photos_small}'/>
 				`;
 		}
-		
 		service.getDetails(request, function(place,status){
+			
 			if (status == google.maps.places.PlacesServiceStatus.OK) {
 				if(place.opening_hours!=null){
 					let arr_hours = place.opening_hours.weekday_text;
 					element.hours = arr_hours;
-					let append_hours = renderHours(arr_hours);
-					content += append_hours;
-					console.log(content);
+					//let append_hours = renderHours(arr_hours);
+					//let append_hours='';
+					for(let j=0;j<arr_hours;j++){
+						content += arr_hours[j];
+					}
 				}
 			}
 		});
+
 		content += '</div>';
 		resultDB[index] = element;
 
 	    let infowindow = new google.maps.InfoWindow();
-	    
+	    console.log(content);
 	    infowindow.setContent(content);
 	    marker.addListener('click', function(){
 	    	infowindow.open(map, marker);
@@ -503,7 +534,8 @@ $(window).on('resize', function(){
 //login
 let localToken; //token
 
-
+let isLogged = false;
+let username = '';
 
 //$('js-form-login').on('submit', event=>{
 $('.login-submit').on('click', event=>{
@@ -512,6 +544,7 @@ $('.login-submit').on('click', event=>{
 		username: $('#user_id').val(),
 		password: $('#user_pw').val()
 	}
+
 	ajaxlogin(item);
 });
 
@@ -531,6 +564,8 @@ function ajaxlogin(item){
 
 function logmein(data){
 	localToken = data.authToken;
+	username = user_id;
+	isLogged = true;
 	console.log(localToken);
 	$('#login-btn').hide();
 	$('#savedlist-btn').show();
@@ -575,6 +610,8 @@ $('#logout-btn').on('click', ()=>{
 	$('#savedlist-btn').hide();
 	$('#login-btn').show();
 });
+
+
 
 
 //INITIALIZATION
