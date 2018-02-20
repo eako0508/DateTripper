@@ -2,12 +2,6 @@
 	/**
 							TODO 
 			(important)
-		- Find out the way to re-order the destinations from the list.
-			= every items are displayed in the order the items are added
-			= make up and down arrow for each items
-			= swap items from the array (let temp = a , a = b, b = temp)
-			= swap from the list without loading the whole list(just like above with the content)
-			= ...or re-render the whole array to destinations...
 
 
 			(misc.)
@@ -92,7 +86,8 @@ const arr_options = [
 ];
 
 //let base_url = 'http://100.33.50.170:8080/';
-let base_url = 'http://192.168.2.199:8080/'
+//let base_url = 'http://192.168.2.199:8080/'
+let base_url = 'http://localhost:8080/'
 //let localhost_url = 'http://localhost:8080';
 
 /**
@@ -250,12 +245,16 @@ $('#save-form').on('click', event=>{
 		alert('Need at least 2 places!');
 		return;
 	}
+	/*
 	if($('#date-title').val()===''){
 		alert('Please enter title.');
 		return;
 	}
+	*/
+	let item_title = $('#date-title').val();
+
 	const item = {
-		"title": "some title",
+		"title": item_title,
 		"destinations": listDB
 	}
 	let post_url = base_url+'destination/addDate/' + localStorage.username;

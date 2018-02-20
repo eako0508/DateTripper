@@ -34,7 +34,7 @@ router.route('/find/:username')
 
 //check if the same title exists
 //if not, create an entry
-
+/*
 router.route('/addDate/:username', (req,res)=>{
   return Destination
     .find({title:req.body.title})
@@ -61,7 +61,7 @@ router.route('/addDate/:username', (req,res)=>{
       })
       );
 });
-
+*/
 /*
         Destination.create({
           username: req.params.username,
@@ -74,7 +74,7 @@ router.route('/addDate/:username', (req,res)=>{
           res.status(500).send('Server error');
         });
         */
-/*
+
 router.route('/addDate/:username')
   .post((req,res)=>{
   	Destination
@@ -87,7 +87,7 @@ router.route('/addDate/:username')
         
         if(result>0){
           console.log(result);
-          
+          /*
           return Promise.reject({
             code: 422,
             message: 'Same title exists',
@@ -98,13 +98,14 @@ router.route('/addDate/:username')
             "message": 'Same title exists',
             "location": 'title'
           }));
-          
+          */
+          res.status(500).send('so sorry');
         }
         
-        
+        res.status(201).send('a okay');
       });  	
   });
-*/
+
 /*
 router.route('/:username').post(function(req,res){
 	console.log(req.body.title);

@@ -1,5 +1,5 @@
 'use strict';
-exports.DATABASE_URL =
+exports.DATABASE_URL = 
     process.env.DATABASE_URL ||
     global.DATABASE_URL ||
     'mongodb://localhost/jwt-auth-demo';
