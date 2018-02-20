@@ -145,10 +145,19 @@ router.get('/', (req, res) => {
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 //'http://localhost:8080/users/saved_list/'+localStorage.username;
-
+/*
 router.get('/saved_list/:userID', (req,res)=>{
   //res.redirect('.../../../public/user.html');
-  express.static('public/user.html');
+  //express.static('public/user.html');
+  return User.find({username: req.params.userID})
+    .then(lists => res.json(lists))
+    .catch(err => ers.status(500).json({message: 'Internal server error'}));
+});
+*/
+router.get('/:userID', (req, res) => {
+  return User.find({username: req.params.userID})
+    .then(users => res.json(users.map(user => user.serialize())))
+    .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 
 

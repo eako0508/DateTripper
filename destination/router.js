@@ -4,6 +4,7 @@ const {Destination} = require('./models');
 const config = require('../config');
 const router = express.Router();
 const bodyParser = require('body-parser');
+const {User} = require('../users');
 
 router.use(bodyParser.json());
 
@@ -24,7 +25,8 @@ router.route('/find/:username')
   	Destination.find({
   		username: req.params.username
   	}).then(entries=>{
-  		res.status(200).json(entries);
+  		res.status(200).json(entries.map(entry=>entry.serialize()));
+      //res.status(200).json(entries);
   	}).catch((err)=>{
   		console.error(err);
   		res.status(500).send('Server error');
@@ -52,14 +54,88 @@ router.route('/addDate/:username')
           title: req.body.title,
           destinations: req.body.destinations
         })
+        .then(addedItem=>{
+          console.log('addedItem: ' + addedItem);
+        //return addedItem._id;
+          User.findOneAndUpdate(
+            {"username": addedItem.username},
+            {"$push": {"savedLists": addedItem._id}}/*,
+            function(err, raw){
+              if(err) return handleError(err);
+              console.log('The raw data: ', raw);
+            }*/
+          )
+          
+          //User.find({username:addedItem.username})
+          .then(destModel => res.status(201).json(destModel.serialize()))
+          //.then(res.status(201).send('okie'))
+          .catch(err => {
+            console.error(err);
+            res.status(500).send('Server error');
+          });
+        });
+      })
+  });
+  
+  
+  
+  
+  /*
+  .then(addedItem=>{
+    //return addedItem._id;
+    User.findOneAndUpdate(
+      {"username": addedItem.username},
+      {"$push": {"savedLists": addedItem}},
+      function(err, raw){
+        if(err) return handleError(err);
+        console.log('The raw data: ', raw);
+      }
+    );
+  })
+  .then(destModel => res.status(201).json(destModel.serialize()))
+  .catch(err => {
+    console.error(err);
+    res.status(500).send('Server error');
+  });
+    */
+
+
+module.exports = {router};
+
+
+/*
+/*
+          User.findByIdAndUpdate(req.params.username,
+            {"$push": {"savedLists": addedItem}},
+            function(err, raw){
+              if(err) return handleError(err);
+              console.log('The raw data: ', raw);
+            })
+
+            //
+
+        //get user's saved list
+        .then(id=>{
+          let userList = User
+              .find({req.body.title})
+              .then(item=>{
+                return item.savedLists;
+              });
+          userList.push(id);
+          return userList;
+        })
+        .then(list=>{
+          User
+            .
+        })
+          */
+
+        /*
         .then(destModel => res.status(201).json(destModel.serialize()))
         .catch(err => {
           console.error(err);
           res.status(500).send('Server error');
         });
-      });  	
-  });
-
-
-
-module.exports = {router};
+      })
+      .then();    
+      */

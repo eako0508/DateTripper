@@ -13,7 +13,9 @@ let destinationSchema = new mongoose.Schema({
 destinationSchema.methods.serialize = function() {
   return {
   	id: this._id,
-    username: this.username
+    username: this.username,
+    title: this.title,
+    destinations: this.destinations
   };
 };
 
