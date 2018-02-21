@@ -59,7 +59,7 @@ app.get('/api/protected', jwtAuth, (req, res) => {
 */
 
 //app.use('/destination', jwtAuth, destinationRouter);
-app.use('/destination/', destinationRouter);
+app.use('/api/destination/', destinationRouter);
 
 
 

@@ -257,7 +257,7 @@ $('#save-form').on('click', event=>{
 		"title": item_title,
 		"destinations": listDB
 	}
-	let post_url = base_url+'destination/addDate/' + localStorage.username;
+	let post_url = base_url+'api/destination/' + localStorage.username;
 	$.ajax({
 		url: post_url,
 		method: "POST",

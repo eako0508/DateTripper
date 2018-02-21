@@ -123,12 +123,12 @@ describe('/Destination', function(){
 
 // get all destination for all users
 // req:endpoint, res:json-array of all the destinations for all users.
-	describe('GET /destination/find', function(){
+	describe('GET /api/destination', function(){
 		
 		it('should return all the saved dates for every users', function(){
 			let res;
 			return chai.request(app)
-				.get('/destination/find')
+				.get('/api/destination')
 				.then(_res=>{
 					res = _res;
 					expect(res).to.have.status(200);
@@ -143,12 +143,12 @@ describe('/Destination', function(){
 
 // get all destination for userID
 // req:endpoint, res:json-array of all the destinations for userID.
-	describe('GET /destination/find/:userID', function(){
-		
+	describe('GET /api/destination/:userID', function(){
+		/* REWORK with userID<--!!!
 		it('should return all the saved dates for a designated user', function(){
 			let resEntry;
 			return chai.request(app)
-				.get('/destination/find/')
+				.get('/api/destination/')
 				.then(res=>{
 					expect(res).to.be.a('object');
 					expect(res).to.have.status(200);
@@ -167,12 +167,13 @@ describe('/Destination', function(){
 					expect(res.destinations).to.deep.equal(resEntry.destinations);
 				});
 		});
+		*/
 	});
 
 //Create a new list of destinations for a single user
 //req:(username, title, DB), res: json-OK message
-	describe('POST /destination/addDate', function(){
-/*
+	describe('POST /api/destination/', function(){
+
 		it('should add date to user\'s savedLists', function(){
 			const entry = {
 				username: faker.name.findName(),
@@ -200,20 +201,35 @@ describe('/Destination', function(){
 			};
 			//get a single user's id
 			//add the date to the user's savedList
-			let temp_id;
+			let temp;
+			let newID;
 			//Q: return User vs return chai
-			return User.findOne().then(res=>{
-					temp_id = res.id;
+			return User.findOne().then(res=>{	//res is list of the users
+					temp = res.body[0];	//temp is now one of user
 					return chai.request(app)
-						.post(`/destination/addDate/${temp_user}`)
+						.post(`/api/destination/${temp.username}`)
 						.send(entry)
 						.then(res=>{
+							newID = res.body.id;
 							expect(res).to.be.status(201);
-						})
+							expect(res).to.be.a('object');
+							expect(res.body).to.include.keys('username','title','destinations');
+						});
+
 				});
+				//look for the same user again
+				//and check if savedList array is updated with new entry
+				
+				//Q: how to query element in array?
+				/*
+				.User
+					.find({savedLists: {"$in": [newID]}})
+					.where('savedList').equals()
+				*/
 		});
+		
 	});
-	*/
+	
 });
 
 describe('/users', function(){
