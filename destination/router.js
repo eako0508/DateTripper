@@ -37,6 +37,36 @@ router.route('/find/:username')
 //check if the same title exists
 //if not, create an entry
 
+/*
+router.route('/addDate/:username')
+  .post((req,res)=>{
+    Destination
+      .find({
+        title: req.body.title
+      })
+      .count()
+      .then(result=>{
+        if(result>0){
+          //Q: how to display the error message??
+          res.status(500).send('so sorry');
+        }
+        Destination.create({
+          username: req.params.username,
+          title: req.body.title,
+          destinations: req.body.destinations
+        })
+        .then(destModel => res.status(201).json(destModel.serialize()))
+        .catch(err => {
+          console.error(err);
+          res.status(500).send('Server error');
+        });
+      })
+  });
+*/
+
+
+
+
 router.route('/addDate/:username')
   .post((req,res)=>{
   	Destination
@@ -55,11 +85,15 @@ router.route('/addDate/:username')
           destinations: req.body.destinations
         })
         .then(addedItem=>{
-          console.log('addedItem: ' + addedItem);
-        //return addedItem._id;
+          let saving_list = {
+            id: addedItem._id,
+            username: addedItem.username,
+            title: addedItem.title
+          };
           User.findOneAndUpdate(
-            {"username": addedItem.username},
-            {"$push": {"savedLists": addedItem._id}}/*,
+            {username: addedItem.username},
+            {$push: {savedLists: saving_list}},
+            {new:true}/*,
             function(err, raw){
               if(err) return handleError(err);
               console.log('The raw data: ', raw);
