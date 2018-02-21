@@ -8,14 +8,69 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 
 const { app, runServer, closeServer } = require('../server');
-const { router: usersRouter } = require('../users');
-const { router: authRouter, localStrategy, jwtStrategy } = require('../auth');
-const { router: destinationRouter } = require('../destination');
+const { Destination } = require('../destination/models');
+const { User } = require('../users/models');
 const { TEST_DATABASE_URL } = require('../config');
 
 
 function establishDestinationsDB(){
 	//establish destinationDB
+	const destinationStack = [];
+	for(let i=0;i<10;i++){
+		destinationStack.push({
+			//Q: 
+			//_id: faker.random.number(),
+			//id: faker.random.number(),
+			username: faker.name.findName(),
+			title: faker.lorem.words(),
+			destinations: {
+				id: faker.random.number(),
+				name: faker.name.findName(),
+				place_id: faker.random.number(),
+				location: {
+					lat: faker.random.number(),
+					lng: faker.random.number(),
+				},
+				photos_large: 'https://some-url/'+faker.random.word()+faker.random.number(),
+				photos_small: 'https://some-url/'+faker.random.word()+faker.random.number(),
+				hours: [
+					faker.random.words(),
+					faker.random.words(),
+					faker.random.words(),
+					faker.random.words(),
+					faker.random.words(),
+					faker.random.words(),
+					faker.random.words()
+				]
+			}
+		},{
+			//_id: faker.random.alphaNumeric(),
+			//id: faker.random.number(),
+			username: faker.name.findName(),
+			title: faker.lorem.words(),
+			destinations: {
+				id: faker.random.number(),
+				name: faker.name.findName(),
+				place_id: faker.random.number(),
+				location: {
+					lat: faker.random.number(),
+					lng: faker.random.number(),
+				},
+				photos_large: 'https://some-url/'+faker.random.word()+faker.random.number(),
+				photos_small: 'https://some-url/'+faker.random.word()+faker.random.number(),
+				hours: [
+					faker.random.words(),
+					faker.random.words(),
+					faker.random.words(),
+					faker.random.words(),
+					faker.random.words(),
+					faker.random.words(),
+					faker.random.words()
+				]
+			}
+		});
+	}
+	return Destination.insertMany(destinationStack);
 }
 function establishUsersDB(){
 	//establish usersDB
@@ -60,11 +115,17 @@ describe('/Destination', function(){
 			json: array of all the destinations for all users.
 		**/
 		it('should return all the saved dates for every users', function(){
+			let res;
 			return chai.request(app)
 				.get('/destination/find')
-				.then(res=>{
+				.then(_res=>{
+					res = _res;
 					expect(res).to.have.status(200);
-
+					expect(res.body.length).to.be.at.least(1);
+					return Destination.count();
+				})
+				.then(count=>{
+					expect(res.body).to.have.lengthOf(count);
 				});
 		});
 	});
@@ -77,6 +138,28 @@ describe('/Destination', function(){
 		res:
 			json: array of all the destinations for userID.
 		**/
+		it('should return all the saved dates for a designated user', function(){
+			let resEntry;
+			return chai.request(app)
+				.get('/destination/find/')
+				.then(res=>{
+					expect(res).to.be.a('object');
+					expect(res).to.have.status(200);
+
+					res.body.forEach(obj=>{
+						expect(obj).to.be.a('object');
+						expect(obj).to.include.keys('username', 'title', 'destinations');
+					});
+
+					resEntry = res.body[0];
+					return Destination.findById(resEntry._id);
+				})
+				.then(res=>{
+					expect(res.username).to.be.equal(resEntry.username);
+					expect(res.title).to.be.equal(resEntry.title);
+					expect(res.destinations).to.deep.equal(resEntry.destinations);
+				});
+		});
 	});
 
 	describe('POST /destination/addDate', function(){
