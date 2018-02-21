@@ -15,12 +15,20 @@ const { TEST_DATABASE_URL } = require('../config');
 
 function establishDestinationsDB(){
 	//establish destinationDB
+	const userStack = [];
+	for(let i=0;i<10;i++){
+		userStack.push({
+			username: faker.name.firstName(),
+			password: '123456789',
+			firstName: faker.name.firstName(),
+			lastName: faker.name.lastName()
+		});
+	}
+	User.insertMany(userStack);
+
 	const destinationStack = [];
 	for(let i=0;i<10;i++){
 		destinationStack.push({
-			//Q: 
-			//_id: faker.random.number(),
-			//id: faker.random.number(),
 			username: faker.name.findName(),
 			title: faker.lorem.words(),
 			destinations: {
@@ -44,8 +52,6 @@ function establishDestinationsDB(){
 				]
 			}
 		},{
-			//_id: faker.random.alphaNumeric(),
-			//id: faker.random.number(),
 			username: faker.name.findName(),
 			title: faker.lorem.words(),
 			destinations: {
@@ -74,6 +80,16 @@ function establishDestinationsDB(){
 }
 function establishUsersDB(){
 	//establish usersDB
+	const userStack = [];
+	for(let i=0;i<10;i++){
+		userStack.push({
+			username: faker.name.firstName(),
+			password: '123456789',
+			firstName: faker.name.firstName(),
+			lastName: faker.name.lastName()
+		});
+	}
+	return User.insertMany(userStack);
 }
 function tearDown(){
 	return mongoose.connection.dropDatabase();
@@ -105,15 +121,10 @@ describe('/Destination', function(){
 		return closeServer();
 	});
 
-	/** /destination **/
+// get all destination for all users
+// req:endpoint, res:json-array of all the destinations for all users.
 	describe('GET /destination/find', function(){
-		/** get all destination for all users
-
-		req:
-
-		res:
-			json: array of all the destinations for all users.
-		**/
+		
 		it('should return all the saved dates for every users', function(){
 			let res;
 			return chai.request(app)
@@ -130,14 +141,10 @@ describe('/Destination', function(){
 		});
 	});
 
+// get all destination for userID
+// req:endpoint, res:json-array of all the destinations for userID.
 	describe('GET /destination/find/:userID', function(){
-		/** get all destination for userID
-
-		req:
-			
-		res:
-			json: array of all the destinations for userID.
-		**/
+		
 		it('should return all the saved dates for a designated user', function(){
 			let resEntry;
 			return chai.request(app)
@@ -162,16 +169,51 @@ describe('/Destination', function(){
 		});
 	});
 
+//Create a new list of destinations for a single user
+//req:(username, title, DB), res: json-OK message
 	describe('POST /destination/addDate', function(){
-		/**
-		Create a new list of destinations for a single user
-		
-		req:
-			username, title, DB
-		res: 
-			json: OK message
-		**/
+/*
+		it('should add date to user\'s savedLists', function(){
+			const entry = {
+				username: faker.name.findName(),
+				title: faker.lorem.words(),
+				destinations: {
+					id: faker.random.number(),
+					name: faker.name.findName(),
+					place_id: faker.random.number(),
+					location: {
+						lat: faker.random.number(),
+						lng: faker.random.number(),
+					},
+					photos_large: 'https://some-url/'+faker.random.word()+faker.random.number(),
+					photos_small: 'https://some-url/'+faker.random.word()+faker.random.number(),
+					hours: [
+						faker.random.words(),
+						faker.random.words(),
+						faker.random.words(),
+						faker.random.words(),
+						faker.random.words(),
+						faker.random.words(),
+						faker.random.words()
+					]
+				}
+			};
+			//get a single user's id
+			//add the date to the user's savedList
+			let temp_id;
+			//Q: return User vs return chai
+			return User.findOne().then(res=>{
+					temp_id = res.id;
+					return chai.request(app)
+						.post(`/destination/addDate/${temp_user}`)
+						.send(entry)
+						.then(res=>{
+							expect(res).to.be.status(201);
+						})
+				});
+		});
 	});
+	*/
 });
 
 describe('/users', function(){
