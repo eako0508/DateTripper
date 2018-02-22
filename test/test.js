@@ -97,6 +97,7 @@ function establishDB(){
 
 function tearDown(){
 	return mongoose.connection.dropDatabase();
+	//return mongoose.connection.dropCollection('datetripper-test');
 }
 
 

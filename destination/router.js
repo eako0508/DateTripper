@@ -21,8 +21,8 @@ router.route('/')
   });
 
 
-//  GET /find/:username
-router.route('/:username')
+//  GET /user/:username
+router.route('/user/:username')
   .get((req,res)=>{
   	Destination.find({
   		username: req.params.username
@@ -35,7 +35,20 @@ router.route('/:username')
   	});
   });
 
+//  GET /title/:title
+router.route('/title/:title')
+  .get((req,res)=>{
+    Destination.find({title:req.params.title})
+      .then(result=>{
+        res.status(200).json(entries.map(entry=>entry.serialize()));
+      })
+      .catch(err=>{
+        console.error(err);
+        res.status(500).send('Server Error');
+      });
+  });
 
+// PUT
 router.route('/:id')
   .put((req,res)=>{
     Destination.findOneAndUpdate(

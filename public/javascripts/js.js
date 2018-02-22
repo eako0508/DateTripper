@@ -86,8 +86,8 @@ const arr_options = [
 ];
 
 //let base_url = 'http://100.33.50.170:8080/';
-//let base_url = 'http://192.168.2.199:8080/'
-let base_url = 'http://localhost:8080/'
+let base_url = 'http://192.168.2.199:8080/'
+//let base_url = 'http://localhost:8080/'
 //let localhost_url = 'http://localhost:8080';
 
 /**
