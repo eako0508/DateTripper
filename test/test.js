@@ -237,23 +237,14 @@ describe('/Destination', function(){
 		it('should delete a user\'s savedList item', function(){
 			return User.findOne()
 				.then(res=>{
-					
-					//console.log("res: "+res);
 					let targetItem = {
 						title: res.savedLists[0].title
 					}
-					//console.log("targetTitle: "+targetItem.title);
-					
-					//let targetTitle = res.saved;
-					//let targetId = res.savedLists[0].id;
 					return chai.request(app)
 						.delete(`/api/destination/`)
 						.send(targetItem)
 						.then(result=>{
-							//Destination
-							//Destination.findOne({id: targetId})
 							expect(result).to.have.status(200);
-							
 							Destination.findOne({title: targetItem.title})
 								.count()
 								.then(result_dest=>{
@@ -262,11 +253,18 @@ describe('/Destination', function(){
 								.catch(err=>{
 									console.error(err);
 								})
-						});
-						
-						
-				});
 
+							User.find({"savedLists.title": targetItem.title})
+								.count()
+								.then(result_user=>{
+									console.log('result_user: '+result_user);
+									expect(result_user).to.be.equal(0);
+								})
+								.catch(err=>{
+									console.error(err);
+								})
+						});
+				});
 		});
 	});
 	

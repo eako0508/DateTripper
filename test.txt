@@ -5,16 +5,18 @@
 
 
   First page
-::ffff:127.0.0.1 - - [22/Feb/2018:17:13:21 +0000] "GET / HTTP/1.1" 200 5585
+::ffff:127.0.0.1 - - [22/Feb/2018:21:00:34 +0000] "GET / HTTP/1.1" 200 5585
     ✓ should display index.html with status 200
 
   /Destination
 Your app is listening on port 8080
     DELETE /api/destination/
-::ffff:127.0.0.1 - - [22/Feb/2018:17:13:21 +0000] "DELETE /api/destination/ HTTP/1.1" 200 28
-      ✓ should delete a user's savedList item (38ms)
+{ title: 'omnis libero quos' }
+::ffff:127.0.0.1 - - [22/Feb/2018:21:00:35 +0000] "DELETE /api/destination/ HTTP/1.1" 200 28
+      ✓ should delete a user's savedList item (52ms)
+result_user: 0
 Closing server
 
 
-  2 passing (658ms)
+  2 passing (653ms)
 

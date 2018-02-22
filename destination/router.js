@@ -150,14 +150,25 @@ router.route('/')
   .delete((req, res)=>{
     Destination
       .remove({title:req.body.title})
-      .then(res.status(200).send('Successfully removed a date.'))
-      .catch(err=>{
-        console.error(err);
-        res.status(500).send('Server Error');
+      .then(()=>{
+        User.findOneAndUpdate(
+          {"savedLists.title": req.body.title},
+          {"$pull": 
+            {"savedLists":
+              {"title": req.body.title}
+            }
+          }
+        )
+        .catch(err=>{
+          console.error(err);
+          res.status(500).send('Server Error');
+        });
+
+        res.status(200).send('Successfully removed a date.');
       });
   });
 
-
+//db.users.findOneAndUpdate({"savedLists.title": "test1"},{"$pull": {"savedLists": {"id": ObjectId("5a8f090e017b311c96e9d906")}}});
 //  Delete All
 router.route('/')
   .delete((req,res)=>{
