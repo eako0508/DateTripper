@@ -4,19 +4,13 @@
 
 
 
-  First page
-::ffff:127.0.0.1 - - [22/Feb/2018:21:00:34 +0000] "GET / HTTP/1.1" 200 5585
-    ✓ should display index.html with status 200
-
   /Destination
 Your app is listening on port 8080
-    DELETE /api/destination/
-{ title: 'omnis libero quos' }
-::ffff:127.0.0.1 - - [22/Feb/2018:21:00:35 +0000] "DELETE /api/destination/ HTTP/1.1" 200 28
-      ✓ should delete a user's savedList item (52ms)
-result_user: 0
+    GET /api/destination/user/:username
+::ffff:127.0.0.1 - - [22/Feb/2018:22:29:32 +0000] "GET /api/destination/user/Sigmund HTTP/1.1" 200 1611
+      ✓ should return all the saved dates for a designated user (73ms)
 Closing server
 
 
-  2 passing (653ms)
+  1 passing (615ms)
 
