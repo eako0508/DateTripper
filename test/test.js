@@ -28,7 +28,7 @@ function generateDestinationStack(username_){
 		destinationStack.push({
 			username: username_,
 			title: faker.lorem.words(),
-			destinations: {
+			destinations: [{
 				id: faker.random.number(),
 				name: faker.name.findName(),
 				place_id: faker.random.number(),
@@ -47,11 +47,7 @@ function generateDestinationStack(username_){
 					faker.random.words(),
 					faker.random.words()
 				]
-			}
-		},{
-			username: username_,
-			title: faker.lorem.words(),
-			destinations: {
+			},{
 				id: faker.random.number(),
 				name: faker.name.findName(),
 				place_id: faker.random.number(),
@@ -70,7 +66,7 @@ function generateDestinationStack(username_){
 					faker.random.words(),
 					faker.random.words()
 				]
-			}
+			}]
 		});
 	}
 	return destinationStack;
@@ -125,7 +121,7 @@ describe('/Destination', function(){
 	after(function(){
 		return closeServer();
 	});
-
+/*
 // get all destination for all users
 // req:endpoint, res:json-array of all the destinations for all users.
 	describe('GET /api/destination', function(){
@@ -152,34 +148,31 @@ describe('/Destination', function(){
 		// REWORK with userID<--!!!
 		it('should return all the saved dates for a designated user', function(){
 			let resEntry;
-			/*
+			
 			return User.findOne().then(res=>{
 				resEntry = res;
-			})
-			*/
-			/*
-			return chai.request(app)
-				.get('/api/destination/')
-				.then(res=>{
-					expect(res).to.be.a('object');
-					expect(res).to.have.status(200);
 
-					res.body.forEach(obj=>{
-						expect(obj).to.be.a('object');
-						expect(obj).to.include.keys('username', 'title', 'destinations');
+				return chai.request(app)
+					.get('/api/destination/')
+					.then(res=>{
+						expect(res).to.be.a('object');
+						expect(res).to.have.status(200);
+
+						res.body.forEach(obj=>{
+							expect(obj).to.be.a('object');
+							expect(obj).to.include.keys('username', 'title', 'destinations');
+						});
+
+						resEntry = res.body[0];
+						return Destination.findById(resEntry._id);
+					})
+					.then(res=>{
+						expect(res.username).to.be.equal(resEntry.username);
+						expect(res.title).to.be.equal(resEntry.title);
+						expect(res.destinations).to.deep.equal(resEntry.destinations);
 					});
-
-					resEntry = res.body[0];
-					return Destination.findById(resEntry._id);
-				})
-				.then(res=>{
-					expect(res.username).to.be.equal(resEntry.username);
-					expect(res.title).to.be.equal(resEntry.title);
-					expect(res.destinations).to.deep.equal(resEntry.destinations);
-				});
-			*/
+			});
 		});
-		
 	});
 
 //Create a new list of destinations for a single user
@@ -239,33 +232,44 @@ describe('/Destination', function(){
 		});
 		
 	});
-	/*
-	describe('DELETE /api/destination/:id', function(){
+	*/
+	describe('DELETE /api/destination/', function(){
 		it('should delete a user\'s savedList item', function(){
-			
-			User.findOne()
+			return User.findOne()
 				.then(res=>{
-					let targetId = res.savedLists[0];
 					
+					//console.log("res: "+res);
+					let targetItem = {
+						title: res.savedLists[0].title
+					}
+					//console.log("targetTitle: "+targetItem.title);
+					
+					//let targetTitle = res.saved;
+					//let targetId = res.savedLists[0].id;
 					return chai.request(app)
-						.delete(`/api/destination/${targetId}`)
-						.then(
+						.delete(`/api/destination/`)
+						.send(targetItem)
+						.then(result=>{
 							//Destination
+							//Destination.findOne({id: targetId})
+							expect(result).to.have.status(200);
 							
-							Destination.findOne({id:targetId})
+							Destination.findOne({title: targetItem.title})
 								.count()
 								.then(result_dest=>{
 									expect(result_dest).to.be.equal(0);
 								})
-							
-							
-						);
+								.catch(err=>{
+									console.error(err);
+								})
+						});
+						
 						
 				});
 
 		});
 	});
-	*/
+	
 
 	//User
 	//let query = {"id": targetId};

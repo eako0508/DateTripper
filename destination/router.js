@@ -133,15 +133,27 @@ router.route('/:username')
 //  DELETE /:id
 //  Strategy
 // pre-requisite: remove from user's savedLists
-
+/*
 router.route('/:id')
   .delete((req, res)=>{
     Destination
-      .remove({_id:req.params.id})
+      .remove({id:req.params.title})
       .then(res.status(201).send('Successfully removed a date.'))
       .catch(err=>{
         console.error(err);
         res.status(201).send('Server Error');
+      });
+  });
+  */
+
+router.route('/')
+  .delete((req, res)=>{
+    Destination
+      .remove({title:req.body.title})
+      .then(res.status(200).send('Successfully removed a date.'))
+      .catch(err=>{
+        console.error(err);
+        res.status(500).send('Server Error');
       });
   });
 
@@ -151,10 +163,10 @@ router.route('/')
   .delete((req,res)=>{
     Destination
       .remove({})
-      .then(res.status(201).send('Successfully removed all dates.'))
+      .then(res.status(200).send('Successfully removed all dates.'))
       .catch(err=>{
         console.error(err);
-        res.status(201).send('Server Error');
+        res.status(500).send('Server Error');
       });
   });
 

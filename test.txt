@@ -5,22 +5,16 @@
 
 
   First page
-::ffff:127.0.0.1 - - [22/Feb/2018:16:13:32 +0000] "GET / HTTP/1.1" 200 5585
+::ffff:127.0.0.1 - - [22/Feb/2018:17:13:21 +0000] "GET / HTTP/1.1" 200 5585
     ✓ should display index.html with status 200
 
   /Destination
 Your app is listening on port 8080
-    GET /api/destination
-::ffff:127.0.0.1 - - [22/Feb/2018:16:13:33 +0000] "GET /api/destination HTTP/1.1" 200 92934
-      ✓ should return all the saved dates for every users (87ms)
-    GET /api/destination/:userID
-      ✓ should return all the saved dates for a designated user
-    POST /api/destination/
-temp.username: Berenice
-::ffff:127.0.0.1 - - [22/Feb/2018:16:13:35 +0000] "POST /api/destination/Berenice HTTP/1.1" 201 455
-      ✓ should add date to user's savedLists (49ms)
+    DELETE /api/destination/
+::ffff:127.0.0.1 - - [22/Feb/2018:17:13:21 +0000] "DELETE /api/destination/ HTTP/1.1" 200 28
+      ✓ should delete a user's savedList item (38ms)
 Closing server
 
 
-  4 passing (2s)
+  2 passing (658ms)
 
