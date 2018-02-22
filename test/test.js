@@ -21,23 +21,12 @@ const { User } = require('../users/models');
 const { TEST_DATABASE_URL } = require('../config');
 
 
-function establishDestinationsDB(){
-	//establish destinationDB
-	const userStack = [];
-	for(let i=0;i<10;i++){
-		userStack.push({
-			username: faker.name.firstName(),
-			password: '123456789',
-			firstName: faker.name.firstName(),
-			lastName: faker.name.lastName()
-		});
-	}
-	User.insertMany(userStack);
-
+function generateDestinationStack(username_){
 	const destinationStack = [];
+
 	for(let i=0;i<10;i++){
 		destinationStack.push({
-			username: faker.name.findName(),
+			username: username_,
 			title: faker.lorem.words(),
 			destinations: {
 				id: faker.random.number(),
@@ -60,7 +49,7 @@ function establishDestinationsDB(){
 				]
 			}
 		},{
-			username: faker.name.findName(),
+			username: username_,
 			title: faker.lorem.words(),
 			destinations: {
 				id: faker.random.number(),
@@ -84,21 +73,28 @@ function establishDestinationsDB(){
 			}
 		});
 	}
-	return Destination.insertMany(destinationStack);
+	return destinationStack;
 }
-function establishUsersDB(){
-	//establish usersDB
+
+function establishDB(){
+	//establish destinationDB
 	const userStack = [];
+	
 	for(let i=0;i<10;i++){
-		userStack.push({
+		let user_ = {
 			username: faker.name.firstName(),
 			password: '123456789',
 			firstName: faker.name.firstName(),
 			lastName: faker.name.lastName()
-		});
+		};
+		let destStack = generateDestinationStack(user_.username);
+		user_.savedLists = destStack;
+		userStack.push(user_);
+		Destination.insertMany(destStack);
 	}
 	return User.insertMany(userStack);
 }
+
 function tearDown(){
 	return mongoose.connection.dropDatabase();
 }
@@ -120,7 +116,7 @@ describe('/Destination', function(){
 		return runServer(TEST_DATABASE_URL);
 	});
 	beforeEach(function(){
-		return establishDestinationsDB();
+		return establishDB();
 	});
 	afterEach(function(){
 		return tearDown();
@@ -190,12 +186,13 @@ describe('/Destination', function(){
 	describe('POST /api/destination/', function(){
 
 		it('should add date to user\'s savedLists', function(){
+			let username_ = faker.name.findName();
 			const entry = {
-				username: faker.name.findName(),
+				username: username_,
 				title: faker.lorem.words(),
-				destinations: {
+				destinations: [{
 					id: faker.random.number(),
-					name: faker.name.findName(),
+					username: username_,
 					place_id: faker.random.number(),
 					location: {
 						lat: faker.random.number(),
@@ -212,7 +209,7 @@ describe('/Destination', function(){
 						faker.random.words(),
 						faker.random.words()
 					]
-				}
+				}]
 			};
 			//get a single user's id
 			//add the date to the user's savedList
@@ -220,12 +217,9 @@ describe('/Destination', function(){
 			let newID;
 			//Q: return User vs return chai
 			User.findOne().then(res=>{	//res is list of the users
-			//User.findOne().then(res=>{	//res is list of the users
-				
-				//temp = res.body[0];	//temp is now one of user
-				
-				temp = res.body;
-				console.log(res);
+				console.log('res:'+res);
+				temp = res;
+				console.log('temp: '+temp);
 				return chai.request(app)
 					.post(`/api/destination/${temp.username}`)
 					.send(entry)
