@@ -36,6 +36,24 @@ router.route('/:username')
   });
 
 
+router.route('/:id')
+  .put((req,res)=>{
+    Destination.findOneAndUpdate(
+      {_id: req.params.id},
+      {$set: {
+        title: req.body.title,
+        destinations: req.body.destinations
+      }},
+      {new: true}
+      )
+      .then(updated=>{
+        res.status(200).json(updated.serialize());
+      })
+      .catch(err=>{
+        console.error(err);
+        res.status(500).send('Server Error on PUT');
+      })
+  })
 
 
 
@@ -67,9 +85,7 @@ router.route('/:username')
       .count()
       .then(result=>{
         if(result>0){
-          //Q: how to display the error message on client end?
-          //res.status(500).send('so sorry');
-          res.status(500).json({
+          return res.status(500).json({
             reason: 'Duplicate title detected under your account. Try using different title'
           });
         }
@@ -89,30 +105,44 @@ router.route('/:username')
           User.findOneAndUpdate(
             {username: addedItem.username},
             {$push: {savedLists: saving_list}},
-            {new:true}/*,
-            //Q: how to add below function, or not necessary?
-            function(err, raw){
-              if(err) return handleError(err);
-              //console.log('The raw data: ', raw);
-              return raw;
-            }*/
+            {new:true}
           )
-          //pick one
-
-          //option 1: user's info
-          //.then(destModel => res.status(201).json(destModel.serialize()))
           .catch(err => {
             console.error(err);
             res.status(500).send('Server error');
           });
-          //option 2: added info
-          //return res.status(201).json(addedItem.serialize());
-          return res.status(201).json(res_.serialize());
+          res.status(201).json(res_.serialize());
         });
       })
   });
   
-/*
+
+//  DELETE /:id
+//  Strategy
+// pre-requisite: remove from user's savedLists
+
 router.route('/:id')
-*/
+  .delete((req, res)=>{
+    Destination
+      .remove({_id:req.params.id})
+      .then(res.status(201).send('Successfully removed a date.'))
+      .catch(err=>{
+        console.error(err);
+        res.status(201).send('Server Error');
+      });
+  });
+
+
+//  Delete All
+router.route('/')
+  .delete((req,res)=>{
+    Destination
+      .remove({})
+      .then(res.status(201).send('Successfully removed all dates.'))
+      .catch(err=>{
+        console.error(err);
+        res.status(201).send('Server Error');
+      });
+  });
+
 module.exports = {router};

@@ -1,3 +1,11 @@
+
+/**
+	TODO:
+		need to fill up user's saved lists...
+
+**/
+
+
 'use strict'
 const chai = require('chai');
 const chaiHttp = require('chai-http');
@@ -144,9 +152,15 @@ describe('/Destination', function(){
 // get all destination for userID
 // req:endpoint, res:json-array of all the destinations for userID.
 	describe('GET /api/destination/:userID', function(){
-		/* REWORK with userID<--!!!
+		// REWORK with userID<--!!!
 		it('should return all the saved dates for a designated user', function(){
 			let resEntry;
+			/*
+			return User.findOne().then(res=>{
+				resEntry = res;
+			})
+			*/
+			/*
 			return chai.request(app)
 				.get('/api/destination/')
 				.then(res=>{
@@ -166,8 +180,9 @@ describe('/Destination', function(){
 					expect(res.title).to.be.equal(resEntry.title);
 					expect(res.destinations).to.deep.equal(resEntry.destinations);
 				});
+			*/
 		});
-		*/
+		
 	});
 
 //Create a new list of destinations for a single user
@@ -204,31 +219,82 @@ describe('/Destination', function(){
 			let temp;
 			let newID;
 			//Q: return User vs return chai
-			return User.findOne().then(res=>{	//res is list of the users
-					temp = res.body[0];	//temp is now one of user
-					return chai.request(app)
-						.post(`/api/destination/${temp.username}`)
-						.send(entry)
-						.then(res=>{
-							newID = res.body.id;
-							expect(res).to.be.status(201);
-							expect(res).to.be.a('object');
-							expect(res.body).to.include.keys('username','title','destinations');
-						});
-
-				});
-				//look for the same user again
-				//and check if savedList array is updated with new entry
+			User.findOne().then(res=>{	//res is list of the users
+			//User.findOne().then(res=>{	//res is list of the users
 				
-				//Q: how to query element in array?
-				/*
-				.User
-					.find({savedLists: {"$in": [newID]}})
-					.where('savedList').equals()
-				*/
+				//temp = res.body[0];	//temp is now one of user
+				
+				temp = res.body;
+				console.log(res);
+				return chai.request(app)
+					.post(`/api/destination/${temp.username}`)
+					.send(entry)
+					.then(res=>{
+						newID = res.body.id;
+						expect(res).to.be.status(201);
+						expect(res).to.be.a('object');
+						expect(res.body).to.include.keys('username','title','destinations');
+					});
+
+			}).catch(err=>{
+				console.error(err);
+			});
+			//look for the same user again
+			//and check if savedList array is updated with new entry
 		});
 		
 	});
+	/*
+	describe('DELETE /api/destination/:id', function(){
+		it('should delete a user\'s savedList item', function(){
+			
+			User.findOne()
+				.then(res=>{
+					let targetId = res.savedLists[0];
+					
+					return chai.request(app)
+						.delete(`/api/destination/${targetId}`)
+						.then(
+							//Destination
+							
+							Destination.findOne({id:targetId})
+								.count()
+								.then(result_dest=>{
+									expect(result_dest).to.be.equal(0);
+								})
+							
+							
+						);
+						
+				});
+
+		});
+	});
+	*/
+
+	//User
+	//let query = {"id": targetId};
+	/*
+	User.find({"savedLists.id": targetId})
+		.count()
+		.then(num=>{
+			expect(num).to.be.equal(0);
+		})
+	*/
+
+	/*
+	let targetId_ = res[0].savedLists[1];
+	User.find(
+			{"savedLists.id": targetId_}
+		)
+		.count()
+		.then(result_user=>{
+			expect(result_user).to.be.equal(1);
+		});
+	*/
+
+
+
 	
 });
 
