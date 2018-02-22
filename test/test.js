@@ -187,40 +187,39 @@ describe('/Destination', function(){
 	describe('POST /api/destination/', function(){
 
 		it('should add date to user\'s savedLists', function(){
-			let username_ = faker.name.findName();
-			const entry = {
-				username: username_,
-				title: faker.lorem.words(),
-				destinations: [{
-					id: faker.random.number(),
-					username: username_,
-					place_id: faker.random.number(),
-					location: {
-						lat: faker.random.number(),
-						lng: faker.random.number(),
-					},
-					photos_large: 'https://some-url/'+faker.random.word()+faker.random.number(),
-					photos_small: 'https://some-url/'+faker.random.word()+faker.random.number(),
-					hours: [
-						faker.random.words(),
-						faker.random.words(),
-						faker.random.words(),
-						faker.random.words(),
-						faker.random.words(),
-						faker.random.words(),
-						faker.random.words()
-					]
-				}]
-			};
+			
 			//get a single user's id
 			//add the date to the user's savedList
 			let temp;
 			let newID;
 			//Q: return User vs return chai
-			User.findOne().then(res=>{	//res is list of the users
-				console.log('res:'+res);
+			return User.findOne().then(res=>{	//res is list of the users
 				temp = res;
-				console.log('temp: '+temp);
+				
+				const entry = {
+					username: temp.username,
+					title: faker.lorem.words(),
+					destinations: [{
+						id: faker.random.number(),
+						username: temp.username,
+						place_id: faker.random.number(),
+						location: {
+							lat: faker.random.number(),
+							lng: faker.random.number(),
+						},
+						photos_large: 'https://some-url/'+faker.random.word()+faker.random.number(),
+						photos_small: 'https://some-url/'+faker.random.word()+faker.random.number(),
+						hours: [
+							faker.random.words(),
+							faker.random.words(),
+							faker.random.words(),
+							faker.random.words(),
+							faker.random.words(),
+							faker.random.words(),
+							faker.random.words()
+						]
+					}]
+				};
 				return chai.request(app)
 					.post(`/api/destination/${temp.username}`)
 					.send(entry)
@@ -229,10 +228,11 @@ describe('/Destination', function(){
 						expect(res).to.be.status(201);
 						expect(res).to.be.a('object');
 						expect(res.body).to.include.keys('username','title','destinations');
+					})
+					.catch(err=>{
+						console.error(err);
 					});
 
-			}).catch(err=>{
-				console.error(err);
 			});
 			//look for the same user again
 			//and check if savedList array is updated with new entry
