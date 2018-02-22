@@ -145,7 +145,7 @@ router.route('/:id')
       });
   });
   */
-
+//REPLACED WITH TITLE (NEED JSON BODY WITH title:'title')
 router.route('/')
   .delete((req, res)=>{
     Destination

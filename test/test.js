@@ -1,7 +1,6 @@
 
 /**
-	TODO:
-		need to fill up user's saved lists...
+	
 
 **/
 
@@ -96,7 +95,7 @@ function tearDown(){
 	//return mongoose.connection.dropCollection('datetripper-test');
 }
 
-/*
+
 describe('First page', function(){
 	it('should display index.html with status 200', function(){
 		return chai.request(app)
@@ -106,7 +105,7 @@ describe('First page', function(){
 		  });
 	});
 });
-*/
+
 describe('/Destination', function(){
 
 	before(function(){
@@ -122,12 +121,12 @@ describe('/Destination', function(){
 		return closeServer();
 	});
 
-	/*
+	
 // get all destination for all users
 // req:endpoint, res:json-array of all the destinations for all users.
 	describe('GET /api/destination', function(){
-		
 		it('should return all the saved dates for every users', function(){
+			
 			let res;
 			return chai.request(app)
 				.get('/api/destination')
@@ -140,42 +139,16 @@ describe('/Destination', function(){
 				.then(count=>{
 					expect(res.body).to.have.lengthOf(count);
 				});
+			
 		});
 	});
-	*/
+	
+
+	
 // get all destination for userID
 // req:endpoint, res:json-array of all the destinations for userID.
 	describe('GET /api/destination/user/:username', function(){
-		// REWORK with userID<--!!!
-		/*
-		it('should return all the saved dates for a designated user', function(){
-			let resEntry;
-			return User.findOne().then(res=>{
-				resEntry = res;
-				console.log('***resEntry.username: '+resEntry.username);
-				return chai.request(app)
-					.get(`/api/destination/user/${resEntry.username}`)
-					.then(res=>{
-						
-						expect(res).to.be.a('object');
-						expect(res).to.have.status(200);
-						
-						res.body.forEach(obj=>{
-							expect(obj).to.be.a('object');
-							expect(obj).to.include.keys('username', 'title', 'destinations');
-						});
-
-						resEntry = res.body[0];
-						return Destination.findById(resEntry._id);
-					})
-					.then(dest_res=>{
-						expect(dest_res.username).to.be.equal(resEntry.username);
-						expect(dest_res.title).to.be.equal(resEntry.title);
-						expect(dest_res.destinations).to.deep.equal(resEntry.destinations);
-					});
-			});
-		});
-		*/
+		
 		it('should return all the saved dates for a designated user', function(){
 			
 			let resDest;
@@ -190,20 +163,22 @@ describe('/Destination', function(){
 							expect(obj).to.be.a('object');
 							expect(obj).to.include.keys('username', 'title', 'destinations');
 						});
-						resDestinations = res.body[0];
-						return Destination.findById(resDestinations.id);
+						resDest = res.body[0];
+						return Destination.findById(resDest.id);
 					})
 					.then(res_=>{
 						expect(res_.username).to.be.equal(resDest.username);
 						expect(res_.title).to.be.equal(resDest.title);
 						expect(res_.destinations).to.deep.equal(resDest.destinations);
 					});
-					
 			});
+			
 		});
 	});
+	
 
-	/*
+
+	
 //Create a new list of destinations for a single user
 //req:(username, title, DB), res: json-OK message
 	describe('POST /api/destination/', function(){
@@ -258,12 +233,20 @@ describe('/Destination', function(){
 			});
 			//look for the same user again
 			//and check if savedList array is updated with new entry
+			
 		});
 		
 	});
 	
+
+
+	
+	//	DELETE WITH TITLE
 	describe('DELETE /api/destination/', function(){
+		
 		it('should delete a user\'s savedList item', function(){
+			
+
 			return User.findOne()
 				.then(res=>{
 					let targetItem = {
@@ -294,10 +277,16 @@ describe('/Destination', function(){
 								})
 						});
 				});
+
 		});
+		
 	});
 	
-	*/
+
+	
+
+
+	
 	//User
 	//let query = {"id": targetId};
 	/*
