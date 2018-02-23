@@ -456,30 +456,44 @@ $('.results').on('click', '.btn-add', event=>{
 	renderItem(item);
 });
 
-
+//<div class='container-fluid'></div>
+/*
+<div class='container-fluid'>
+	<i class="fas fa-angle-down" id='dn-${item.id}'></i>
+</div>
+*/
+					
 function renderItem(item){
 	
 	let place = `
 	<div class='list' id='rank-${rank}'>
-		<div class='rank-container row align-items-center'>`;
+		<div class='row'>
+			<div class='col-sm-1' id="updown">
+				<div class='row justify-content-start'>
+					<button type='button' class='btn btn-primary align-self-center'>
+						<i class="fas fa-angle-up" id='up-${item.id}'></i>
+					</button>
+				</div>
+				<div class='row'>
+					<button type='button' class='btn btn-primary align-self-center'>
+						<i class="fas fa-angle-down" id='up-${item.id}'></i>
+					</button>
+				</div>
+			</div>
+			<div class='col-sm-3 no paddings'>`;
 	rank++;
 	if(item.photos_small) {
 		place += `
-			<img class='list-img' src='${item.photos_small}'/>`;
+			<img class='list-img' class='rounded' src='${item.photos_small}'/>`;
 	}
 	place +=`
-			<div class='list-name col'>
+			</div>
+			<div class='list-name col-sm-5'>
 				<div>${item.name}</div>
-				<div>Time</div>
 			</div>
-			<div class='col list-btn'>
-				<div class='row justify-content-end' id='updown'>
-					<button id='up-${item.id}' class='btn-up btn btn-primary'>up</button>
-					<button id='dn-${item.id}' class='btn-dn btn btn-secondary'>dn</button>	
-				</div>
-			
-				<input type="button" class="btn btn-delete btn-danger" place-list-id='${item.id}' value="delete">
-			</div>
+
+			<input type="button" class="btn btn-delete btn-danger col-sm-3" 
+			place-list-id='${item.id}' value="delete">
 		</div>
 	</div>`;
 	//change id for every items?? what happens when the order changes?
@@ -676,13 +690,9 @@ function resizeWindow(){
 	let window_height = $(window).height();
 	let window_width = $(window).width();
 	$('#map').height(window_height*.6);
-	$('.place-list').height(window_height*.6);
+	if(window_width>=991){
+		$('#place-list-list').height(window_height*.6);
+	}
 }
 
-/*	experiments
-function requestList(id){
-	//
-}
-$('#place-list-list').on('sortable', '')
-*/
 $(firstLoad);

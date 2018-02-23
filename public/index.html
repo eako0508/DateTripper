@@ -4,8 +4,9 @@
 	<title>Date Tripper</title>
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-	<link rel="stylesheet" type="text/css" href="stylesheets/cs.css">
 	<link rel="stylesheet" type="text/css" href="stylesheets/jquery-ui.min.css">
+	<link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="stylesheets/cs.css">
 </head>
 <body>
 	
@@ -18,69 +19,64 @@
 			</div>
 		</div>
 	</div>
-
-	<section class='trip container'>
+	<section>
 		<div class='row'>
-			<div id='trip-map' class='col-8 no-paddings'>
-				<!--
-				<div id='div-form-go'>
-					<label for='goto-text'>Goto:</label>
 
-					<div class='input-group'>
-						<input type="text" class='form-control' id='input-text-go' name='goto-text'>
-						<div class='input-group-append'>
-							<button type='submit' class='btn btn-outline-secondary' id='submit-go'>Go</button>
+			<div class='col-10 offset-1 col-lg-7 offset-lg-1'>
+
+				<div class='row'>
+					<div id='map'></div>
+				</div>
+
+				<div class='row'>					
+					<div class='trip-map-btn col-12 no-paddings'>
+						<div id='search-options' class='col-sm-8 float-left no-paddings'>
+							<!-- list of options -->
 						</div>
-					</div>
+						<div class='col-sm-4 float-right no-paddings'>
+							<input type="button" id='search-nearby' class='btn btn-primary float-right' value="Search Nearby">
+							<button class='btn btn-primary' id='clear-search' style='float:right'>Clear Search</button>
+						</div>
+						
 
-				</div>
-				-->
-				<div id='map'></div>
-				
-				
-				
-			</div>
-			<div class='place-list col-4 no-paddings'>
-				<div id='place-list-list'>
-					<!--
-						list of places added for date
-					-->
-				</div>
-				
-			</div>
-		</div>
-		<div id='map-btn-control'>
-			<div class='row'>
-				<div class='trip-map-btn col-8 no-paddings'>
-					<div id='search-options' class='col-sm-8 float-left no-paddings'>
-						<!-- list of options -->
-					</div>
-					<div class='col-sm-4 float-right no-paddings'>
-						<input type="button" id='search-nearby' class='btn btn-primary float-right' value="Search Nearby">
-						<button class='btn btn-primary' id='clear-search' style='float:right'>Clear Search</button>
-					</div>
-					
-
-					<div class='input-group'>
-						<input type="text" class='form-control' id="custom_query">
-						<div class='input-group-append'>
-							<button class='btn btn-outline-secondary' id='custom_query_submit'>search</button>
+						<div class='input-group'>
+							<input type="text" class='form-control' id="custom_query">
+							<div class='input-group-append'>
+								<button class='btn btn-outline-secondary' id='custom_query_submit'>search</button>
+							</div>
 						</div>
 					</div>
 				</div>
-				<div class='col-4 no-paddings'>
-					<form id='save-form' action='#'>
-						<label for='date_title'>Title: </label>
-						<input type='text' id='date-title' name='date_title' required>
-						<button type='submit' class='btn btn-outline-secondary' id='date-btn-save'>Save the Date</button>
-						<button type='button' class='btn btn-outline-secondary' id='date-btn-clear'>Clear Date</button>
-						<!--ask are you sure??-->
-					</form>
+
+			</div>
+
+
+
+
+
+			<div class='col-10 offset-1 col-lg-3 offset-lg-0'>
+
+				<div class='row'>
+					<div id='place-list-list' class='col-sm-12'>
+					</div>
+				</div>
+
+				<div class='row'>
+					<div class='col-12 no-paddings'>
+						<form id='save-form' action='#'>
+							<label for='date_title'>Title: </label>
+							<input type='text' id='date-title' name='date_title' required>
+							<button type='submit' class='btn btn-outline-secondary' id='date-btn-save'>Save the Date</button>
+							<button type='button' class='btn btn-outline-secondary' id='date-btn-clear'>Clear Date</button>
+							<!--ask are you sure??-->
+						</form>
+					</div>
 				</div>
 
 			</div>
 
 		</div>
+		
 	</section>
 	
 	<section class='results container'>
@@ -150,3 +146,31 @@
 </script>
 <script type="text/javascript" src="javascripts/js.js"></script>
 </html>
+
+<!--
+<div class="list" id="rank-0">
+	<div class='row'>
+		<div class='col-sm-1' id="updown">
+			<div class='row'>
+				<div class='container-fluid'>
+					<i class="fas fa-angle-up"></i>
+				</div>
+			</div>
+			<div class='row'>
+				<div class='container-fluid'>
+					<i class="fas fa-angle-down"></i>
+				</div>
+			</div>
+		</div>
+		<div class='col-sm-3 no-paddings'>
+			<img class="list-img rounded" src="https://lh3.googleusercontent.com/p/AF1QipOFBGoDPobRkyVJ2GuynHb6Eni_CLjqKnuAZihV=h100-k">
+		</div>
+		<div class="list-name col-sm-5">
+			<div>McDonald's</div>
+		</div>
+		<input type="button" class="btn btn-delete btn-danger col-sm-3 no no-paddings" place-list-id="00d7bdd0fc3a94c3abb7ab67526f10ffc9fce95e" value="delete">
+		
+	</div>
+</div>
+-->
+
