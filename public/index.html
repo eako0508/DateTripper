@@ -12,23 +12,11 @@
 <body>
 	<div class='nav'>
 		<div class='container'>
-			<div class='row justify-content-end'>
+			<div class='row justify-content-end'>				
 				
-					<div class='row'>
-						<div class='keep-open'>
-							<div class="button-group">
-								<button class='btn btn-primary dropdown-toggle'
-								data-toggle='dropdown'>Options</button>
-								<ul class='dropdown-menu' id='display-options'>
-								</ul>
-							</div>
-						</div>
-							
-						</div>
-						<button type='button' class='btn btn-primary' id='savedlist-btn'>Saved Lists</button>
-						<button type='button' class='btn btn-primary' id='login-btn' data-toggle='modal' data-target='#login-page'>Login</button>
-						<button type='button' class='btn btn-primary' id='logout-btn'>Logout</button>
-					</div>
+				<button type='button' class='btn btn-info' id='savedlist-btn'>Saved Lists</button>
+				<button type='button' class='btn btn-info' id='login-btn' data-toggle='modal' data-target='#login-page'>Login</button>
+				<button type='button' class='btn btn-danger' id='logout-btn'>Logout</button>
 				
 			</div>
 		</div>
@@ -43,15 +31,20 @@
 				</div>
 
 				<div class='row'>
-					<div class='btn-group btn-group-justified'>
-						<a class='btn btn-primary' id='search-nearby' href='#'>Search Nearby</a>
-						<a class='btn btn-primary' id='clear-search' href='#'>Clear Search</a>
+					<div class='btn-group col-12 no-paddings no-gutters'>
+						<button type='button' class='col-4 btn btn-danger' id='clear-search'>Clear Search</button>
+						<button type='button' class='col-4 btn btn-primary' id='search-nearby'>Search Nearby</button>
+						<button class='btn btn-info dropdown-toggle col-4 '
+						data-toggle='dropdown'>Options</button>
+						<ul class='dropdown-menu' id='display-options'>
+						</ul>
 					</div>
-					
-					<div class='input-group'>
-						<input type="text" class='form-control' id="custom_query">
+				</div>
+				<div class='row'>
+					<div class='input-group col-12 no-paddings'>
+						<input type="text" class='form-control' id="custom_query" placeholder="Ice cream, Disneyland, rainbow, etc...">
 						<div class='input-group-append'>
-							<button class='btn btn-outline-secondary' id='custom_query_submit'>search</button>
+							<button class='btn btn-primary' id='custom_query_submit'>search</button>
 						</div>
 					</div>
 				</div>
@@ -62,23 +55,24 @@
 				<div class='row'>
 					<div id='place-list-list' class='col-sm-12'>
 
-						
-
 					</div>
 				</div>
 
 				<div class='row'>
 					<div class='col-12 no-paddings'>
 						<form id='save-form' action='#'>
-							<div class='input-group'>
-								<input type='text' class='form-control' placeholder='Title' id='date-title' aria-label='date-title' aria-describedby='date-title-input-text' required>
-								<div class='input-group-append'>
-									<button type='submit' class='btn btn-outline-secondary' id='date-btn-save'>Save the Date</button>
+							<div class='row no-gutters'>
+								<div class='input-group'>							
+									<input type='text' class='form-control' placeholder='Title' id='date-title' aria-label='date-title' aria-describedby='date-title-input-text' required>
+									<div class='input-group-append'>
+										<button type='submit' class='btn btn-success' id='date-btn-save'>Save the Date</button>
+									</div>
 								</div>
 							</div>
-							<button type='reset' class='btn btn-outline-secondary' id='date-btn-clear'>Clear Date</button>
-							<!--ask are you sure??-->
-							
+							<div class='row no-gutters justify-content-end'>
+								<button type='reset' class='btn btn-danger' id='date-btn-clear'>Clear Date</button>
+								<!--ask are you sure??-->
+							</div>							
 						</form>
 					</div>
 				</div>
