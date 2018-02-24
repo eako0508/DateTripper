@@ -4,7 +4,10 @@
 	width: 100%;
 	top: 0;
 }
-
+#nav-option{
+	width: inherit;
+	height: inherit;
+}
 #map {
 	width: 100%;
 	height: 100%;

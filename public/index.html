@@ -4,18 +4,52 @@
 	<title>Date Tripper</title>
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-	<link rel="stylesheet" type="text/css" href="stylesheets/jquery-ui.min.css">
 	<link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="stylesheets/cs.css">
 </head>
 <body>
 	
+
+<!--
+<div id='option-accordion'>
+	<div class="card" id='nav-option'>
+	    <div class="card-header" id="search-option-header">
+	      
+	        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#search_options" aria-expanded="false" aria-controls="collapseTwo">
+	          Options
+	        </button>
+	      
+	    </div>
+	    <div class='form-check-inline collapse' id='search_options' data-parent='option-accordion'>
+		<div class='card-body' id='display-options'>
+			
+		</div>
+	</div>
+</div>
+
+-->
+
+
 	<div class='nav'>
 		<div class='container'>
 			<div class='row justify-content-end'>
-				<button type='button' class='btn btn-primary' id='savedlist-btn'>Saved Lists</button>
-				<button type='button' class='btn btn-primary' id='login-btn' data-toggle='modal' data-target='#login-page'>Login</button>
-				<button type='button' class='btn btn-primary' id='logout-btn'>Logout</button>
+				
+					<div class='row'>
+						<div class='keep-open'>
+							<div class="button-group">
+								<button class='btn btn-primary dropdown-toggle'
+								data-toggle='dropdown'>Options</button>
+								<ul class='dropdown-menu' id='display-options'>
+								</ul>
+							</div>
+						</div>
+							
+						</div>
+						<button type='button' class='btn btn-primary' id='savedlist-btn'>Saved Lists</button>
+						<button type='button' class='btn btn-primary' id='login-btn' data-toggle='modal' data-target='#login-page'>Login</button>
+						<button type='button' class='btn btn-primary' id='logout-btn'>Logout</button>
+					</div>
+				
 			</div>
 		</div>
 	</div>
@@ -30,9 +64,11 @@
 
 				<div class='row'>					
 					<div class='trip-map-btn col-12 no-paddings'>
-						<div id='search-options' class='col-sm-8 float-left no-paddings'>
-							<!-- list of options -->
-						</div>
+						
+						
+						
+						
+						
 						<div class='col-sm-4 float-right no-paddings'>
 							<input type="button" id='search-nearby' class='btn btn-primary float-right' value="Search Nearby">
 							<button class='btn btn-primary' id='clear-search' style='float:right'>Clear Search</button>
@@ -141,8 +177,7 @@
 
 
 <script type="text/javascript" src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
-<script type="text/javascript" src='javascripts/jquery-ui.min.js'></script>
-
+<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js'></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script async defer
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBI0gg36wn9wYCNXdNHsrMmsGYCE6pmH-4&callback=initMap&libraries=places">

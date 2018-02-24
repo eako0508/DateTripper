@@ -189,19 +189,6 @@ $('#search-nearby').on('click', function(event){
 	}
 	service.nearbySearch(query, callback);
 });
-
-$('#search-options').on('click', 'input', event=>{
-	const checked_id = $(event.currentTarget).attr('id');
-	const temp = checked_options.find(item=>{
-		return item===checked_id;
-	});
-	if($(event.currentTarget).is(':checked')){
-		if(!temp) checked_options.push(checked_id);
-	} else{
-		if(temp) checked_options.pop(checked_id);
-	}
-});
-
 		//SEARCH KEYWORD
 $('#custom_query_submit').on('click', event=>{	
 	const keyword = $('#custom_query').val();
@@ -408,22 +395,34 @@ function renderSinglePlace(item, index){
 	return result;
 }
 
+$('.dropdown-menu').on('click', '.options-item, li', event=>{
+   var $target = $( event.currentTarget ),
+       val = $target.attr( 'option-num' ),
+       $inp = $target.find( 'input' ),
+       idx;
+   if ( ( idx = checked_options.indexOf( val ) ) > -1 ) {
+      checked_options.splice( idx, 1 );
+      setTimeout( function() { $inp.prop( 'checked', false ) }, 0);
+   } else {
+      checked_options.push( val );
+      setTimeout( function() { $inp.prop( 'checked', true ) }, 0);
+   }
+   $( event.target ).blur();     
+   return false;
+});
+
 function renderOptions(arr){
 
 	const items = arr.map((item, index)=>{
 		return `
-			<div class='form-check-inline'>
-				<input class='form-check-input' type='checkbox' value='' id=${item.id}>
-				<label class='form-check-label' for='${item.id}'>
-					${item.name}
-				</label>
-			</div>
-		`;
+		<li class='dropdown-item' option-num=${item.id}>
+			<a href="#" option-num=${item.id} tabIndex="-1" class='options-item'>
+				<input type="checkbox"/>${item.name}
+			</a>
+		</li>`;
 	});
-	$('#search-options').html(items);
+	$('#display-options').html(items);
 }
-
-
 
 /**
 	GOOGLE PLACE - END
