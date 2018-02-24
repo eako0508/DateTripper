@@ -86,8 +86,8 @@ const arr_options = [
 ];
 
 //let base_url = 'http://100.33.50.170:8080/';
-let base_url = 'http://192.168.2.199:8080/'
-//let base_url = 'http://localhost:8080/'
+//let base_url = 'http://192.168.2.199:8080/';
+let base_url = 'http://localhost:8080/';
 //let localhost_url = 'http://localhost:8080';
 
 /**
@@ -468,32 +468,22 @@ function renderItem(item){
 	let place = `
 	<div class='list' id='rank-${rank}'>
 		<div class='row'>
-			<div class='col-sm-1' id="updown">
-				<div class='row justify-content-start'>
-					<button type='button' class='btn btn-primary align-self-center'>
-						<i class="fas fa-angle-up" id='up-${item.id}'></i>
-					</button>
-				</div>
-				<div class='row'>
-					<button type='button' class='btn btn-primary align-self-center'>
-						<i class="fas fa-angle-down" id='up-${item.id}'></i>
-					</button>
-				</div>
+			<div class='col-sm-1 no-gutters' id="updown">				
+				<button type='button' class='btn btn-primary align-self-center'>
+					<i class="fas fa-angle-up" id='up-${item.id}'></i>
+				</button>
+				
+				<button type='button' class='btn btn-primary align-self-center'>
+					<i class="fas fa-angle-down" id='up-${item.id}'></i>
+				</button>
 			</div>
-			<div class='col-sm-3 no paddings'>`;
-	rank++;
-	if(item.photos_small) {
-		place += `
-			<img class='list-img' class='rounded' src='${item.photos_small}'/>`;
-	}
-	place +=`
-			</div>
-			<div class='list-name col-sm-5'>
+			<div class='list-name col-sm align-items-center'>
 				<div>${item.name}</div>
 			</div>
-
-			<input type="button" class="btn btn-delete btn-danger col-sm-3" 
-			place-list-id='${item.id}' value="delete">
+			<button type='button' class='btn btn-danger 
+			align-self-center' place-list-id='${item.id}'>
+				<i class="fas fa-times"></i>
+			</button>
 		</div>
 	</div>`;
 	//change id for every items?? what happens when the order changes?

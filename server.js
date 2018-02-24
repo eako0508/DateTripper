@@ -36,38 +36,17 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.use('/', express.static('public'));
+
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
-app.use('/api/users/', usersRouter);
-app.use('/api/auth/', authRouter);
-
-app.use('/', express.static('public'));
-
-
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
-// A protected endpoint which needs a valid JWT to access it
-/*
-app.get('/api/protected', jwtAuth, (req, res) => {
-  
-  return res.json({
-    data: 'rosebud'
-  });
-  
-});
-*/
+app.use('/api/users/', jwtAuth, usersRouter);
+app.use('/api/auth/', authRouter);
+app.use('/api/destination', jwtAuth, destinationRouter);
 
-//app.use('/destination', jwtAuth, destinationRouter);
-app.use('/api/destination/', destinationRouter);
-
-
-
-/*
-app.use('*', (req, res) => {
-  return res.status(404).json({ message: 'Not Found' });
-});
-*/
 // Referenced by both runServer and closeServer. closeServer
 // assumes runServer has run and set `server` to a server object
 let server;

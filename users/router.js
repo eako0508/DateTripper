@@ -144,39 +144,11 @@ router.get('/', (req, res) => {
     .then(users => res.json(users.map(user => user.serialize())))
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
-//'http://localhost:8080/users/saved_list/'+localStorage.username;
-/*
-router.get('/saved_list/:userID', (req,res)=>{
-  //res.redirect('.../../../public/user.html');
-  //express.static('public/user.html');
-  return User.find({username: req.params.userID})
-    .then(lists => res.json(lists))
-    .catch(err => ers.status(500).json({message: 'Internal server error'}));
-});
-*/
+
 router.get('/:userID', (req, res) => {
   return User.find({username: req.params.userID})
     .then(users => res.json(users.map(user => user.serialize())))
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 
-
 module.exports = {router};
-
-
-
-
-/*
-const express = require('express');
-const router = express.Router();
-
-router.get('/', (req,res)=>{
-	return res.status(200).json({
-		code: 200,
-		message: 'OK'
-	});
-	return res.sendFile('user.html');
-});
-
-module.exports = {router};
-*/
