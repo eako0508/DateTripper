@@ -34,10 +34,6 @@
 .list-btn {
 	text-align: right;
 }
-.list-name {
-	overflow: hidden;
-	height: 80%;
-}
 
 .list-img {
 	//max-width: 100px;
@@ -53,46 +49,37 @@
 .result {
 	border:1px solid black;
 }
-.card {
-	width: 33.33333%;
-	float: left;
-	height: 450px;
-}
-/*
-.login-container {
-	background: white;
-}
-*/
 
 .results {
 	padding-left:0;
 	padding-right:0;
 }
-.card-img-top{
-	max-width: 300px;
-	max-height: 150px;
-}
+
 html::-webkit-scrollbar {
 	width: 0px;
 	//background: red;
 }
 
 // Small devices (landscape phones, 576px and up)
-@media (min-width: 576px) { 
+@media only screen and (min-width: 576px) { 
 
 }
 
 // Medium devices (tablets, 768px and up)
-@media (min-width: 768px) {
-
+@media only screen and (min-width: 768px) {
+	.card-img-top{
+		display: none;
+		max-height: 300px;
+		max-width: 225px;
+	}
 }
 
 // Large devices (desktops, 992px and up)
-@media (min-width: 992px) {
+@media only screen and (min-width: 992px) {
 	
 }
 
 // Extra large devices (large desktops, 1200px and up)
-@media (min-width: 1200px) {
+@media only screen and (min-width: 1200px) {
 
 }

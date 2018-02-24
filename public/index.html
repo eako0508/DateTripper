@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang='en'>
 <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Date Tripper</title>
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -8,28 +10,6 @@
 	<link rel="stylesheet" type="text/css" href="stylesheets/cs.css">
 </head>
 <body>
-	
-
-<!--
-<div id='option-accordion'>
-	<div class="card" id='nav-option'>
-	    <div class="card-header" id="search-option-header">
-	      
-	        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#search_options" aria-expanded="false" aria-controls="collapseTwo">
-	          Options
-	        </button>
-	      
-	    </div>
-	    <div class='form-check-inline collapse' id='search_options' data-parent='option-accordion'>
-		<div class='card-body' id='display-options'>
-			
-		</div>
-	</div>
-</div>
-
--->
-
-
 	<div class='nav'>
 		<div class='container'>
 			<div class='row justify-content-end'>
@@ -62,33 +42,20 @@
 					<div id='map'></div>
 				</div>
 
-				<div class='row'>					
-					<div class='trip-map-btn col-12 no-paddings'>
-						
-						
-						
-						
-						
-						<div class='col-sm-4 float-right no-paddings'>
-							<input type="button" id='search-nearby' class='btn btn-primary float-right' value="Search Nearby">
-							<button class='btn btn-primary' id='clear-search' style='float:right'>Clear Search</button>
-						</div>
-						
-
-						<div class='input-group'>
-							<input type="text" class='form-control' id="custom_query">
-							<div class='input-group-append'>
-								<button class='btn btn-outline-secondary' id='custom_query_submit'>search</button>
-							</div>
+				<div class='row'>
+					<div class='btn-group btn-group-justified'>
+						<a class='btn btn-primary' id='search-nearby' href='#'>Search Nearby</a>
+						<a class='btn btn-primary' id='clear-search' href='#'>Clear Search</a>
+					</div>
+					
+					<div class='input-group'>
+						<input type="text" class='form-control' id="custom_query">
+						<div class='input-group-append'>
+							<button class='btn btn-outline-secondary' id='custom_query_submit'>search</button>
 						</div>
 					</div>
 				</div>
-
 			</div>
-
-
-
-
 
 			<div class='col-10 offset-1 col-lg-3 offset-lg-0'>
 
@@ -103,11 +70,15 @@
 				<div class='row'>
 					<div class='col-12 no-paddings'>
 						<form id='save-form' action='#'>
-							<label for='date_title'>Title: </label>
-							<input type='text' id='date-title' name='date_title' required>
-							<button type='submit' class='btn btn-outline-secondary' id='date-btn-save'>Save the Date</button>
-							<button type='button' class='btn btn-outline-secondary' id='date-btn-clear'>Clear Date</button>
+							<div class='input-group'>
+								<input type='text' class='form-control' placeholder='Title' id='date-title' aria-label='date-title' aria-describedby='date-title-input-text' required>
+								<div class='input-group-append'>
+									<button type='submit' class='btn btn-outline-secondary' id='date-btn-save'>Save the Date</button>
+								</div>
+							</div>
+							<button type='reset' class='btn btn-outline-secondary' id='date-btn-clear'>Clear Date</button>
 							<!--ask are you sure??-->
+							
 						</form>
 					</div>
 				</div>
@@ -118,8 +89,9 @@
 		
 	</section>
 	
-	<section class='results container'>
+	<section class='results row col-10 offset-1'>
 		<!--list of results-->
+		
 	</section>
 	
 </body>
@@ -174,6 +146,7 @@
 		</div>
 	</div>
 </div>
+
 
 
 <script type="text/javascript" src='https://code.jquery.com/jquery-3.2.1.min.js'></script>

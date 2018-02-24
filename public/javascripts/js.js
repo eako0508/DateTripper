@@ -372,10 +372,10 @@ function renderPlaces(){
 function renderSinglePlace(item, index){	
 	
 	let result = `
-		<div class='card border-primary res'>`;
+		<div class='card border-primary res col-12 col-lg-4'>`;
 	if(item.photos_large!=undefined) {
 		result+= `
-		<img class='card-img-top' src='${item.photos_large}' alt='card img'>
+		<img class='card-img-top img-thumbnail img-responsive' src='${item.photos_large}' alt='card img'>
 		`;
 	}	
 	/*
