@@ -419,7 +419,13 @@ $('#clear-search').on('click', function(){
 
 //add result item to place list
 $('.results').on('click', '.btn-add', event=>{
-	$('.save-btn-container').removeClass('d-none');
+	if($('#map-container').hasClass('col-lg-10')){
+		$('#map-container').removeClass('col-lg-10');
+		$('#map-container').addClass('col-lg-7');
+		$('#list-container').removeClass('d-none');
+		$('.save-btn-container').removeClass('d-none');
+	}
+		
 	const index = $(event.currentTarget).attr('result-index');
 	const item = resultDB[index];
 	listDB.push(item);
@@ -439,8 +445,7 @@ $('.results').on('click', '.btn-add', event=>{
 </div>
 */
 					
-function renderItem(item){
-	
+function renderItem(item){	
 	let place = `
 	<div class='list' id='rank-${rank}'>
 		<div class='row no-gutters align-items-center justify-content-between bg-light'>
@@ -462,13 +467,10 @@ function renderItem(item){
 			</button>
 		</div>
 	</div>`;
-	//change id for every items?? what happens when the order changes?
-	//
-	$('#place-list-list').append(place);
+	$('#place-list').append(place);
 }
 
-$('#place-list-list').on('click', '.btn-up', event=>{
-	console.log('triggered!');
+$('#place-list').on('click', '.btn-up', event=>{
 	let targetID = $(event.currentTarget).attr('id');
 	targetID = targetID.substring(3,targetID.length);
 	let temp;
@@ -485,7 +487,7 @@ $('#place-list-list').on('click', '.btn-up', event=>{
 	renderDestination();
 });
 
-$('#place-list-list').on('click', '.btn-dn', event=>{
+$('#place-list').on('click', '.btn-dn', event=>{
 	let targetID = $(event.currentTarget).attr('id');
 	targetID = targetID.substring(3,targetID.length);
 	let temp;
@@ -504,22 +506,25 @@ $('#place-list-list').on('click', '.btn-dn', event=>{
 
 function clearListDB(){
 	while(listDB.length) listDB.pop();
-	$('#place-list-list').html('');
+	$('#place-list').html('');
 }
 
 $('#date-btn-clear').on('click', event=>{
 	clearListDB();
+	$('#map-container').removeClass('col-lg-7');
+	$('#map-container').addClass('col-lg-10');
+	$('#list-container').addClass('d-none');
 });
 
 function renderDestination(){
-	$('#place-list-list').html('');	
+	$('#place-list').html('');	
 	for(let i=0;i<listDB.length;i++){
 		renderItem(listDB[i]);
 	}
 }
 
 
-$('#place-list-list').on('click', '.btn-delete', event=>{
+$('#place-list').on('click', '.btn-delete', event=>{
 	let targetID = $(event.currentTarget).attr('place-list-id');
 	for(let i=0;i<listDB.length;i++){
 		if(targetID === listDB[i].id){
@@ -641,10 +646,15 @@ $('#savedlist-btn').on('click', function(){
 	});
 });
 */
+let init_height;
+let init_width;
 
 //INITIALIZATION
 function firstLoad(){
 	resizeWindow();
+
+	//$('body:before').css({width: `${init_width}px `});
+	//console.log($('body').css("background-size"));
 	renderOptions(arr_options);
 	$('#logout-btn').hide();
 	$('#savedlist-btn').hide();
@@ -659,10 +669,14 @@ function firstLoad(){
 function resizeWindow(){
 	let window_height = $(window).height();
 	let window_width = $(window).width();
+	init_width = window_width;
+	init_height = window_height;
+
 	$('#map').height(window_height*.6);
 	if(window_width>=991){
-		$('#place-list-list').height(window_height*.6);
+		$('#place-list').height(window_height*.6);
 	}
+
 }
 
 $(firstLoad);

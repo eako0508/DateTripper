@@ -19,6 +19,7 @@
 #place-list-list {
 	overflow-x: hidden;
 	overflow-y: scroll;
+
 }
 
 .list-btn {
@@ -42,19 +43,16 @@
 }
 
 html::-webkit-scrollbar {
-	width: 0px;
+	//width: 0px;
 }
 body {
 	//background-image: url('https://c.wallhere.com/photos/84/4a/blurred-179731.jpg!d');
 	//background-image: url('https://cdn.wallpapersafari.com/24/39/MI7mA0.jpg');
 	//background-image: url('http://sfwallpaper.com/images/background-hd-4.jpg');
-
 	//background-image: url('http://witl.com/files/2018/02/RS16438_504222934.jpg?w=980&q=75');
 	//background-image: url('http://eskipaper.com/images/cute-love-wallpaper-6.jpg');
 
 	background-image: url('http://wallscollection.net/wp-content/uploads/2017/01/Cute-Couple-Wallpaper-In-High-Definition-.jpg');
-	
-	
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 	background-position: center;
@@ -71,6 +69,9 @@ body {
 		display: none;
 		max-height: 300px;
 		max-width: 225px;
+	}
+	body{
+		background-attachment: initial;
 	}
 }
 
