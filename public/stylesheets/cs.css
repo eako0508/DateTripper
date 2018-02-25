@@ -1,6 +1,6 @@
 
 .nav {
-	background-color: #ccc;
+	//background-color: #ccc;
 	width: 100%;
 	top: 0;
 }
@@ -24,7 +24,12 @@
 .list-btn {
 	text-align: right;
 }
-
+.img-thumbnail{
+	max-width: 350px;
+}
+#page-title {
+	font-family: 'Amatic SC', cursive;
+}
 .rank-container {
 	width: 100%;
 	height: 100%;
@@ -35,7 +40,22 @@
 html::-webkit-scrollbar {
 	width: 0px;
 }
+body {
+	//background-image: url('https://c.wallhere.com/photos/84/4a/blurred-179731.jpg!d');
+	//background-image: url('https://cdn.wallpapersafari.com/24/39/MI7mA0.jpg');
+	//background-image: url('http://sfwallpaper.com/images/background-hd-4.jpg');
 
+	//background-image: url('http://witl.com/files/2018/02/RS16438_504222934.jpg?w=980&q=75');
+	//background-image: url('http://eskipaper.com/images/cute-love-wallpaper-6.jpg');
+
+	background-image: url('http://wallscollection.net/wp-content/uploads/2017/01/Cute-Couple-Wallpaper-In-High-Definition-.jpg');
+	
+	
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-position: center;
+	background-size: cover;
+}
 // Small devices (landscape phones, 576px and up)
 @media only screen and (min-width: 576px) { 
 

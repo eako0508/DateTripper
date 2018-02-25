@@ -7,20 +7,25 @@
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Amatic+SC" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="stylesheets/cs.css">
 </head>
 <body>
-	<div class='nav'>
-		<div class='container'>
-			<div class='row justify-content-end'>				
-				
-				<button type='button' class='btn btn-info' id='savedlist-btn'>Saved Lists</button>
-				<button type='button' class='btn btn-info' id='login-btn' data-toggle='modal' data-target='#login-page'>Login</button>
-				<button type='button' class='btn btn-danger' id='logout-btn'>Logout</button>
-				
-			</div>
+	
+	<span class='text-light text-font-bold d-flex justify-content-center display-4'
+	id='page-title'>Date Tripper</span>
+
+	<nav class='nav justify-content-center text-center'>
+		
+		<div class='row col-12 btn-group'>
+			<a href='#' class='nav-link text-light btn btn-info font-weight-bold' id='savedlist-btn'>Saved Lists</a>
+			<a href='#' class='nav-link text-light btn btn-success font-weight-bold' id='logout-btn'>Logout</a>		
 		</div>
-	</div>
+		<a href='#' class='nav-link text-light btn btn-success font-weight-bold' id='login-btn' data-toggle='modal' data-target='#login-page'>Login</a>
+	</nav>
+	<br>
+
+
 	<section>
 		<div class='row'>
 
@@ -34,7 +39,7 @@
 					<div class='btn-group col-12 no-paddings no-gutters'>
 						<button type='button' class='col-4 btn btn-danger' id='clear-search'>Reset</button>
 						<button type='button' class='col-4 btn btn-primary' id='search-nearby'>Nearby</button>
-						<button class='btn btn-outline-info dropdown-toggle col-4 '
+						<button class='btn btn-info dropdown-toggle col-4 '
 						data-toggle='dropdown'>Filter</button>
 						<ul class='dropdown-menu' id='display-options'>
 						</ul>
@@ -70,7 +75,7 @@
 								</div>
 							</div>
 							<div class='row no-gutters justify-content-end'>
-								<button type='reset' class='btn btn-danger' id='date-btn-clear'>Clear Date</button>
+								<button type='reset' class='btn btn-danger col-12' id='date-btn-clear'>Clear Date</button>
 								<!--ask are you sure??-->
 							</div>							
 						</form>

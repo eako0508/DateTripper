@@ -217,7 +217,7 @@ let username = '';
 **/
 
 //$('#date-btn-save').on('click', event=>{
-$('#save-form').on('click', event=>{
+$('#save-form').on('submit', event=>{
 
 	event.preventDefault();
 	//let temp = JSON.stringify(listDB);
@@ -225,7 +225,7 @@ $('#save-form').on('click', event=>{
 	//send it to logged-in user's database
 	//if(!isLogged) {
 	if(!localStorage.token) {	
-		alert('Login first!');
+		$('#login-page').modal('show')
 		return;
 	}
 	if(listDB.length<2){
@@ -375,7 +375,7 @@ function renderSinglePlace(item, index){
 		<div class='card res col-12 col-lg-3 my-2 mx-2 d-flex'>`;
 	if(item.photos_large!=undefined) {
 		result+= `
-		<img class='card-img-top img-thumbnail img-responsive mh-25' src='${item.photos_large}' alt='card img'>
+		<img class='card-img-top img-thumbnail img-responsive mh-25 d-flex align-self-center' src='${item.photos_large}' alt='card img'>
 		`;
 	}	
 	/*
