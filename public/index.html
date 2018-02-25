@@ -32,17 +32,17 @@
 
 				<div class='row'>
 					<div class='btn-group col-12 no-paddings no-gutters'>
-						<button type='button' class='col-4 btn btn-danger' id='clear-search'>Clear Search</button>
-						<button type='button' class='col-4 btn btn-primary' id='search-nearby'>Search Nearby</button>
+						<button type='button' class='col-4 btn btn-danger' id='clear-search'>Reset</button>
+						<button type='button' class='col-4 btn btn-primary' id='search-nearby'>Nearby</button>
 						<button class='btn btn-outline-info dropdown-toggle col-4 '
-						data-toggle='dropdown'>Options</button>
+						data-toggle='dropdown'>Filter</button>
 						<ul class='dropdown-menu' id='display-options'>
 						</ul>
 					</div>
 				</div>
 				<div class='row'>
 					<div class='input-group col-12 no-paddings'>
-						<input type="text" class='form-control' id="custom_query" placeholder="Ice cream, Disneyland, rainbow, etc...">
+						<input type="text" class='form-control' id="custom_query" placeholder="Waffle house, Laser tag, etc...">
 						<div class='input-group-append'>
 							<button class='btn btn-primary' id='custom_query_submit'>search</button>
 						</div>
@@ -59,7 +59,7 @@
 				</div>
 
 				<div class='row'>
-					<div class='col-12 no-paddings'>
+					<div class='col-12 no-paddings save-btn-container d-none'>
 						<form id='save-form' action='#'>
 							<div class='row no-gutters'>
 								<div class='input-group'>							

@@ -396,19 +396,19 @@ function renderSinglePlace(item, index){
 }
 
 $('.dropdown-menu').on('click', '.options-item, li', event=>{
-   var $target = $( event.currentTarget ),
-       val = $target.attr( 'option-num' ),
-       $inp = $target.find( 'input' ),
-       idx;
-   if ( ( idx = checked_options.indexOf( val ) ) > -1 ) {
-      checked_options.splice( idx, 1 );
-      setTimeout( function() { $inp.prop( 'checked', false ) }, 0);
-   } else {
-      checked_options.push( val );
-      setTimeout( function() { $inp.prop( 'checked', true ) }, 0);
-   }
-   $( event.target ).blur();     
-   return false;
+   	let target = $(event.currentTarget);
+   	let val = target.attr('option-num');
+    let inp = target.find('input');
+    let idx;
+   	if((idx = checked_options.indexOf(val))> -1){
+		checked_options.splice(idx, 1);
+		setTimeout(function(){inp.prop('checked', false)}, 0);
+   	}else {
+		checked_options.push(val);
+		setTimeout(function(){inp.prop('checked', true)}, 0);
+   	}
+   	$(event.target).blur();     
+   	return false;
 });
 
 function renderOptions(arr){
@@ -417,7 +417,7 @@ function renderOptions(arr){
 		return `
 		<li class='dropdown-item' option-num=${item.id}>
 			<a href="#" option-num=${item.id} tabIndex="-1" class='options-item btn'>
-				<input type="checkbox"/>${item.name}
+				<input type="checkbox"/> ${item.name}
 			</a>
 		</li>`;
 	});
@@ -448,6 +448,7 @@ $('#clear-search').on('click', function(){
 
 //add result item to place list
 $('.results').on('click', '.btn-add', event=>{
+	$('.save-btn-container').removeClass('d-none');
 	const index = $(event.currentTarget).attr('result-index');
 	const item = resultDB[index];
 	listDB.push(item);
@@ -471,7 +472,7 @@ function renderItem(item){
 	
 	let place = `
 	<div class='list' id='rank-${rank}'>
-		<div class='row no-gutters align-items-center bg-light'>
+		<div class='row no-gutters align-items-center justify-content-between bg-light'>
 			<div class='btn-group-vertical' id="updown">				
 				<button type='button' class='btn btn-outline-primary align-self-center btn-up' id='up-${item.id}'>
 					<i class="fas fa-angle-up"></i>
@@ -480,12 +481,12 @@ function renderItem(item){
 					<i class="fas fa-angle-down" id='up-${item.id}'></i>
 				</button>
 			</div>
-			<div class='list-name col-sm'>
-				
-					<div class='align-items-center d-flex'>${item.name}</div>
+			<div class='list-name col-8 tex-truncate'>
+				${item.name}
+					
 				
 			</div>
-			<button type='button' class='btn btn-danger align-self-center btn-delete' place-list-id='${item.id}'>
+			<button type='button' class='btn btn-danger btn-delete' place-list-id='${item.id}'>
 				<i class="fas fa-times"></i>
 			</button>
 		</div>
