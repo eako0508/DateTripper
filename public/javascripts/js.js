@@ -143,8 +143,16 @@ function callback(results, status) {
 	if (status == google.maps.places.PlacesServiceStatus.OK) {
 	    saveToResultDB(results);
 	    renderPlaces();
+
+	    const bounds = new google.maps.LatLngBounds();
+	    resultDB.forEach(item=>{
+	    	bounds.extend(item.mapObj);
+	    })
+	    map.fitBounds(bounds);
 	}
 }
+
+
 
 		//SEARCH NEARBY
 
@@ -234,6 +242,16 @@ function saveSuccess(data){
 	return;
 }
 
+
+$('.results').on('click', `.card > .card-body, .card > img`, event=>{
+	let idx = $(event.currentTarget).parents('.card').attr('db-index');
+	let target_map_obj = resultDB[idx].mapObj;
+	map.panTo(target_map_obj);
+	const bounds = new google.maps.LatLngBounds();
+	bounds.extend(target_map_obj);
+	map.fitBounds(bounds);
+});
+
 /**
 	GOOGLE PLACE - START
 **/
@@ -262,7 +280,10 @@ function saveToResultDB(data){
 			name: item.name,
 			id: item.id,
 			place_id: item.place_id,
-			location: item.geometry.location
+			location: {
+				lat: item.geometry.location.lat(),
+				lng: item.geometry.location.lng(),
+			}
 		}
 		//put name, pic, and hours
 		let content = '<div>';
@@ -293,6 +314,7 @@ function saveToResultDB(data){
 				}
 			}
 		});
+		element.mapObj = new google.maps.LatLng(element.location.lat, element.location.lng);
 
 		content += '</div>';
 		resultDB[index] = element;
@@ -339,7 +361,7 @@ function renderPlaces(){
 function renderSinglePlace(item, index){	
 	
 	let result = `
-		<div class='card res col-12 col-lg-3 my-2 mx-2 d-flex'>`;
+		<div class='card res col-12 col-lg-3 my-2 mx-2 d-flex' db-index='${index}'>`;
 	if(item.photos_large!=undefined) {
 		result+= `
 		<img class='card-img-top img-thumbnail img-responsive mh-25 d-flex align-self-center' src='${item.photos_large}' alt='card img'>
