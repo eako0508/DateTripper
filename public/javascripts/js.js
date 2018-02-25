@@ -372,10 +372,10 @@ function renderPlaces(){
 function renderSinglePlace(item, index){	
 	
 	let result = `
-		<div class='card border-primary res col-12 col-lg-4'>`;
+		<div class='card res col-12 col-lg-3 my-2 mx-2 d-flex'>`;
 	if(item.photos_large!=undefined) {
 		result+= `
-		<img class='card-img-top img-thumbnail img-responsive' src='${item.photos_large}' alt='card img'>
+		<img class='card-img-top img-thumbnail img-responsive mh-25' src='${item.photos_large}' alt='card img'>
 		`;
 	}	
 	/*
@@ -386,10 +386,10 @@ function renderSinglePlace(item, index){
 	result += `	
 		<div class='card-body'>
 			<h5 class='card-title'>${item.name}</h5>
-			<p class='card-text'>
-				
-			</p>
-			<input type='button' class='btn btn-primary btn-add' result-index='${index}' value='ADD'>
+			
+		</div>
+		<div class='card-footer'>
+			<button class='col-12 btn btn-primary btn-add' result-index='${index}'>ADD</button>
 		</div>
 	</div>`;
 	return result;
@@ -416,7 +416,7 @@ function renderOptions(arr){
 	const items = arr.map((item, index)=>{
 		return `
 		<li class='dropdown-item' option-num=${item.id}>
-			<a href="#" option-num=${item.id} tabIndex="-1" class='options-item'>
+			<a href="#" option-num=${item.id} tabIndex="-1" class='options-item btn'>
 				<input type="checkbox"/>${item.name}
 			</a>
 		</li>`;
@@ -448,10 +448,15 @@ $('#clear-search').on('click', function(){
 
 //add result item to place list
 $('.results').on('click', '.btn-add', event=>{
-	event.preventDefault();
 	const index = $(event.currentTarget).attr('result-index');
 	const item = resultDB[index];
 	listDB.push(item);
+	
+	//replace add button to check icon button
+	const theButton = `<button class='col-12 btn btn-success btn-add' result-index='${index}'>
+	<i class="fas fa-check"></i> ADDED
+	</button>`
+	$(event.currentTarget).replaceWith(theButton);
 	renderItem(item);
 });
 
@@ -466,21 +471,21 @@ function renderItem(item){
 	
 	let place = `
 	<div class='list' id='rank-${rank}'>
-		<div class='row'>
-			<div class='col-sm-1 no-gutters' id="updown">				
-				<button type='button' class='btn btn-primary align-self-center'>
-					<i class="fas fa-angle-up" id='up-${item.id}'></i>
+		<div class='row no-gutters align-items-center bg-light'>
+			<div class='btn-group-vertical' id="updown">				
+				<button type='button' class='btn btn-outline-primary align-self-center btn-up' id='up-${item.id}'>
+					<i class="fas fa-angle-up"></i>
 				</button>
-				
-				<button type='button' class='btn btn-primary align-self-center'>
+				<button type='button' class='btn btn-outline-primary align-self-center btn-dn' id='dn-${item.id}'>
 					<i class="fas fa-angle-down" id='up-${item.id}'></i>
 				</button>
 			</div>
-			<div class='list-name col-sm align-items-center'>
-				<div>${item.name}</div>
+			<div class='list-name col-sm'>
+				
+					<div class='align-items-center d-flex'>${item.name}</div>
+				
 			</div>
-			<button type='button' class='btn btn-danger 
-			align-self-center' place-list-id='${item.id}'>
+			<button type='button' class='btn btn-danger align-self-center btn-delete' place-list-id='${item.id}'>
 				<i class="fas fa-times"></i>
 			</button>
 		</div>
@@ -491,6 +496,7 @@ function renderItem(item){
 }
 
 $('#place-list-list').on('click', '.btn-up', event=>{
+	console.log('triggered!');
 	let targetID = $(event.currentTarget).attr('id');
 	targetID = targetID.substring(3,targetID.length);
 	let temp;
@@ -554,6 +560,9 @@ $('#place-list-list').on('click', '.btn-delete', event=>{
 $(window).on('resize', function(){
 	resizeWindow();
 });
+
+
+
 
 
 

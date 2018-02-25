@@ -16,48 +16,24 @@
 	padding-left: 0;
 	padding-right: 0;
 }
-#trip-map {
-	/*
-	padding-left: 0;
-	padding-right: 0;
-	*/
-}
 #place-list-list {
 	overflow-x: hidden;
 	overflow-y: scroll;
-}
-.list {
-	//border:1px solid black;
-	//height: 200px;
 }
 
 .list-btn {
 	text-align: right;
 }
 
-.list-img {
-	//max-width: 100px;
-}
-
 .rank-container {
 	width: 100%;
 	height: 100%;
 }
-.card {
-	//width: 18rem;
+i {
+	pointer-events: none;
 }
-.result {
-	border:1px solid black;
-}
-
-.results {
-	padding-left:0;
-	padding-right:0;
-}
-
 html::-webkit-scrollbar {
 	width: 0px;
-	//background: red;
 }
 
 // Small devices (landscape phones, 576px and up)
