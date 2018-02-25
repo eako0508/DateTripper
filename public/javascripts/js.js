@@ -398,14 +398,17 @@ function renderSinglePlace(item, index){
 $('.dropdown-menu').on('click', '.options-item, li', event=>{
    	let target = $(event.currentTarget);
    	let val = target.attr('option-num');
-    let inp = target.find('input');
+    
     let idx;
+
+    target.toggleClass('bg-success');
+    target.children('i').toggleClass('invisible');
+    target.children('a').toggleClass('text-light');
+    
    	if((idx = checked_options.indexOf(val))> -1){
 		checked_options.splice(idx, 1);
-		setTimeout(function(){inp.prop('checked', false)}, 0);
    	}else {
 		checked_options.push(val);
-		setTimeout(function(){inp.prop('checked', true)}, 0);
    	}
    	$(event.target).blur();     
    	return false;
@@ -416,8 +419,9 @@ function renderOptions(arr){
 	const items = arr.map((item, index)=>{
 		return `
 		<li class='dropdown-item' option-num=${item.id}>
+			<i class="fas fa-check invisible text-light"></i>
 			<a href="#" option-num=${item.id} tabIndex="-1" class='options-item btn'>
-				<input type="checkbox"/> ${item.name}
+				${item.name}
 			</a>
 		</li>`;
 	});

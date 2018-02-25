@@ -29,7 +29,7 @@
 	width: 100%;
 	height: 100%;
 }
-i {
+.options-item, i {
 	pointer-events: none;
 }
 html::-webkit-scrollbar {
