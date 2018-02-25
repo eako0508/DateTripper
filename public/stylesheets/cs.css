@@ -37,6 +37,10 @@
 .options-item, i {
 	pointer-events: none;
 }
+.autocomplete-form{
+	bottom: 20px!important;
+}
+
 html::-webkit-scrollbar {
 	width: 0px;
 }

@@ -25,7 +25,6 @@
 	</nav>
 	<br>
 
-
 	<section>
 		<div class='row'>
 
@@ -147,6 +146,16 @@
 	</div>
 </div>
 
+<div class='fade' tabindex="-1">
+	<form class='autocomplete-form' id='autoform'>
+		<div class='input-group'>
+			<input type='text' id='autocomplete-input' class="form-control" placeholder="Place to go">
+			<div class='input-group-append'>
+				<button class='btn btn-primary' type='submit'>Go</button>
+			</div>
+		</div>
+	</form>
+</div>
 
 
 <script type="text/javascript" src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
@@ -155,6 +164,7 @@
 <script async defer
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBI0gg36wn9wYCNXdNHsrMmsGYCE6pmH-4&callback=initMap&libraries=places">
 </script>
+<script type="text/javascript" src='javascripts/mapStyles.js'></script>
 <script type="text/javascript" src="javascripts/js.js"></script>
 </html>
 

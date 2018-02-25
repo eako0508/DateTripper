@@ -1,4 +1,6 @@
 
+
+
 	/**
 							TODO 
 			(important)
@@ -93,72 +95,37 @@ let base_url = 'http://localhost:8080/';
 /**
 	GOOGLE MAP
 **/
+let user_input = document.getElementById('autocomplete-input');
+let autocomplete_form = document.getElementById('autoform');
+let autocomplete;
+
+$('.autocomplete-form').on('submit', event=>{
+	event.preventDefault();
+	console.log(event);
+	let auto_string = autocomplete.getPlace();
+	console.log(auto_string);
+	//keep getting undefined on first submit
+	//ASK: async callback
+	const place_lat = auto_string.geometry.location.lat();
+	const place_lng = auto_string.geometry.location.lng();
+	const targetLocation = new google.maps.LatLng(place_lat, place_lng);
+	map.panTo(targetLocation);
+});
+
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
 		center: {lat:40.727141, lng: -73.907959},
 		zoom: 12
 	});
 
-	const myStyle = [
-		{
-			"featureType": "administrative",
-			"elementType": "all",
-			"stylers": [
-				{
-					"visibility": "off"
-				}
-			]
-		},
-		{
-			"featureType": "landscape",
-			"elementType": "all",
-			"stylers": [
-				{
-					"visibility": "off"
-				}
-			]
-		},
-		{
-			"featureType": "poi.government",
-			"elementType": "all",
-			"stylers": [
-				{
-					"visibility": "off"
-				}
-			]
-		},
-		{
-			"featureType": "poi.place_of_worship",
-			"elementType": "all",
-			"stylers": [
-				{
-					"visibility": "off"
-				}
-			]
-		},
-		{
-			"featureType": "poi.school",
-			"elementType": "all",
-			"stylers": [
-				{
-					"visibility": "off"
-				}
-			]
-		},
-		{
-			"featureType": "poi.medical",
-			"elementType": "all",
-			"stylers": [
-				{
-					"visibility": "off"
-				}
-			]
-		}
-	];
-
-	map.set('styles', myStyle);
+	map.set('styles', mapStyles.blue_essense);
 
 	service = new google.maps.places.PlacesService(map);
+
+	
+	map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(autocomplete_form);
+
+	autocomplete = new google.maps.places.Autocomplete(user_input);
 
 }
 function clearMarkers(){
