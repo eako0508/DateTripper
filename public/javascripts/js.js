@@ -47,6 +47,9 @@
 /**
 		G L O B A L   V A R I A B L E S
 **/
+//let markerStorage = [];
+let marker_arr = [];
+
 let localToken; //token
 
 let isLogged = false;
@@ -177,9 +180,6 @@ $('#custom_query_submit').on('click', event=>{
 		query: keyword
 	}
 	service.textSearch(search_query, callback);
-
-	//let example = new google.maps.LatLng(40.727141, -73.907959);
-	//map.panTo(example);
 });
 $('.submit-go').on('submit', event=>{
 	event.preventDefault();
@@ -193,14 +193,10 @@ let isLogged = false;
 let username = '';
 **/
 
-//$('#date-btn-save').on('click', event=>{
 $('#save-form').on('submit', event=>{
 
 	event.preventDefault();
-	//let temp = JSON.stringify(listDB);
-	//console.log(temp);
-	//send it to logged-in user's database
-	//if(!isLogged) {
+	
 	if(!localStorage.token) {	
 		$('#login-page').modal('show')
 		return;
@@ -209,12 +205,7 @@ $('#save-form').on('submit', event=>{
 		alert('Need at least 2 places!');
 		return;
 	}
-	/*
-	if($('#date-title').val()===''){
-		alert('Please enter title.');
-		return;
-	}
-	*/
+	
 	let item_title = $('#date-title').val();
 
 	
@@ -233,6 +224,7 @@ $('#save-form').on('submit', event=>{
 		"title": item_title,
 		"destinations": listDB
 	}
+
 	console.log(item);
 	$.ajax({
 		url: post_url,
@@ -257,14 +249,7 @@ function saveSuccess(data){
 }
 
 
-$('.results').on('click', `.card > .card-body, .card > img`, event=>{
-	let idx = $(event.currentTarget).parents('.card').attr('db-index');
-	let target_map_obj = resultDB[idx].mapObj;
-	map.panTo(target_map_obj);
-	const bounds = new google.maps.LatLngBounds();
-	bounds.extend(target_map_obj);
-	map.fitBounds(bounds);
-});
+
 
 /**
 	GOOGLE PLACE - START
@@ -361,6 +346,51 @@ function renderHours(arr){
 	RENDERING
 **/
 
+
+
+/**
+	FILTER OPTIONS
+**/
+$('.dropdown-menu').on('click', '.options-item, li', event=>{
+   	let target = $(event.currentTarget);
+   	let val = target.attr('option-num');
+    
+    let idx;
+
+    target.toggleClass('bg-success');
+    target.children('i').toggleClass('invisible');
+    target.children('a').toggleClass('text-light');
+    
+   	if((idx = checked_options.indexOf(val))> -1){
+		checked_options.splice(idx, 1);
+   	}else {
+		checked_options.push(val);
+   	}
+   	$(event.target).blur();     
+   	return false;
+});
+
+function renderOptions(arr){
+	const items = arr.map((item, index)=>{
+		return `
+		<li class='dropdown-item' option-num=${item.id}>
+			<i class="fas fa-check invisible text-light"></i>
+			<a href="#" option-num=${item.id} tabIndex="-1" class='options-item btn'>
+				${item.name}
+			</a>
+		</li>`;
+	});
+	$('#display-options').html(items);
+}
+
+
+
+
+
+
+/**
+	RESULTS
+**/
 //renderPlaces->renderSinglePlace->$('.results').html
 function renderPlaces(){
 	//display array to places
@@ -392,68 +422,19 @@ function renderSinglePlace(item, index){
 			
 		</div>
 		<div class='card-footer'>
-			<button class='col-12 btn btn-primary btn-add' result-index='${index}'>ADD</button>
+			<button class='col-12 btn btn-primary btn-add' targetID='${item.id}' result-index='${index}'>ADD</button>
 		</div>
 	</div>`;
 	return result;
 }
-
-$('.dropdown-menu').on('click', '.options-item, li', event=>{
-   	let target = $(event.currentTarget);
-   	let val = target.attr('option-num');
-    
-    let idx;
-
-    target.toggleClass('bg-success');
-    target.children('i').toggleClass('invisible');
-    target.children('a').toggleClass('text-light');
-    
-   	if((idx = checked_options.indexOf(val))> -1){
-		checked_options.splice(idx, 1);
-   	}else {
-		checked_options.push(val);
-   	}
-   	$(event.target).blur();     
-   	return false;
+$('.results').on('click', `.card > .card-body, .card > img`, event=>{
+	let idx = $(event.currentTarget).parents('.card').attr('db-index');
+	let target_map_obj = resultDB[idx].mapObj;
+	map.panTo(target_map_obj);
+	const bounds = new google.maps.LatLngBounds();
+	bounds.extend(target_map_obj);
+	map.fitBounds(bounds);
 });
-
-function renderOptions(arr){
-
-	const items = arr.map((item, index)=>{
-		return `
-		<li class='dropdown-item' option-num=${item.id}>
-			<i class="fas fa-check invisible text-light"></i>
-			<a href="#" option-num=${item.id} tabIndex="-1" class='options-item btn'>
-				${item.name}
-			</a>
-		</li>`;
-	});
-	$('#display-options').html(items);
-}
-
-/**
-	GOOGLE PLACE - END
-**/
-
-//event handler
-
-function clearResultDB(){
-	while(resultDB.length) resultDB.pop();
-	return;
-}
-
-$('#clear-search').on('click', function(){
-	
-	
-	//clear markers
-	clearMarkers();
-	//clear resultDB
-	clearResultDB();
-	//cear result html
-	$('.results').html('');
-});
-
-//add result item to place list
 $('.results').on('click', '.btn-add', event=>{
 	if($('#map-container').hasClass('col-lg-10')){
 		$('#map-container').removeClass('col-lg-10');
@@ -463,14 +444,22 @@ $('.results').on('click', '.btn-add', event=>{
 	}
 		
 	const index = $(event.currentTarget).attr('result-index');
+	const targetID = $(event.currentTarget).attr('targetID');
 	const item = resultDB[index];
 	
 	let marker = new google.maps.Marker({
 	    position: item.mapObj,
 	    map: map
     });
+    //get targetID!!
+	let item_marker = {
+		marker: marker,
+		id: targetID
+	}
 
-    item.marker = marker;
+	marker_arr.push(item_marker);
+	//markerStorage.push(marker);
+    //item.marker = marker;
 
 
     listDB.push(item);
@@ -482,14 +471,33 @@ $('.results').on('click', '.btn-add', event=>{
 	$(event.currentTarget).replaceWith(theButton);
 	renderItem(item);
 });
+$('#clear-search').on('click', function(){
+	clearMarkers();
+	clearResultDB();
+	$('.results').html('');
+});
+function clearResultDB(){
+	while(resultDB.length) resultDB.pop();
+	return;
+}
 
-//<div class='container-fluid'></div>
-/*
-<div class='container-fluid'>
-	<i class="fas fa-angle-down" id='dn-${item.id}'></i>
-</div>
-*/
-//hhhhh
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+	PLACE LIST
+**/
 $('#place-list').on('click', '.list-name', event=>{
 	let idx = $(event.currentTarget).parent('div').children('button').attr('place-list-id');
 	const aPlace = listDB.find(item=>{
@@ -499,7 +507,6 @@ $('#place-list').on('click', '.list-name', event=>{
 
 	map.panTo(aPlace.mapObj);
 });
-					
 function renderItem(item){	
 	let place = `
 	<div class='list' id='rank-${rank}'>
@@ -559,43 +566,52 @@ $('#place-list').on('click', '.btn-dn', event=>{
 	renderDestination();
 });
 
-function clearListDB(){
-	
-	listDB.forEach((item,index)=>{
-		item.marker.setMap(null);
-		item.marker = null;
-		item = null;
-	});
-
-	$('#place-list').html('');
-}
-
 $('#date-btn-clear').on('click', event=>{
+	clearDate();
+});
+function clearDate(){
 	clearListDB();
 	$('#map-container').removeClass('col-lg-7');
 	$('#map-container').addClass('col-lg-10');
 	$('#list-container').addClass('d-none');
-});
-
+}
+function clearListDB(){	
+	let pop;
+	while(marker_arr.length){
+		pop = marker_arr.pop();
+		pop.marker.setMap(null);
+		pop.marker = null;
+	}
+	$('#place-list').html('');
+}
 function renderDestination(){
 	$('#place-list').html('');	
 	for(let i=0;i<listDB.length;i++){
 		renderItem(listDB[i]);
 	}
 }
-
-
 $('#place-list').on('click', '.btn-delete', event=>{
-	let targetID = $(event.currentTarget).attr('place-list-id');
-	for(let i=0;i<listDB.length;i++){
-		if(targetID === listDB[i].id){
-			listDB[i].marker.setMap(null);
-			listDB[i].marker = null;
-			listDB.splice(i, 1);
+	let targetID = $(event.currentTarget).attr('place-list-id');	
+	listDB.forEach((item,index)=>{
+		if(targetID === item.id){
+			listDB.splice(index, 1);
 		}
-	}
+	});	
+	marker_arr.forEach((item,index)=>{
+		if(targetID === item.id){
+			item.marker.setMap(null);
+			item.marker = null;
+			marker_arr.splice(index, 1);
+		}
+	})
 	$(event.currentTarget).closest('.list').remove();
+	if(listDB.length<1) clearDate();		
 });
+
+
+
+
+
 
 $(window).on('resize', function(){
 	resizeWindow();
