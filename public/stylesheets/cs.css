@@ -21,7 +21,11 @@
 	overflow-y: scroll;
 
 }
-
+.results {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
 .list-btn {
 	text-align: right;
 }

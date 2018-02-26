@@ -217,14 +217,26 @@ $('#save-form').on('submit', event=>{
 	*/
 	let item_title = $('#date-title').val();
 
+	
+	let post_url = base_url+'api/destination/' + localStorage.username;
+
+
+	listDB.forEach((item,index)=>{
+		if(item.marker!=null){
+			item.marker.setMap(null);
+			item.marker = null;
+			item = null;	
+		}		
+	});
+
 	const item = {
 		"title": item_title,
 		"destinations": listDB
 	}
-	let post_url = base_url+'api/destination/' + localStorage.username;
+	console.log(item);
 	$.ajax({
 		url: post_url,
-		method: "POST",
+		method:"POST",
 		contentType: 'application/json',
 		dataType: 'json',
 		data: JSON.stringify(item),
@@ -363,7 +375,7 @@ function renderPlaces(){
 function renderSinglePlace(item, index){	
 	
 	let result = `
-		<div class='card res col-12 col-lg-3 my-2 mx-2 d-flex' db-index='${index}'>`;
+		<div class='card res col-12 col-lg-4 d-flex justify-content-start' db-index='${index}'>`;
 	if(item.photos_large!=undefined) {
 		result+= `
 		<img class='card-img-top img-thumbnail img-responsive mh-25 d-flex align-self-center' src='${item.photos_large}' alt='card img'>
@@ -457,7 +469,10 @@ $('.results').on('click', '.btn-add', event=>{
 	    position: item.mapObj,
 	    map: map
     });
+
     item.marker = marker;
+
+
     listDB.push(item);
     
 	//replace add button to check icon button
@@ -699,6 +714,7 @@ let init_width;
 
 //INITIALIZATION
 function firstLoad(){
+	localStorage.clear();
 	resizeWindow();
 
 	//$('body:before').css({width: `${init_width}px `});
