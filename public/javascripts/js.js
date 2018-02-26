@@ -60,6 +60,7 @@ let service;
 
 let markers = [];		//array of markers objects(lat, lng)
 
+
 //array of objects(name, imgUrl(small&large), id, place_id)
 const resultDB = [];	//for search results
 const listDB = [];		//for added destinations
@@ -133,6 +134,7 @@ function clearMarkers(){
 	while(markers.length){
 		pop = markers.pop();
 		pop.setMap(null);
+		pop = null;
 	}
 	return;
 }
@@ -450,8 +452,14 @@ $('.results').on('click', '.btn-add', event=>{
 		
 	const index = $(event.currentTarget).attr('result-index');
 	const item = resultDB[index];
-	listDB.push(item);
 	
+	let marker = new google.maps.Marker({
+	    position: item.mapObj,
+	    map: map
+    });
+    item.marker = marker;
+    listDB.push(item);
+    
 	//replace add button to check icon button
 	const theButton = `<button class='col-12 btn btn-success btn-add' result-index='${index}'>
 	<i class="fas fa-check"></i> ADDED
@@ -466,6 +474,16 @@ $('.results').on('click', '.btn-add', event=>{
 	<i class="fas fa-angle-down" id='dn-${item.id}'></i>
 </div>
 */
+//hhhhh
+$('#place-list').on('click', '.list-name', event=>{
+	let idx = $(event.currentTarget).parent('div').children('button').attr('place-list-id');
+	const aPlace = listDB.find(item=>{
+		return item.id === idx;
+	});
+	
+
+	map.panTo(aPlace.mapObj);
+});
 					
 function renderItem(item){	
 	let place = `
@@ -527,7 +545,13 @@ $('#place-list').on('click', '.btn-dn', event=>{
 });
 
 function clearListDB(){
-	while(listDB.length) listDB.pop();
+	
+	listDB.forEach((item,index)=>{
+		item.marker.setMap(null);
+		item.marker = null;
+		item = null;
+	});
+
 	$('#place-list').html('');
 }
 
@@ -550,6 +574,8 @@ $('#place-list').on('click', '.btn-delete', event=>{
 	let targetID = $(event.currentTarget).attr('place-list-id');
 	for(let i=0;i<listDB.length;i++){
 		if(targetID === listDB[i].id){
+			listDB[i].marker.setMap(null);
+			listDB[i].marker = null;
 			listDB.splice(i, 1);
 		}
 	}
