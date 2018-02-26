@@ -92,8 +92,8 @@ const arr_options = [
 ];
 
 //let base_url = 'http://100.33.50.170:8080/';
-//let base_url = 'http://192.168.2.199:8080/';
-let base_url = 'http://localhost:8080/';
+let base_url = 'http://192.168.2.199:8080/';
+//let base_url = 'http://localhost:8080/';
 //let localhost_url = 'http://localhost:8080';
 
 /**
@@ -247,10 +247,33 @@ function saveSuccess(data){
 	console.log(data);
 	return;
 }
+/**
+let hours_arr = [];
+	hours_arr = [
+		{
+			id: 12323,
+			hours: [
+					string,
+					string,
+					string
+				]
+		},
+		{
+			id: 12323,
+			hours: [
+					string,
+					string,
+					string
+				]
+		}
+	];
 
+function generateHours(arr_){
+	hours_arr.forEach((item,index)=>{
 
-
-
+	});
+}
+**/
 /**
 	GOOGLE PLACE - START
 **/
@@ -282,7 +305,8 @@ function saveToResultDB(data){
 			location: {
 				lat: item.geometry.location.lat(),
 				lng: item.geometry.location.lng(),
-			}
+			},
+			hours: []
 		}
 		//put name, pic, and hours
 		let content = '<div>';
@@ -402,8 +426,16 @@ function renderPlaces(){
 	return;	
 }
 
+function renderHours(arr){
+	let string = '';
+	arr.forEach(item=>{
+		string += `<span>${item}</span>`;
+	});
+	return string;
+}
+
+
 function renderSinglePlace(item, index){	
-	
 	let result = `
 		<div class='card res col-12 col-lg-4 d-flex justify-content-start' db-index='${index}'>`;
 	if(item.photos_large!=undefined) {
@@ -416,10 +448,24 @@ function renderSinglePlace(item, index){
 	place_id: ${item.place_id},
 	location: ${item.location}
 	*/
+
+	//question: unable to access object array
+	console.log(item);	//object
+	let place_hours = '';
+	let arr_hour = item.hours;	//object.hours array
+	console.log('arr_hour:');
+	console.log(arr_hour);
+	
+	//hhhhhhhhhhhhhhhh
+	if(arr_hour.length>0){
+		place_hours = renderHours(item.hours);
+		console.log(place_hours);
+	}
+	
 	result += `	
 		<div class='card-body'>
 			<h5 class='card-title'>${item.name}</h5>
-			
+			${place_hours}
 		</div>
 		<div class='card-footer'>
 			<button class='col-12 btn btn-primary btn-add' targetID='${item.id}' result-index='${index}'>ADD</button>
@@ -671,6 +717,7 @@ $('#register-submit').on('click', event=>{
 		firstName: $('#reg-userFirstname').val(),
 		lastName: $('#reg-userLastname').val()
 	}
+	console.log(JSON.stringify(item));
 	const loginItem = {
 		username: item.username,
 		password: item.password
@@ -702,10 +749,12 @@ $('#logout-btn').on('click', ()=>{
 	$('#login-btn').show();
 	localStorage.clear();
 });
+/*
 $('#savedlist-btn').on('click', function(){
 	window.location.href = 
 		base_url+'api/users/saved_list/'+localStorage.username;
 });
+*/
 /*	redirect to user's saved dates
 $('#savedlist-btn').on('click', function(){
 	let saved_url = 'http://localhost:8080/users/saved_list/' + localStorage.username;
