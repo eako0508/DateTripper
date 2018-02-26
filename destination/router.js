@@ -8,8 +8,32 @@ const {User} = require('../users');
 
 
 router.use(bodyParser.json());
+//  GET /
+//  res: all user's saved destinations 200
 
-//  GET /find
+//  GET /user/:username
+//  res: all username's saved destinations 200
+
+//  GET /title 
+//  need: json({title})
+//  res: list of destinations 200
+
+//  PUT /
+//  need: json({title})
+//  res: updated data 200
+
+//  POST /addDate:username
+//  need: json({username, title, destinations})
+//  res: posted data 201
+
+//  DELETE /
+//  need: json({title})
+//  res: 200
+
+
+
+
+//  GET /
 router.route('/')
   .get((req,res)=>{
   	Destination.find({})
@@ -39,7 +63,19 @@ router.route('/user/:username')
   	});
   });
 
-//  GET /title/:title
+//  GET /title
+router.route('/title')
+  .get((req,res)=>{
+    Destination.find({title:req.body.title})
+      .then(result=>{
+        res.status(200).json(entries.map(entry=>entry.serialize()));
+      })
+      .catch(err=>{
+        console.error(err);
+        res.status(500).send('Server Error');
+      });
+  });
+/*
 router.route('/title/:title')
   .get((req,res)=>{
     Destination.find({title:req.params.title})
@@ -51,8 +87,37 @@ router.route('/title/:title')
         res.status(500).send('Server Error');
       });
   });
+  */
+
+
+
 
 // PUT
+router.route('/')
+  .put((req,res)=>{
+    Destination.findOneAndUpdate(
+      {$and: [{username: req.user.username}, {title: req.body.title}]},
+      {$set: {
+        destinations: req.body.destinations
+      }},
+      {new: true}
+      )
+      .then(updated=>{
+        /*
+        User.findOneAndUpdate(
+            {$and: {username: addedItem.username,savedLists.title:req.body.title}},
+            {savedLists.$.title: },
+            {new:true}
+          )
+        */
+        res.status(200).json(updated.serialize());
+      })
+      .catch(err=>{
+        console.error(err);
+        res.status(500).send('Server Error on PUT');
+      })
+  })
+/*
 router.route('/:id')
   .put((req,res)=>{
     Destination.findOneAndUpdate(
@@ -71,6 +136,7 @@ router.route('/:id')
         res.status(500).send('Server Error on PUT');
       })
   })
+  */
 
 
 
@@ -83,6 +149,8 @@ router.route('/:id')
 router.route('/:username')
   //Check if the user exists 
   .post((req,res)=>{
+    //this part is not needed since the user must login to access this page.
+    /*
     User
       .find({username:req.params.username})
       .count()
@@ -93,6 +161,12 @@ router.route('/:username')
           });
         }
       });
+      */
+    if(req.params.username != req.user.username){
+      res.status(400).json({
+        reason: `Username does not match.`
+      });
+    }
   //Check if the same title exists for the same user.
   	Destination
       .find({

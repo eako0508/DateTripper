@@ -50,10 +50,10 @@
 //let markerStorage = [];
 let marker_arr = [];
 
-let localToken; //token
+let localToken = ''; //token
 
 let isLogged = false;
-let username = '';
+let local_username = '';
 //maps, used for map and markers
 var map;
 
@@ -197,7 +197,7 @@ $('#save-form').on('submit', event=>{
 
 	event.preventDefault();
 	
-	if(!localStorage.token) {	
+	if(localToken==='') {	
 		$('#login-page').modal('show')
 		return;
 	}
@@ -209,7 +209,7 @@ $('#save-form').on('submit', event=>{
 	let item_title = $('#date-title').val();
 
 	
-	let post_url = base_url+'api/destination/' + localStorage.username;
+	let post_url = base_url+'api/destination/' + local_username;
 
 
 	listDB.forEach((item,index)=>{
@@ -655,6 +655,27 @@ $('#place-list').on('click', '.btn-delete', event=>{
 });
 
 
+/* Scheme
+<div class='card'>
+	<div class='card-body'>						
+		Saved list 1					
+	</div>
+	<div class='card-footer'>						
+		<button type='button' class='btn btn-primary'>Load</button>					
+	</div>
+</div>
+*/
+
+function requestSavedItem(id){
+	let username;
+	let toekn;
+
+}
+
+function renderSavedList(obj){
+
+}
+
 
 
 
@@ -697,11 +718,29 @@ function ajaxlogin(item){
 	});
 }
 
+function getSavedLists(title){
+
+	$.ajax({
+		url: base_url+'api/destination/title',
+		method: 'GET',
+		contentType: 'application/json',
+		dataType: 'json',
+		data: JSON.stringify(item),
+		success: loadSavedLists,
+		failure: function(errMsg){
+			console.log(errMsg);
+		},
+		beforeSend: function(xhr, settings) { 
+			xhr.setRequestHeader('Authorization','Bearer ' + localToken); 
+		}
+	});
+}
+
 function logmein(data){
 	localToken = data.authToken;
-	localStorage.setItem('token', data.authToken);
-	username = $('#user_id').val();
-	localStorage.setItem('username', username);
+	//localStorage.setItem('token', data.authToken);
+	local_username = $('#user_id').val();
+	//localStorage.setItem('username', username);
 	isLogged = true;
 	//console.log(localToken);
 	$('#login-btn').hide();
@@ -747,7 +786,7 @@ $('#logout-btn').on('click', ()=>{
 	$('#logout-btn').hide();
 	$('#savedlist-btn').hide();
 	$('#login-btn').show();
-	localStorage.clear();
+	//localStorage.clear();
 });
 /*
 $('#savedlist-btn').on('click', function(){
@@ -779,7 +818,7 @@ let init_width;
 
 //INITIALIZATION
 function firstLoad(){
-	localStorage.clear();
+	//localStorage.clear();
 	resizeWindow();
 
 	//$('body:before').css({width: `${init_width}px `});
@@ -787,12 +826,12 @@ function firstLoad(){
 	renderOptions(arr_options);
 	$('#logout-btn').hide();
 	$('#savedlist-btn').hide();
-
-	if(localStorage.token){
+	/*
+	if(localToken!=''){
 		$('#login-btn').hide();
 		$('#savedlist-btn').show();
 		$('#logout-btn').show();
-	}
+	}*/
 }
 
 function resizeWindow(){
