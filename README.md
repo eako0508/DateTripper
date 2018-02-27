@@ -15,12 +15,11 @@ res: all username's saved destinations in detail
 GET /user/:username
 res: brief user's list
 
-GET /title 
-need: json({title})
+GET /:id 
 res: list of destinations
 
 PUT /
-need: json({title})
+need: json({title, modifiying destination})
 res: updated data
 
 POST /addDate:username
@@ -34,7 +33,10 @@ need: json({title})
 ## TODO
 - add saved list pop-up 
 	- saved destinations to load
-	
+- update saved list table upon new save	
+- place-list overflow(scroll for desktop, no scroll for mobile)
+- add background image(or color) on place-list(div)
+- google maps: move zoom control higher position
 
 ## misc.
 - add location's website & phone number
@@ -43,3 +45,6 @@ need: json({title})
 - click item from results to show place on the map.
 - From cards, move card-contents to the bottom.
 
+## Thoughts
+- add saved destination to current build?
+- have 'save the date' add new item or combine with updated list?

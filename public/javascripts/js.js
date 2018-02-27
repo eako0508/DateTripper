@@ -475,16 +475,29 @@ function makeMarkerAndSaveDB(placeID, obj){
 		id: placeID
 	}
 	marker_arr.push(item_marker);	
-    listDB.push(obj);    
+    listDB.push(obj);
+    renderItem(obj);
+    showList();
 }
-
-$('.results').on('click', '.btn-add', event=>{
+function showList(){
 	if($('#map-container').hasClass('col-lg-10')){
 		$('#map-container').removeClass('col-lg-10');
 		$('#map-container').addClass('col-lg-7');
 		$('#list-container').removeClass('d-none');
 		$('.save-btn-container').removeClass('d-none');
 	}
+}
+
+$('.results').on('click', '.btn-add', event=>{
+	/*
+	if($('#map-container').hasClass('col-lg-10')){
+		$('#map-container').removeClass('col-lg-10');
+		$('#map-container').addClass('col-lg-7');
+		$('#list-container').removeClass('d-none');
+		$('.save-btn-container').removeClass('d-none');
+	}
+	*/
+	showList();
 		
 	const index = $(event.currentTarget).attr('result-index');
 	const targetID = $(event.currentTarget).attr('targetID');
@@ -497,7 +510,7 @@ $('.results').on('click', '.btn-add', event=>{
 	<i class="fas fa-check"></i> ADDED
 	</button>`
 	$(event.currentTarget).replaceWith(theButton);
-	renderItem(item);
+	//renderItem(item);
 });
 $('#clear-search').on('click', function(){
 	clearMarkers();
@@ -508,17 +521,6 @@ function clearResultDB(){
 	while(resultDB.length) resultDB.pop();
 	return;
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -597,11 +599,20 @@ $('#place-list').on('click', '.btn-dn', event=>{
 $('#date-btn-clear').on('click', event=>{
 	clearDate();
 });
-function clearDate(){
-	clearListDB();
+
+function hideList(){
 	$('#map-container').removeClass('col-lg-7');
 	$('#map-container').addClass('col-lg-10');
 	$('#list-container').addClass('d-none');
+}
+function clearDate(){
+	clearListDB();
+	/*
+	$('#map-container').removeClass('col-lg-7');
+	$('#map-container').addClass('col-lg-10');
+	$('#list-container').addClass('d-none');
+	*/
+	hideList();
 }
 function clearListDB(){	
 	let pop;
@@ -612,6 +623,8 @@ function clearListDB(){
 	}
 	$('#place-list').html('');
 }
+
+
 function renderDestination(){
 	$('#place-list').html('');	
 	for(let i=0;i<listDB.length;i++){
@@ -724,22 +737,19 @@ function ajaxlogin(item){
 }
 */
 function loadDestination(data){
+	clearDate();
 	data[0].destinations.forEach((item)=>{
 		makeMarkerAndSaveDB(item.id, item);
 	});
-	return;
+	$('#users_saved_list').modal('hide');
 }
 
-function getDetailedSavedList(loadTitle){
-	let requestItem = {
-		title: loadTitle
-	};
+function getDetailedSavedList(loadID){
 	$.ajax({
-		url: base_url+'api/destination/title',
+		url: base_url+'api/destination/'+loadID,
 		method: 'GET',
 		contentType: 'application/json',
-		dataType: 'json',
-		data: JSON.stringify(requestItem),
+		dataType: 'json',		
 		success: function(data){
 			loadDestination(data);
 		},
@@ -753,9 +763,8 @@ function getDetailedSavedList(loadTitle){
 }
 
 $('#users_saved_list_modal').on('click', '.save-load-btn', event=>{
-	let loadTitle = $(event.currentTarget).parents('.card').attr('savedLists-title');
-	console.log(loadTitle);
-	getDetailedSavedList(loadTitle);
+	let loadID = $(event.currentTarget).parents('.card').attr('savedLists-id');
+	getDetailedSavedList(loadID);
 });
 
 
@@ -767,7 +776,7 @@ $('#users_saved_list_close').on('click', ()=>{
 function renderSaved_card(item){
 	
 	let thething = `
-	<div class='card col-12 col-lg-5 no-paddings' savedLists-title=${item.title}>
+	<div class='card col-12 col-lg-5 no-paddings' savedLists-id=${item.id}>
 		<div class='card-body'>
 			${item.title}
 		</div>

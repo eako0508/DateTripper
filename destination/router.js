@@ -17,8 +17,7 @@ router.use(bodyParser.json());
 //  GET /user/:username
 //  res: brief user's list 200
 
-//  GET /title 
-//  need: json({title})
+//  GET /:id
 //  res: list of destinations 200
 
 //  PUT /
@@ -76,32 +75,24 @@ router.route('/user/:username')
       .then(users => res.json(users.map(user => user.serialize())))
       .catch(err => res.status(500).json({message: 'Internal server error'}));
   });
-
-//  GET /title
-router.route('/title')
-  .get((req,res)=>{
-    Destination.find({title:req.body.title})
-      .then(result=>{
-        res.status(200).json(entries.map(entry=>entry.serialize()));
-      })
-      .catch(err=>{
-        console.error(err);
-        res.status(500).send('Server Error');
-      });
-  });
 /*
-router.route('/title/:title')
+if(req.user.username!=result.username){
+          res.status(403).send(`${req.user.username}, ${result}, ${x}`);
+        }
+*/
+//  GET /:id
+router.route('/:id')
   .get((req,res)=>{
-    Destination.find({title:req.params.title})
+    Destination.find({_id: req.params.id})
       .then(result=>{
-        res.status(200).json(entries.map(entry=>entry.serialize()));
+        res.status(200).json(result.map(entry=>entry.serialize()));
       })
       .catch(err=>{
         console.error(err);
         res.status(500).send('Server Error');
       });
   });
-  */
+
 
 
 
