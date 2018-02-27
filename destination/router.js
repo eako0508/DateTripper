@@ -228,6 +228,43 @@ router.route('/:id')
   });
   */
 //REPLACED WITH TITLE (NEED JSON BODY WITH title:'title')
+
+
+//!!problem
+router.route('/:id')
+  .delete((req, res)=>{
+    //find title and see if username matches
+    return Destination
+      //.find({title:req.body.title})
+      .find({_id:req.params.id})
+      .then(target=>{
+        
+        if(target[0].username!=req.user.username){
+          res.status(403).send('Unauthorized');
+          next();
+        }
+        return Destination
+          .remove({_id:req.params.id})
+          .then(()=>{
+            return User.findOneAndUpdate(
+              {"savedLists.id": req.params.id},
+              {"$pull": 
+                {"savedLists":
+                  {"id": req.params.id}
+                }
+              }
+            )
+            .then(()=>{              
+              res.status(200).send('Successfully removed a date.');
+            })
+            .catch(err=>{
+              console.error(err);
+              res.status(500).send('Server Error');
+            });            
+          });
+      });
+  });
+/*
 router.route('/')
   .delete((req, res)=>{
 
@@ -259,7 +296,7 @@ router.route('/')
           });
       });
   });
-
+*/
 //db.users.findOneAndUpdate({"savedLists.title": "test1"},{"$pull": {"savedLists": {"id": ObjectId("5a8f090e017b311c96e9d906")}}});
 //  Delete All
 router.route('/')

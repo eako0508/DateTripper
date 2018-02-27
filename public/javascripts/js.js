@@ -170,6 +170,7 @@ $('.submit-go').on('submit', event=>{
 });
 
 //date-btn-save
+//save the date
 $('#save-form').on('submit', event=>{
 	event.preventDefault();
 	if(localToken==='') {	
@@ -198,24 +199,26 @@ $('#save-form').on('submit', event=>{
 		method:"POST",
 		contentType: 'application/json',
 		dataType: 'json',
-		data: JSON.stringify(item),
-		success: saveSuccess,
-		failure: function(errMsg){
-			console.log(errMsg.message);
-		},
+		data: JSON.stringify(item),		
 		beforeSend: function(xhr, settings) { 
 			xhr.setRequestHeader('Authorization','Bearer ' + localToken); 
 		}
-	});
+	})
+	.done(saveSuccess)
+	.fail(alertFail);
 });
 
-function saveSuccess(data){
-	/*
-	console.log('success!');
-	console.log(data);
-	*/
+function saveSuccess(xhr_sent, status, resFromServer){
+	const newEntry = renderSaved_card(xhr_sent);
+	console.log(newEntry);
+	$('#users_saved_list_modal').append(newEntry);
+
 	return;
 }
+
+
+
+
 /**
 let hours_arr = [];
 	hours_arr = [
@@ -474,17 +477,8 @@ function showList(){
 	}
 }
 
-$('.results').on('click', '.btn-add', event=>{
-	/*
-	if($('#map-container').hasClass('col-lg-10')){
-		$('#map-container').removeClass('col-lg-10');
-		$('#map-container').addClass('col-lg-7');
-		$('#list-container').removeClass('d-none');
-		$('.save-btn-container').removeClass('d-none');
-	}
-	*/
-	showList();
-		
+$('.results').on('click', '.btn-add', event=>{	
+	showList();		
 	const index = $(event.currentTarget).attr('result-index');
 	const targetID = $(event.currentTarget).attr('targetID');
 	const item = resultDB[index];
@@ -592,12 +586,7 @@ function hideList(){
 	$('#list-container').addClass('d-none');
 }
 function clearDate(){
-	clearListDB();
-	/*
-	$('#map-container').removeClass('col-lg-7');
-	$('#map-container').addClass('col-lg-10');
-	$('#list-container').addClass('d-none');
-	*/
+	clearListDB();	
 	hideList();
 }
 function clearListDB(){	
@@ -636,39 +625,10 @@ $('#place-list').on('click', '.btn-delete', event=>{
 });
 
 
-/* Scheme
-<div class='card'>
-	<div class='card-body'>						
-		Saved list 1					
-	</div>
-	<div class='card-footer'>						
-		<button type='button' class='btn btn-primary'>Load</button>					
-	</div>
-</div>
-*/
-
-function requestSavedItem(id){
-	let username;
-	let toekn;
-
+function alertFail(xhr, textStatus, errThrown){
+	console.log(xhr);
+	alert(`${textStatus}: ${xhr.status} ${xhr.responseText}`);
 }
-
-function renderSavedList(obj){
-
-}
-
-
-
-
-
-$(window).on('resize', function(){
-	resizeWindow();
-});
-
-
-
-
-
 
 //login
 
@@ -685,43 +645,34 @@ $('.login-submit').on('click', event=>{
 });
 
 function ajaxlogin(item){
-	
 	$.ajax({
 		url: base_url+'api/auth/login',
 		method: "POST",
 		contentType: 'application/json',
 		dataType: 'json',
-		data: JSON.stringify(item),
-		success: logmein,
-		failure: function(errMsg){
-			console.log(errMsg);
-			alert('Login Fail!');
-		}
-	});
+		data: JSON.stringify(item)		
+	})
+	.done(logmein)
+	.fail(alertFail);
 }
 
-/*
-{ 
-	id: string
-	username: string
-	title: string
-	destinations: [
-		{
-			//pretty much object.
-			name: string,
-			id: string,
-			place_id: string,
-			location:{
-				lat: double,
-				lng: double
-			},
-			photos_large: stringUrl,
-			photos_small: stringUrl,
-			hours: [ strings ]
-		}
-	]
+
+function deleteSavedListItem(loadID){
+	//ajax request to delete ID
+	$.ajax({
+		url: base_url+'api/destination/'
+	})
+	//remove item from the savedList
+	
 }
-*/
+
+//hhhhhhhhhhhhhhhhh
+$('#users_saved_list_modal').on('click', '.delete-load-btn', event=>{
+	let loadID = $(event.currentTarget).parents('.card').attr('savedLists-id');
+	//getDetailedSavedList(loadID);
+	deleteSavedListItem(loadID);
+});
+
 function loadDestination(data){
 	clearDate();
 	data[0].destinations.forEach((item)=>{
@@ -735,17 +686,13 @@ function getDetailedSavedList(loadID){
 		url: base_url+'api/destination/'+loadID,
 		method: 'GET',
 		contentType: 'application/json',
-		dataType: 'json',		
-		success: function(data){
-			loadDestination(data);
-		},
-		failure: function(errMsg){
-			console.log(errMsg);
-		},
+		dataType: 'json',
 		beforeSend: function(xhr, settings) { 
 			xhr.setRequestHeader('Authorization','Bearer ' + localToken); 
 		}
-	});
+	})
+	.done(loadDestination)
+	.fail(alertFail);
 }
 
 $('#users_saved_list_modal').on('click', '.save-load-btn', event=>{
@@ -768,7 +715,7 @@ function renderSaved_card(item){
 		</div>
 		<div class='card-footer justify-content-around'>
 			<button type='button' class='btn btn-primary save-load-btn'>Load</button>
-			<button type='button' class='btn btn-danger'>Delete</button>
+			<button type='button' class='btn btn-danger delete-load-btn'>Delete</button>
 		</div>
 	</div>`;
 	
@@ -780,7 +727,7 @@ function loadSavedLists(data){
 		data[0].savedLists.map(item=>{
 			return renderSaved_card(item);			
 		});	
-	$('#users_saved_list_modal').html(completeCards);	
+	$('#users_saved_list_modal').html(completeCards);
 }
 
 function getSavedLists(){
@@ -788,15 +735,13 @@ function getSavedLists(){
 		url: base_url+'api/destination/user/'+local_username,
 		method: 'GET',
 		contentType: 'application/json',
-		dataType: 'json',		
-		success: loadSavedLists,
-		failure: function(errMsg){
-			console.log(errMsg);
-		},
+		dataType: 'json',	
 		beforeSend: function(xhr, settings) { 
 			xhr.setRequestHeader('Authorization','Bearer ' + localToken); 
 		}
-	});
+	})
+	.done(loadSavedLists)
+	.fail(alertFail);		
 }
 
 function logmein(data){
@@ -819,7 +764,6 @@ $('#register-submit').on('click', event=>{
 		firstName: $('#reg-userFirstname').val(),
 		lastName: $('#reg-userLastname').val()
 	}
-	//console.log(JSON.stringify(item));
 	const loginItem = {
 		username: item.username,
 		password: item.password
@@ -829,14 +773,10 @@ $('#register-submit').on('click', event=>{
 		method: 'POST',
 		contentType: 'application/json',
 		dataType: 'json',
-		data: JSON.stringify(item),
-		success: function(data){
-			ajaxlogin(loginItem);
-		},
-		failure: function(errMsg){
-			console.log(errMsg);
-		}
-	});
+		data: JSON.stringify(item)
+	})
+	.done(loginItem)
+	.fail(alertFail);		
 });
 
 
@@ -861,6 +801,10 @@ function firstLoad(){
 
 	$.ajaxSetup({cache:false});
 }
+
+$(window).on('resize', function(){
+	resizeWindow();
+});
 
 function resizeWindow(){
 	let window_height = $(window).height();
