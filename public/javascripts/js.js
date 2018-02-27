@@ -465,7 +465,18 @@ $('.results').on('click', `.card > .card-body, .card > img`, event=>{
 	map.fitBounds(bounds);
 });
 
-
+function makeMarkerAndSaveDB(placeID, obj){
+	let marker = new google.maps.Marker({
+	    position: obj.mapObj,
+	    map: map
+    });    
+	let item_marker = {
+		marker: marker,
+		id: placeID
+	}
+	marker_arr.push(item_marker);	
+    listDB.push(obj);    
+}
 
 $('.results').on('click', '.btn-add', event=>{
 	if($('#map-container').hasClass('col-lg-10')){
@@ -479,22 +490,7 @@ $('.results').on('click', '.btn-add', event=>{
 	const targetID = $(event.currentTarget).attr('targetID');
 	const item = resultDB[index];
 	
-	let marker = new google.maps.Marker({
-	    position: item.mapObj,
-	    map: map
-    });
-    //get targetID!!
-	let item_marker = {
-		marker: marker,
-		id: targetID
-	}
-
-	marker_arr.push(item_marker);
-	//markerStorage.push(marker);
-    //item.marker = marker;
-
-
-    listDB.push(item);
+	makeMarkerAndSaveDB(targetID, item);
     
 	//replace add button to check icon button
 	const theButton = `<button class='col-12 btn btn-success btn-add' result-index='${index}'>
@@ -705,34 +701,33 @@ function ajaxlogin(item){
 	});
 }
 
-function loadSavedListToFront(data){
-		
-		/*
-		{ 
-			id: string
-			username: string
-			title: string
-			destinations: [
-				{
-					name: string,
-					id: string,
-					place_id: string,
-					location:{
-						lat: double,
-						lng: double
-					},
-					photos_large: stringUrl,
-					photos_small: stringUrl,
-					hours: [ strings ]
-				}
-			]
+/*
+{ 
+	id: string
+	username: string
+	title: string
+	destinations: [
+		{
+			//pretty much object.
+			name: string,
+			id: string,
+			place_id: string,
+			location:{
+				lat: double,
+				lng: double
+			},
+			photos_large: stringUrl,
+			photos_small: stringUrl,
+			hours: [ strings ]
 		}
-		*/
-
+	]
 }
-
+*/
 function loadDestination(data){
-
+	data[0].destinations.forEach((item)=>{
+		makeMarkerAndSaveDB(item.id, item);
+	});
+	return;
 }
 
 function getDetailedSavedList(loadTitle){
@@ -757,8 +752,9 @@ function getDetailedSavedList(loadTitle){
 	});
 }
 
-$('#users_saved_list_modal').on('click', 'save-load-btn', event=>{
-	let loadTitle = $(event.currentTarget).parents('card').attr('savedLists-title');
+$('#users_saved_list_modal').on('click', '.save-load-btn', event=>{
+	let loadTitle = $(event.currentTarget).parents('.card').attr('savedLists-title');
+	console.log(loadTitle);
 	getDetailedSavedList(loadTitle);
 });
 
@@ -784,23 +780,15 @@ function renderSaved_card(item){
 	return thething;
 }
 
-function loadSavedLists(data){
-	console.log(data);
-
+function loadSavedLists(data){	
 	const completeCards = 
 		data[0].savedLists.map(item=>{
-			//console.log('at building completeCards');
-			let theting = renderSaved_card(item);
-			console.log(theting);
-			return theting;
-		});
-	
-	$('#users_saved_list_modal').html(completeCards);
-	
+			return renderSaved_card(item);			
+		});	
+	$('#users_saved_list_modal').html(completeCards);	
 }
 
 function getSavedLists(){
-
 	$.ajax({
 		url: base_url+'api/destination/user/'+local_username,
 		method: 'GET',
