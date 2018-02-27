@@ -464,6 +464,9 @@ $('.results').on('click', `.card > .card-body, .card > img`, event=>{
 	bounds.extend(target_map_obj);
 	map.fitBounds(bounds);
 });
+
+
+
 $('.results').on('click', '.btn-add', event=>{
 	if($('#map-container').hasClass('col-lg-10')){
 		$('#map-container').removeClass('col-lg-10');
@@ -728,29 +731,39 @@ function loadSavedListToFront(data){
 
 }
 
+function loadDestination(data){
 
-/*
-{
-	username: string
-	savedLists: [
-		{
-			id: string,
-			username: string,
-			title: string
-		}
-	]
 }
 
-<div class='card'>
-	<div class='card-body'>
-		Saved list 1
-	</div>
-	<div class='card-footer'>
-		<button type='button' class='btn btn-primary'>Load</button>
-		<button type='button' class='btn btn-danger'>Delete</button>
-	</div>
-</div>	
-*/
+function getDetailedSavedList(loadTitle){
+	let requestItem = {
+		title: loadTitle
+	};
+	$.ajax({
+		url: base_url+'api/destination/title',
+		method: 'GET',
+		contentType: 'application/json',
+		dataType: 'json',
+		data: JSON.stringify(requestItem),
+		success: function(data){
+			loadDestination(data);
+		},
+		failure: function(errMsg){
+			console.log(errMsg);
+		},
+		beforeSend: function(xhr, settings) { 
+			xhr.setRequestHeader('Authorization','Bearer ' + localToken); 
+		}
+	});
+}
+
+$('#users_saved_list_modal').on('click', 'save-load-btn', event=>{
+	let loadTitle = $(event.currentTarget).parents('card').attr('savedLists-title');
+	getDetailedSavedList(loadTitle);
+});
+
+
+
 $('#users_saved_list_close').on('click', ()=>{
 	$('#users_saved_list').modal('hide');
 });
@@ -758,12 +771,12 @@ $('#users_saved_list_close').on('click', ()=>{
 function renderSaved_card(item){
 	
 	let thething = `
-	<div class='card' savedLists-id=${item.id}>
+	<div class='card col-12 col-lg-5 no-paddings' savedLists-title=${item.title}>
 		<div class='card-body'>
 			${item.title}
 		</div>
-		<div class='card-footer'>
-			<button type='button' class='btn btn-primary'>Load</button>
+		<div class='card-footer justify-content-around'>
+			<button type='button' class='btn btn-primary save-load-btn'>Load</button>
 			<button type='button' class='btn btn-danger'>Delete</button>
 		</div>
 	</div>`;
@@ -805,11 +818,10 @@ function getSavedLists(){
 
 function logmein(data){
 	localToken = data.authToken;
-	//localStorage.setItem('token', data.authToken);
 	local_username = $('#user_id').val();
-	//localStorage.setItem('username', username);
+	
 	isLogged = true;
-	//console.log(localToken);
+	
 	$('#login-btn').hide();
 	$('#savedlist-btn').show();
 	$('#logout-btn').show();
@@ -853,66 +865,27 @@ $('#logout-btn').on('click', ()=>{
 	localToken = '';
 	$('#logout-btn').hide();
 	$('#savedlist-btn').hide();
-	$('#login-btn').show();
-	//localStorage.clear();
+	$('#login-btn').show();	
 });
-/*
-$('#savedlist-btn').on('click', function(){
-	window.location.href = 
-		base_url+'api/users/saved_list/'+localStorage.username;
-});
-*/
-/*	redirect to user's saved dates
-$('#savedlist-btn').on('click', function(){
-	let saved_url = 'http://localhost:8080/users/saved_list/' + localStorage.username;
-	$.ajax({
-		url: saved_url,
-		method: 'POST',
-		contentType: 'application/json',
-		dataType: 'json',
-		data: JSON.stringify(item),
-		success: function(data){
-			console.log(data);
-			//work on redirecting
-		},
-		failure: function(errMsg){
-			console.error(errMsg);
-		}
-	});
-});
-*/
-let init_height;
-let init_width;
+
 
 //INITIALIZATION
 function firstLoad(){
-	//localStorage.clear();
 	resizeWindow();
 
-	//$('body:before').css({width: `${init_width}px `});
-	//console.log($('body').css("background-size"));
 	renderOptions(arr_options);
 	$('#logout-btn').hide();
 	$('#savedlist-btn').hide();
-	/*
-	if(localToken!=''){
-		$('#login-btn').hide();
-		$('#savedlist-btn').show();
-		$('#logout-btn').show();
-	}*/
 }
 
 function resizeWindow(){
 	let window_height = $(window).height();
 	let window_width = $(window).width();
-	init_width = window_width;
-	init_height = window_height;
 
 	$('#map').height(window_height*.6);
 	if(window_width>=991){
 		$('#place-list').height(window_height*.6);
 	}
-
 }
 
 $(firstLoad);
