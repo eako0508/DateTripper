@@ -75,8 +75,8 @@ const arr_options = [
 ];
 
 //let base_url = 'http://100.33.50.170:8080/';
-//let base_url = 'http://192.168.2.199:8080/';
-let base_url = 'http://localhost:8080/';
+let base_url = 'http://192.168.2.199:8080/';
+//let base_url = 'http://localhost:8080/';
 //let localhost_url = 'http://localhost:8080';
 
 /**
@@ -88,9 +88,9 @@ let autocomplete;
 
 $('.autocomplete-form').on('submit', event=>{
 	event.preventDefault();
-	console.log(event);
+	
 	let auto_string = autocomplete.getPlace();
-	console.log(auto_string);
+	
 	//keep getting undefined on first submit
 	//ASK: async callback
 	const place_lat = auto_string.geometry.location.lat();
@@ -169,17 +169,9 @@ $('.submit-go').on('submit', event=>{
 
 });
 
-
-/**
-let localToken; //token
-let isLogged = false;
-let username = '';
-**/
-
+//date-btn-save
 $('#save-form').on('submit', event=>{
-
 	event.preventDefault();
-	
 	if(localToken==='') {	
 		$('#login-page').modal('show')
 		return;
@@ -188,13 +180,8 @@ $('#save-form').on('submit', event=>{
 		alert('Need at least 2 places!');
 		return;
 	}
-	
 	let item_title = $('#date-title').val();
-
-	
 	let post_url = base_url+'api/destination/' + local_username;
-
-
 	listDB.forEach((item,index)=>{
 		if(item.marker!=null){
 			item.marker.setMap(null);
@@ -202,13 +189,10 @@ $('#save-form').on('submit', event=>{
 			item = null;	
 		}		
 	});
-
 	const item = {
 		"title": item_title,
 		"destinations": listDB
-	}
-
-	console.log(item);
+	}	
 	$.ajax({
 		url: post_url,
 		method:"POST",
@@ -226,8 +210,10 @@ $('#save-form').on('submit', event=>{
 });
 
 function saveSuccess(data){
+	/*
 	console.log('success!');
 	console.log(data);
+	*/
 	return;
 }
 /**
@@ -699,7 +685,7 @@ $('.login-submit').on('click', event=>{
 });
 
 function ajaxlogin(item){
-
+	
 	$.ajax({
 		url: base_url+'api/auth/login',
 		method: "POST",
@@ -833,7 +819,7 @@ $('#register-submit').on('click', event=>{
 		firstName: $('#reg-userFirstname').val(),
 		lastName: $('#reg-userLastname').val()
 	}
-	console.log(JSON.stringify(item));
+	//console.log(JSON.stringify(item));
 	const loginItem = {
 		username: item.username,
 		password: item.password
@@ -868,11 +854,12 @@ $('#logout-btn').on('click', ()=>{
 
 //INITIALIZATION
 function firstLoad(){
-	resizeWindow();
-
+	resizeWindow();	
 	renderOptions(arr_options);
 	$('#logout-btn').hide();
 	$('#savedlist-btn').hide();
+
+	$.ajaxSetup({cache:false});
 }
 
 function resizeWindow(){
