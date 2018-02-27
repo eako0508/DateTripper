@@ -21,7 +21,8 @@
 	overflow-y: scroll;
 
 }
-.results {
+
+.flex-row-wrap{
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;

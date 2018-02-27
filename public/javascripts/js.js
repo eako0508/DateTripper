@@ -420,7 +420,7 @@ function renderHours(arr){
 
 function renderSinglePlace(item, index){	
 	let result = `
-		<div class='card res col-12 col-lg-4 d-flex justify-content-start' db-index='${index}'>`;
+		<div class='card res col-12 col-lg-4 justify-content-start' db-index='${index}'>`;
 	if(item.photos_large!=undefined) {
 		result+= `
 		<img class='card-img-top img-thumbnail img-responsive mh-25 d-flex align-self-center' src='${item.photos_large}' alt='card img'>
@@ -754,14 +754,9 @@ function loadSavedListToFront(data){
 $('#users_saved_list_close').on('click', ()=>{
 	$('#users_saved_list').modal('hide');
 });
-/*
-$('#savedlist-btn').on('click', ()=>{
-	getSavedLists();
-});
-*/
+
 function renderSaved_card(item){
-	//console.log('at renderSaved_card');
-	//console.log(item);
+	
 	let thething = `
 	<div class='card' savedLists-id=${item.id}>
 		<div class='card-body'>
@@ -772,10 +767,10 @@ function renderSaved_card(item){
 			<button type='button' class='btn btn-danger'>Delete</button>
 		</div>
 	</div>`;
-	//console.log(thething);
+	
 	return thething;
 }
-let wtf;
+
 function loadSavedLists(data){
 	console.log(data);
 
@@ -786,17 +781,9 @@ function loadSavedLists(data){
 			console.log(theting);
 			return theting;
 		});
-	//console.log(completeCards);
-		/*
-	const completeCards = 
-		Object.keys(data).savedLists.forEach(item=>{
-			return renderSaved_card(item);
-		});
-		*/
-		wtf = completeCards;
+	
 	$('#users_saved_list_modal').html(completeCards);
-	//$('#results').html(completeCards);
-	$('#results').html('haha');
+	
 }
 
 function getSavedLists(){
