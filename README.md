@@ -33,7 +33,7 @@ need: json({title})
 ## TODO
 - add saved list pop-up 
 	- saved destinations to load
-- update saved list table upon new save	
+- update saved list table upon new save	/ delete
 - place-list overflow(scroll for desktop, no scroll for mobile)
 - add background image(or color) on place-list(div)
 - google maps: move zoom control higher position
@@ -48,3 +48,9 @@ need: json({title})
 ## Thoughts
 - add saved destination to current build?
 - have 'save the date' add new item or combine with updated list?
+
+
+## issues
+- background for mobile app is chainging when more items are generated below
+- unable to login with mobile(iphone)
+- not getting error message on invalid username/password
