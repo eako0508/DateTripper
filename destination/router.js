@@ -9,10 +9,13 @@ const {User} = require('../users');
 
 router.use(bodyParser.json());
 //  GET /
-//  res: all user's saved destinations 200
+//  res: all user's saved destinations in detail 200
+
+//  GET /all/:username
+//  res: all username's saved destinations in detail 200
 
 //  GET /user/:username
-//  res: all username's saved destinations 200
+//  res: brief user's list 200
 
 //  GET /title 
 //  need: json({title})
@@ -46,8 +49,8 @@ router.route('/')
   });
 
 
-//  GET /user/:username
-router.route('/user/:username')
+//  GET /all/:username
+router.route('/all/:username')
   .get((req,res)=>{
     if(req.user.username!=req.params.username){
       res.status(403).send('Unauthorized');
@@ -61,6 +64,17 @@ router.route('/user/:username')
   		console.error(err);
   		res.status(500).send('Server error');
   	});
+  });
+
+//  GET /user/:username
+router.route('/user/:username')
+  .get((req,res)=>{
+    if(req.user.username!=req.params.username){
+      res.status(403).send('Unauthorized to view other user\'s list.');
+    }
+    return User.find({username: req.params.username})
+      .then(users => res.json(users.map(user => user.serialize())))
+      .catch(err => res.status(500).json({message: 'Internal server error'}));
   });
 
 //  GET /title

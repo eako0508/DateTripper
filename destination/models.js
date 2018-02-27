@@ -19,7 +19,6 @@ destinationSchema.methods.serialize = function() {
   };
 };
 
-
 const Destination = mongoose.model('destination', destinationSchema);
 
 module.exports = {Destination};

@@ -22,7 +22,11 @@ router.post('/login', localAuth, (req, res) => {
   const authToken = createAuthToken(req.user.serialize());
   res.json({authToken});
 });
-
+/*
+.catch(err=>{
+	res.status(401).send('Login failed');
+});
+*/
 const jwtAuth = passport.authenticate('jwt', {session: false});
 
 // The user exchanges a valid JWT for a new one with a later expiration

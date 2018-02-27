@@ -1,21 +1,4 @@
 
-
-
-	/**
-							TODO 
-			(important)
-
-
-			(misc.)
-		- add location's website & phone number
-		- display opening hours.
-		- click item from results and display detailed info in lightbox.
-		- click item from results to show place on the map.
-		- From cards, move card-contents to the bottom.
-		
-	**/
-
-
 		/** 
 			PROCESS: RENDERING SEARCH RESULTS
 			global: 
@@ -92,8 +75,8 @@ const arr_options = [
 ];
 
 //let base_url = 'http://100.33.50.170:8080/';
-let base_url = 'http://192.168.2.199:8080/';
-//let base_url = 'http://localhost:8080/';
+//let base_url = 'http://192.168.2.199:8080/';
+let base_url = 'http://localhost:8080/';
 //let localhost_url = 'http://localhost:8080';
 
 /**
@@ -714,18 +697,115 @@ function ajaxlogin(item){
 		success: logmein,
 		failure: function(errMsg){
 			console.log(errMsg);
+			alert('Login Fail!');
 		}
 	});
 }
 
-function getSavedLists(title){
+function loadSavedListToFront(data){
+		
+		/*
+		{ 
+			id: string
+			username: string
+			title: string
+			destinations: [
+				{
+					name: string,
+					id: string,
+					place_id: string,
+					location:{
+						lat: double,
+						lng: double
+					},
+					photos_large: stringUrl,
+					photos_small: stringUrl,
+					hours: [ strings ]
+				}
+			]
+		}
+		*/
+
+}
+
+
+/*
+{
+	username: string
+	savedLists: [
+		{
+			id: string,
+			username: string,
+			title: string
+		}
+	]
+}
+
+<div class='card'>
+	<div class='card-body'>
+		Saved list 1
+	</div>
+	<div class='card-footer'>
+		<button type='button' class='btn btn-primary'>Load</button>
+		<button type='button' class='btn btn-danger'>Delete</button>
+	</div>
+</div>	
+*/
+$('#users_saved_list_close').on('click', ()=>{
+	$('#users_saved_list').modal('hide');
+});
+/*
+$('#savedlist-btn').on('click', ()=>{
+	getSavedLists();
+});
+*/
+function renderSaved_card(item){
+	//console.log('at renderSaved_card');
+	//console.log(item);
+	let thething = `
+	<div class='card' savedLists-id=${item.id}>
+		<div class='card-body'>
+			${item.title}
+		</div>
+		<div class='card-footer'>
+			<button type='button' class='btn btn-primary'>Load</button>
+			<button type='button' class='btn btn-danger'>Delete</button>
+		</div>
+	</div>`;
+	//console.log(thething);
+	return thething;
+}
+let wtf;
+function loadSavedLists(data){
+	console.log(data);
+
+	const completeCards = 
+		data[0].savedLists.map(item=>{
+			//console.log('at building completeCards');
+			let theting = renderSaved_card(item);
+			console.log(theting);
+			return theting;
+		});
+	//console.log(completeCards);
+		/*
+	const completeCards = 
+		Object.keys(data).savedLists.forEach(item=>{
+			return renderSaved_card(item);
+		});
+		*/
+		wtf = completeCards;
+	$('#users_saved_list_modal').html(completeCards);
+	//$('#results').html(completeCards);
+	$('#results').html('haha');
+}
+
+function getSavedLists(){
 
 	$.ajax({
-		url: base_url+'api/destination/title',
+		url: base_url+'api/destination/user/'+local_username,
 		method: 'GET',
 		contentType: 'application/json',
-		dataType: 'json',
-		data: JSON.stringify(item),
+		dataType: 'json',		
 		success: loadSavedLists,
 		failure: function(errMsg){
 			console.log(errMsg);
@@ -746,6 +826,7 @@ function logmein(data){
 	$('#login-btn').hide();
 	$('#savedlist-btn').show();
 	$('#logout-btn').show();
+	getSavedLists();
 }
 
 $('#register-submit').on('click', event=>{
