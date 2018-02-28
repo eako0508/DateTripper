@@ -31,12 +31,11 @@ need: json({title})
 
 
 ## TODO
-- add saved list pop-up 
-	- saved destinations to load
-- update saved list table upon new save	/ delete
 - place-list overflow(scroll for desktop, no scroll for mobile)
 - add background image(or color) on place-list(div)
 - google maps: move zoom control higher position
+- custom keyword search should limit near the current center of the map
+- add save success message display
 
 ## misc.
 - add location's website & phone number
@@ -52,5 +51,3 @@ need: json({title})
 
 ## issues
 - background for mobile app is chainging when more items are generated below
-- unable to login with mobile(iphone)
-- not getting error message on invalid username/password

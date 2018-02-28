@@ -27,9 +27,34 @@
 	flex-direction: row;
 	flex-wrap: wrap;
 }
+#place-list{
+	overflow: scroll;
+	overflow-x: hidden;	
+}
+
+#place-list::-webkit-scrollbar {	
+	width: 5px;	
+}
+#place-list::-webkit-scrollbar-thumb {
+	//background-color: sandybrown;
+	background-color: darkgray;
+}
+
 .list-btn {
 	text-align: right;
 }
+.list {
+	margin-top: 1px;
+	margin-bottom: 1px;
+}
+/*
+.list-container > .row,
+#place-list,
+.list,
+.list > .row {
+	border-radius: .25rem;
+}
+*/
 .img-thumbnail{
 	max-width: 350px;
 }
@@ -60,6 +85,7 @@ body {
 	background-image: url('http://wallscollection.net/wp-content/uploads/2017/01/Cute-Couple-Wallpaper-In-High-Definition-.jpg');
 	background-repeat: no-repeat;
 	background-attachment: fixed;
+	//background-attachment: scroll;	
 	background-position: center;
 	background-size: cover;
 }

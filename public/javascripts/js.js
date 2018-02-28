@@ -1,32 +1,4 @@
 
-		/** 
-			PROCESS: RENDERING SEARCH RESULTS
-			global: 
-				resultDB[]
-				listDB[]
-				markers[]
-
-		$('search-nearby').click->callback
-		$('custom_query_submit').click->callback
-
-		callback(saveToResults)
-		-> renderPlaces
-		-> renderSinglePlace
-		-> $('.results').html
-
-		**/
-
-
-		/**
-			PROCESS: RENDERING ADDED LIST ON DESTINATIONS
-			global: listDB[]
-		
-
-		$('.results').click 
-		-> renderItem(render)
-
-		**/
-
 /**
 		G L O B A L   V A R I A B L E S
 **/
@@ -34,9 +6,10 @@
 let marker_arr = [];
 
 let localToken = ''; //token
-
-let isLogged = false;
 let local_username = '';
+
+//let isLogged = false;
+
 //maps, used for map and markers
 var map;
 
@@ -77,7 +50,9 @@ const arr_options = [
 //let base_url = 'http://100.33.50.170:8080/';
 //let base_url = 'http://192.168.2.199:8080/';
 let base_url = 'http://localhost:8080/';
+//let base_url = 'http://192.168.1.100:8080';
 //let localhost_url = 'http://localhost:8080';
+
 
 /**
 	GOOGLE MAP
@@ -101,7 +76,7 @@ $('.autocomplete-form').on('submit', event=>{
 
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
-		center: {lat:40.727141, lng: -73.907959},
+		center: {lat:40.74414900000001, lng: -73.91254900000001},
 		zoom: 12
 	});
 
@@ -125,10 +100,17 @@ function clearMarkers(){
 	return;
 }
 
+$('#no-result-close').on('click', ()=>{
+	$('#no-result').modal('hide');
+});
 function callback(results, status) {
-	//let marker;
-	clearMarkers();
+	
+	if (status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+		$('#no-result').modal('show');
+		return;
+	}
 	if (status == google.maps.places.PlacesServiceStatus.OK) {
+		clearMarkers();
 	    saveToResultDB(results);
 	    renderPlaces();
 
@@ -409,7 +391,7 @@ function renderHours(arr){
 
 function renderSinglePlace(item, index){	
 	let result = `
-		<div class='card res col-12 col-lg-4 justify-content-start' db-index='${index}'>`;
+		<div class='card res col-12 col-lg-4 justify-content-start no-paddings' db-index='${index}'>`;
 	if(item.photos_large!=undefined) {
 		result+= `
 		<img class='card-img-top img-thumbnail img-responsive mh-25 d-flex align-self-center' src='${item.photos_large}' alt='card img'>
@@ -449,9 +431,14 @@ $('.results').on('click', `.card > .card-body, .card > img`, event=>{
 	let idx = $(event.currentTarget).parents('.card').attr('db-index');
 	let target_map_obj = resultDB[idx].mapObj;
 	map.panTo(target_map_obj);
+	/* this feature zooms in too much...
+		Nearby button already bounds nearby area before anyway.
+
 	const bounds = new google.maps.LatLngBounds();
 	bounds.extend(target_map_obj);
 	map.fitBounds(bounds);
+	*/
+	$('html, body').animate({ scrollTop: 0});
 });
 
 function makeMarkerAndSaveDB(placeID, obj){
@@ -486,7 +473,7 @@ $('.results').on('click', '.btn-add', event=>{
 	makeMarkerAndSaveDB(targetID, item);
     
 	//replace add button to check icon button
-	const theButton = `<button class='col-12 btn btn-success btn-add' result-index='${index}'>
+	const theButton = `<button class='col-12 btn btn-success btn-add' result-index='${index}' disabled>
 	<i class="fas fa-check"></i> ADDED
 	</button>`
 	$(event.currentTarget).replaceWith(theButton);
@@ -517,11 +504,37 @@ $('#place-list').on('click', '.list-name', event=>{
 
 	map.panTo(aPlace.mapObj);
 });
+/*
 function renderItem(item){	
 	let place = `
 	<div class='list' id='rank-${rank}'>
 		<div class='row no-gutters align-items-center justify-content-between bg-light'>
 			<div class='btn-group-vertical' id="updown">				
+				<button type='button' class='btn btn-outline-primary align-self-center btn-up' id='up-${item.id}'>
+					<i class="fas fa-angle-up"></i>
+				</button>
+				<button type='button' class='btn btn-outline-primary align-self-center btn-dn' id='dn-${item.id}'>
+					<i class="fas fa-angle-down" id='up-${item.id}'></i>
+				</button>
+			</div>
+			<div class='list-name col-8 tex-truncate'>
+				${item.name}
+					
+				
+			</div>
+			<button type='button' class='btn btn-danger btn-delete' place-list-id='${item.id}'>
+				<i class="fas fa-times"></i>
+			</button>
+		</div>
+	</div>`;
+	$('#place-list').append(place);
+}
+*/
+function renderItem(item){	
+	let place = `
+	<div class='list' id='rank-${rank}'>
+		<div class='row no-gutters align-items-center justify-content-between bg-light'>
+			<div class='btn-group-vertical bg-light' id="updown">				
 				<button type='button' class='btn btn-outline-primary align-self-center btn-up' id='up-${item.id}'>
 					<i class="fas fa-angle-up"></i>
 				</button>
@@ -823,8 +836,10 @@ function resizeWindow(){
 	let window_width = $(window).width();
 
 	$('#map').height(window_height*.6);
+	
 	if(window_width>=991){
-		$('#place-list').height(window_height*.6);
+		//$('#place-list').height(window_height*.6);
+		$('#place-list').css("maxHeight", (window_height * .6)+"px");
 	}
 }
 
