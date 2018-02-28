@@ -511,32 +511,7 @@ $('#place-list').on('click', '.list-name', event=>{
 
 	map.panTo(aPlace.mapObj);
 });
-/*
-function renderItem(item){	
-	let place = `
-	<div class='list' id='rank-${rank}'>
-		<div class='row no-gutters align-items-center justify-content-between bg-light'>
-			<div class='btn-group-vertical' id="updown">				
-				<button type='button' class='btn btn-outline-primary align-self-center btn-up' id='up-${item.id}'>
-					<i class="fas fa-angle-up"></i>
-				</button>
-				<button type='button' class='btn btn-outline-primary align-self-center btn-dn' id='dn-${item.id}'>
-					<i class="fas fa-angle-down" id='up-${item.id}'></i>
-				</button>
-			</div>
-			<div class='list-name col-8 tex-truncate'>
-				${item.name}
-					
-				
-			</div>
-			<button type='button' class='btn btn-danger btn-delete' place-list-id='${item.id}'>
-				<i class="fas fa-times"></i>
-			</button>
-		</div>
-	</div>`;
-	$('#place-list').append(place);
-}
-*/
+
 function renderItem(item){	
 	let place = `
 	<div class='list' id='rank-${rank}'>
@@ -743,9 +718,7 @@ function renderSaved_card(item){
 	
 	let thething = `
 	<div class='card col-12 col-lg-5 no-paddings' savedLists-id=${item.id}>
-		<div class='card-body'>
-			${item.title}
-		</div>
+		<div class='card-body'>${item.title}</div>
 		<div class='card-footer justify-content-around'>
 			<button type='button' class='btn btn-primary save-load-btn'>Load</button>
 			<button type='button' class='btn btn-danger delete-load-btn'>Delete</button>
@@ -763,7 +736,7 @@ function loadSavedLists(data){
 	$('#users_saved_list_modal').html(completeCards);
 }
 
-function getSavedLists(){
+function getSavedLists(){	
 	$.ajax({
 		url: base_url+'api/destination/user/'+local_username,
 		method: 'GET',
@@ -777,10 +750,10 @@ function getSavedLists(){
 	.fail(alertFail);		
 }
 
-function logmein(data){
+function logmein(data){	
 	localToken = data.authToken;
-	console.log('data for login: ');
-	console.log(data);
+	//console.log('data for login: ');
+	//console.log(data);
 	local_username = $('#user_id').val();
 	
 	isLogged = true;
@@ -792,13 +765,13 @@ function logmein(data){
 }
 
 $('#register-submit').on('click', event=>{
-	event.preventDefault();
+	event.preventDefault();	
 	const item = {
 		username: $('#reg-userid').val(),
 		password: $('#reg-userpw').val(),
 		firstName: $('#reg-userFirstname').val(),
 		lastName: $('#reg-userLastname').val()
-	}
+	}	
 	const loginItem = {
 		username: item.username,
 		password: item.password
@@ -810,7 +783,11 @@ $('#register-submit').on('click', event=>{
 		dataType: 'json',
 		data: JSON.stringify(item)
 	})
-	.done(logmein)
+	//.done(logmein)
+	.done((res_)=>{
+		alertMessage(`A user ${item.username} is successfully created.`);
+		ajaxlogin(loginItem);
+	})
 	.fail(alertFail);		
 });
 
@@ -849,17 +826,9 @@ function resizeWindow(){
 
 	$('#map').height(resized_height);
 	
-	if(window_width>=991){
-		//$('#place-list').height(window_height*.6);
+	if(window_width>=991){		
 		$('#place-list').css("maxHeight", resized_height+"px");
-	}
-	/*
-	if($('#place-list').height()>=resized_height){
-		$('#place-list').addClass('overflow-hidden');
-	} else{
-		$('#place-list').removeClass('overflow-hidden');
-	}
-	*/
+	}	
 }
 
 $(firstLoad);
