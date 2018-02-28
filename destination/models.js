@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-let destinationSchema = new mongoose.Schema({
+const destinationSchema = mongoose.Schema({
 	username: {type: String, required: true},
 	title: {type: String, required: true},
 	destinations: {type: Array, default: []}

@@ -75,8 +75,8 @@ const arr_options = [
 ];
 
 //let base_url = 'http://100.33.50.170:8080/';
-let base_url = 'http://192.168.2.199:8080/';
-//let base_url = 'http://localhost:8080/';
+//let base_url = 'http://192.168.2.199:8080/';
+let base_url = 'http://localhost:8080/';
 //let localhost_url = 'http://localhost:8080';
 
 /**
@@ -656,20 +656,32 @@ function ajaxlogin(item){
 	.fail(alertFail);
 }
 
+function removeSavedList(res){
+	//remove item from the savedList
+	let targetID = res.id;
+	$('#users_saved_list_modal')
+		.find(`[savedlists-id='${targetID}']`).remove();
+}
 
 function deleteSavedListItem(loadID){
-	//ajax request to delete ID
+	
 	$.ajax({
-		url: base_url+'api/destination/'
+		url: base_url+'api/destination/'+loadID,
+		method: 'DELETE',
+		contentType: 'application/json',
+		dataType: 'json',
+		beforeSend: function(xhr, settings) { 
+			xhr.setRequestHeader('Authorization','Bearer ' + localToken); 
+		}
 	})
-	//remove item from the savedList
+	.done(removeSavedList)
+	.fail(alertFail);
+
 	
 }
 
-//hhhhhhhhhhhhhhhhh
 $('#users_saved_list_modal').on('click', '.delete-load-btn', event=>{
 	let loadID = $(event.currentTarget).parents('.card').attr('savedLists-id');
-	//getDetailedSavedList(loadID);
 	deleteSavedListItem(loadID);
 });
 

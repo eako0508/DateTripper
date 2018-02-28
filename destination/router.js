@@ -5,7 +5,7 @@ const config = require('../config');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const {User} = require('../users');
-
+var ObjectId = require('mongoose').Types.ObjectId;
 
 router.use(bodyParser.json());
 //  GET /
@@ -153,20 +153,7 @@ router.route('/:id')
 
 router.route('/:username')
   //Check if the user exists 
-  .post((req,res)=>{
-    //this part is not needed since the user must login to access this page.
-    /*
-    User
-      .find({username:req.params.username})
-      .count()
-      .then(result=>{
-        if(result<1){
-          res.status(400).json({
-            reason: `A user,${req.params.username}, does not exists.`
-          });
-        }
-      });
-      */
+  .post((req,res)=>{    
     if(req.params.username != req.user.username){
       res.status(400).json({
         reason: `Username does not match.`
@@ -213,32 +200,12 @@ router.route('/:username')
   
 
 //  DELETE /:id
-//  Strategy
-// pre-requisite: remove from user's savedLists
-/*
-router.route('/:id')
-  .delete((req, res)=>{
-    Destination
-      .remove({id:req.params.title})
-      .then(res.status(201).send('Successfully removed a date.'))
-      .catch(err=>{
-        console.error(err);
-        res.status(201).send('Server Error');
-      });
-  });
-  */
-//REPLACED WITH TITLE (NEED JSON BODY WITH title:'title')
-
-
-//!!problem
 router.route('/:id')
   .delete((req, res)=>{
     //find title and see if username matches
     return Destination
-      //.find({title:req.body.title})
       .find({_id:req.params.id})
-      .then(target=>{
-        
+      .then(target=>{        
         if(target[0].username!=req.user.username){
           res.status(403).send('Unauthorized');
           next();
@@ -247,15 +214,15 @@ router.route('/:id')
           .remove({_id:req.params.id})
           .then(()=>{
             return User.findOneAndUpdate(
-              {"savedLists.id": req.params.id},
+              {"savedLists.id": new ObjectId(req.params.id)},
               {"$pull": 
                 {"savedLists":
-                  {"id": req.params.id}
+                  {"id": new ObjectId(req.params.id)}
                 }
               }
             )
             .then(()=>{              
-              res.status(200).send('Successfully removed a date.');
+              res.status(200).json({id: req.params.id});
             })
             .catch(err=>{
               console.error(err);
@@ -264,39 +231,7 @@ router.route('/:id')
           });
       });
   });
-/*
-router.route('/')
-  .delete((req, res)=>{
 
-    //find title and see if username matches
-    Destination
-      .find({title:req.body.title})
-      .then(target=>{
-        if(target[0].username!=req.user.username){
-          res.status(403).send('Unauthorized');
-          next();
-        }
-        return Destination
-          .remove({title:req.body.title})
-          .then(()=>{
-            User.findOneAndUpdate(
-              {"savedLists.title": req.body.title},
-              {"$pull": 
-                {"savedLists":
-                  {"title": req.body.title}
-                }
-              }
-            )
-            .catch(err=>{
-              console.error(err);
-              res.status(500).send('Server Error');
-            });
-
-            res.status(200).send('Successfully removed a date.');
-          });
-      });
-  });
-*/
 //db.users.findOneAndUpdate({"savedLists.title": "test1"},{"$pull": {"savedLists": {"id": ObjectId("5a8f090e017b311c96e9d906")}}});
 //  Delete All
 router.route('/')
