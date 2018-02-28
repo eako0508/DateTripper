@@ -720,8 +720,8 @@ function renderSaved_card(item){
 	<div class='card col-12 col-lg-5 no-paddings' savedLists-id=${item.id}>
 		<div class='card-body'>${item.title}</div>
 		<div class='card-footer justify-content-around'>
-			<button type='button' class='btn btn-primary save-load-btn'>Load</button>
-			<button type='button' class='btn btn-danger delete-load-btn'>Delete</button>
+			<button type='button' class='btn btn-primary save-load-btn'><i class="fas fa-folder-open"></i> LOAD</button>
+			<button type='button' class='btn btn-danger delete-load-btn'><i class="fas fa-trash"></i></button>
 		</div>
 	</div>`;
 	
@@ -751,9 +751,7 @@ function getSavedLists(){
 }
 
 function logmein(data){	
-	localToken = data.authToken;
-	//console.log('data for login: ');
-	//console.log(data);
+	localToken = data.authToken;	
 	local_username = $('#user_id').val();
 	
 	isLogged = true;
@@ -783,12 +781,11 @@ $('#register-submit').on('click', event=>{
 		dataType: 'json',
 		data: JSON.stringify(item)
 	})
-	//.done(logmein)
 	.done((res_)=>{
 		alertMessage(`A user ${item.username} is successfully created.`);
 		ajaxlogin(loginItem);
 	})
-	.fail(alertFail);		
+	.fail(alertFail);
 });
 
 
