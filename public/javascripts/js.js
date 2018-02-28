@@ -77,7 +77,13 @@ $('.autocomplete-form').on('submit', event=>{
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
 		center: {lat:40.74414900000001, lng: -73.91254900000001},
-		zoom: 12
+		zoom: 12, 	
+		streetViewControlOptions: {
+			position: google.maps.ControlPosition.RIGHT_CENTER
+		},
+		zoomControlOptions: {
+			position: google.maps.ControlPosition.RIGHT_CENTER
+		}
 	});
 
 	map.set('styles', mapStyles.blue_essense);
@@ -429,7 +435,7 @@ function renderSinglePlace(item, index){
 			${place_hours}
 		</div>
 		<div class='card-footer'>
-			<button class='col-12 btn btn-primary btn-add' targetID='${item.id}' result-index='${index}'>ADD</button>
+			<button class='col-12 btn btn-primary btn-add' targetID='${item.id}' result-index='${index}'><i class="fas fa-plus-square"></i> ADD</button>
 		</div>
 	</div>`;
 	return result;
@@ -721,7 +727,7 @@ function renderSaved_card(item){
 		<div class='card-body'>${item.title}</div>
 		<div class='card-footer justify-content-around'>
 			<button type='button' class='btn btn-primary save-load-btn'><i class="fas fa-folder-open"></i> LOAD</button>
-			<button type='button' class='btn btn-danger delete-load-btn'><i class="fas fa-trash"></i></button>
+			<button type='button' class='btn btn-danger delete-load-btn'><i class="fas fa-trash-alt"></i></button>
 		</div>
 	</div>`;
 	

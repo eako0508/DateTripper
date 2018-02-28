@@ -31,11 +31,7 @@ need: json({title})
 
 
 ## TODO
-- place-list overflow(scroll for desktop, no scroll for mobile)
-- add background image(or color) on place-list(div)
-- google maps: move zoom control higher position
 - custom keyword search should limit near the current center of the map
-- add save success message display
 
 ## misc.
 - add location's website & phone number
@@ -46,7 +42,7 @@ need: json({title})
 
 ## Thoughts
 - add saved destination to current build?
-- have 'save the date' add new item or combine with updated list?
+- have 'save the date' add new item or updated list?
 
 
 ## issues
