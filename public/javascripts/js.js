@@ -100,13 +100,20 @@ function clearMarkers(){
 	return;
 }
 
-$('#no-result-close').on('click', ()=>{
-	$('#no-result').modal('hide');
+$('#announcement-close').on('click', ()=>{
+	$('#announcement').modal('hide');
 });
+
+function alertMessage(msg){
+	$('#announcement').find('.modal-body').html(msg);
+	$('#announcement').modal('show');
+}
+
+////announcement
 function callback(results, status) {
 	
 	if (status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-		$('#no-result').modal('show');
+		alertMessage('no results');
 		return;
 	}
 	if (status == google.maps.places.PlacesServiceStatus.OK) {
@@ -192,9 +199,9 @@ $('#save-form').on('submit', event=>{
 
 function saveSuccess(xhr_sent, status, resFromServer){
 	const newEntry = renderSaved_card(xhr_sent);
-	console.log(newEntry);
+	alertMessage('save success');
 	$('#users_saved_list_modal').append(newEntry);
-
+	//Save success!
 	return;
 }
 
@@ -674,6 +681,7 @@ function removeSavedList(res){
 	let targetID = res.id;
 	$('#users_saved_list_modal')
 		.find(`[savedlists-id='${targetID}']`).remove();
+	alertMessage(`Successfully removed ${res.title}.`);
 }
 
 function deleteSavedListItem(loadID){
@@ -771,6 +779,8 @@ function getSavedLists(){
 
 function logmein(data){
 	localToken = data.authToken;
+	console.log('data for login: ');
+	console.log(data);
 	local_username = $('#user_id').val();
 	
 	isLogged = true;
@@ -800,7 +810,7 @@ $('#register-submit').on('click', event=>{
 		dataType: 'json',
 		data: JSON.stringify(item)
 	})
-	.done(loginItem)
+	.done(logmein)
 	.fail(alertFail);		
 });
 
@@ -835,12 +845,21 @@ function resizeWindow(){
 	let window_height = $(window).height();
 	let window_width = $(window).width();
 
-	$('#map').height(window_height*.6);
+	let resized_height = (window_height*.6);
+
+	$('#map').height(resized_height);
 	
 	if(window_width>=991){
 		//$('#place-list').height(window_height*.6);
-		$('#place-list').css("maxHeight", (window_height * .6)+"px");
+		$('#place-list').css("maxHeight", resized_height+"px");
 	}
+	/*
+	if($('#place-list').height()>=resized_height){
+		$('#place-list').addClass('overflow-hidden');
+	} else{
+		$('#place-list').removeClass('overflow-hidden');
+	}
+	*/
 }
 
 $(firstLoad);

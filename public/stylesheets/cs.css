@@ -27,8 +27,8 @@
 	flex-direction: row;
 	flex-wrap: wrap;
 }
-#place-list{
-	overflow: scroll;
+.overflow-hidden{
+	overflow: auto;	
 	overflow-x: hidden;	
 }
 
