@@ -115,7 +115,14 @@ function alertMessage(msg){
 	$('#announcement').modal('show');
 }
 
-////announcement
+/*
+function runPromises(results, arr){
+	return Promise(function (resolve, reject){
+		buildDB(results, arr);
+		resolve(arr);
+	});
+}
+*/
 function callback(results, status) {
 	
 	if (status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
@@ -123,19 +130,22 @@ function callback(results, status) {
 		return;
 	}
 	if (status == google.maps.places.PlacesServiceStatus.OK) {
-		clearMarkers();
-	    //saveToResultDB(results);
-	    buildDB(results);
+		clearMarkers();	    
+	    buildDB(results, resultDB);
+	    renderPlaces(resultDB);	//<- this doesn't run...
+	    //resultPromise.then(renderPlaces);
+	    //runPromises(results, resultDB).then(renderPlaces);
 
-	    renderPlaces(resultDB);
-
+	    /*
 	    const bounds = new google.maps.LatLngBounds();
 	    resultDB.forEach(item=>{
 	    	bounds.extend(item.mapObj);
 	    })
 	    map.fitBounds(bounds);
+	    */
 	}
 }
+
 
 
 
@@ -214,35 +224,68 @@ function saveSuccess(xhr_sent, status, resFromServer){
 	return;
 }
 
-function buildDB(data){
-	saveToResultDB(data);	//resultDB is filled with elements	
-	for(let i=0;i<resultDB.length;i++){		
-		getPlaceDetail(resultDB[i]);
-	}
-	return;	
+function setBound(arr){
+	const bounds = new google.maps.LatLngBounds();
+    arr.forEach(item=>{
+    	bounds.extend(item.mapObj);
+    });    
 }
 
-function getPlaceDetail(element){
-	if(!element){
-		return;
+function buildDB(data, arr){
+	while(arr.length) arr.pop();
+	for(let i=0;i<data.length;i++){
+		getPlaceDetail(data[i], i, arr);
 	}
+	return arr;
+}
+
+function getPlaceDetail(item, index, database){	
 	let request = {
-		"placeId": element.place_id
+		"placeId": item.place_id
 	};
-	service.getDetails(request, function(place,status){				
+	service.getDetails(request, function(place,status){
 		if (status == google.maps.places.PlacesServiceStatus.OK) {
-			if(place.opening_hours){
-				console.log(place);
-				element.hours = renderHours(place.opening_hours.weekday_text);
-				let content = `<div class='info-div d-flex flex-column'>`;
-				content += `<div class='div-info-title'>${place.name}</div>`;
-				content += `<div class='div-info-vicinity'>${place.vicinity}</div>`;				
+			
+			if(place.opening_hours && item.photos){
+				//console.log(place);
+				const place_lat = item.geometry.location.lat();
+		    	const place_lng = item.geometry.location.lng();
+
+				const element = {
+					name: place.name,
+					id: place.id,
+					place_id: place.place_id,
+					location: {
+						lat: place_lat,
+						lng: place_lng,
+					},
+					photos_large: '',
+					photos_small: '',
+					hours: renderHours(place.opening_hours.weekday_text),
+					web: place.website,
+					vicinity: place.vicinity,
+					mapObj: new google.maps.LatLng(
+							place_lat, place_lng
+						)
+				};
+				element.photos_large = item.photos[0].getUrl({
+					'maxHeight':200, 
+					'minWidth':300
+				});
+				element.photos_small = item.photos[0].getUrl({
+					'maxHeight':100, 
+					'minWidth':150
+				});
+
+				let content = '';
+				content += `<div class='info-div d-flex flex-column'>`;
+				content += `<div class='div-info-title'>${element.name}</div>`;
+				content += `<div class='div-info-vicinity'>${element.vicinity}</div>`;				
 				content += `<img src='${element.photos_small}'/>`;
-
 				content += element.hours;
-				content += `<a href='${place.website}'>Website</a>`;
-
+				content += `<a href='${element.website}'>Website</a>`;
 				content += '</div>';
+
 				let marker = new google.maps.Marker({
 				    position: new google.maps.LatLng(
 				    		element.location.lat, element.location.lng
@@ -256,51 +299,12 @@ function getPlaceDetail(element){
 			    });
 			    info.push(infowindow);
 			    markers.push(marker);
+			    database[index] = element;
 			}
 		}
-	});
-	return element;
+	});	
 }
 
-function saveToResultDB(data){	
-	//clear DB
-	while(resultDB.length) resultDB.pop();
-	//generate element
-	data.forEach((item,index)=>{
-		if(!item.photos){
-			return;
-		}
-		const place_lat = item.geometry.location.lat();
-	    const place_lng = item.geometry.location.lng();
-		const element = {
-			name: item.name,
-			id: item.id,
-			place_id: item.place_id,
-			location: {
-				lat: place_lat,
-				lng: place_lng,
-			},
-			photos_large: '',
-			photos_small: '',
-			hours: '',
-			mapObj: new google.maps.LatLng(
-					place_lat, place_lng
-				)
-		};				
-		if(item.photos) {
-			element.photos_large = item.photos[0].getUrl({
-				'maxHeight':200, 
-				'minWidth':300
-			});
-			element.photos_small = item.photos[0].getUrl({
-				'maxHeight':100, 
-				'minWidth':150
-			});
-		}
-		resultDB[index] = element;
-	});
-	return;
-}
 
 /**
 	RENDERING
