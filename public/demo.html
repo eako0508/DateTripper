@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Date Tripper</title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Amatic+SC" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="stylesheets/cs.css">
+</head>
+<body>
+	
+	<span class='text-light text-font-bold d-flex justify-content-center display-4'
+	id='page-title'>Date Tripper</span>
+
+	<nav class='nav justify-content-center text-center'>		
+		<div class='row col-12 btn-group justify-content-center'>
+			<a href='#' class='nav-link text-light btn btn-info font-weight-bold' id='savedlist-btn' data-toggle='modal' data-target='#users_saved_list'><i class="fas fa-folder"></i> Saved Lists</a>
+			<a href='#' class='nav-link text-light btn btn-success font-weight-bold' id='logout-btn'><i class="fas fa-sign-out-alt"></i> Logout</a>		
+		</div>
+		<a href='#' class='nav-link text-light btn btn-success font-weight-bold' id='login-btn' data-toggle='modal' data-target='#login-page'>Login <i class="fas fa-sign-in-alt"></i></a>
+	</nav>
+	<br>
+
+	<section>
+		<div class='row'>
+			<div class='col-10 offset-1 col-lg-10 offset-lg-1' id='map-container'>
+
+				<div class='row'>
+					<div id='map'></div>
+				</div>
+
+				<div class='row'>
+					<div class='btn-group col-12 no-paddings no-gutters'>
+						<button type='button' class='col-4 btn btn-danger' id='clear-search'><i class="fas fa-reply-all"></i> Clear</button>
+						<button type='button' class='col-4 btn btn-primary' id='search-nearby'><i class="fas fa-crosshairs"></i> Nearby</button>
+						<button class='btn btn-info dropdown-toggle col-4 '
+						data-toggle='dropdown'><i class="fas fa-list"></i> Filter</button>
+						<ul class='dropdown-menu' id='display-options'>
+						</ul>
+					</div>
+				</div>
+				<div class='row'>
+					<div class='input-group col-12 no-paddings'>
+						<input type="text" class='form-control' id="custom_query" placeholder="Waffle house, Laser tag, etc...">
+						<div class='input-group-append'>
+							<button class='btn btn-primary' id='custom_query_submit'><i class="fas fa-search"></i> Search</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class='col-10 offset-1 col-lg-3 offset-lg-0 d-none' id='list-container'>
+				<div class='row'>
+					<div id='place-list' class='col-sm-12 no-paddings overflow-hidden'>
+
+					</div>
+				</div>
+
+				<div class='row'>
+					<div class='col-12 no-paddings save-btn-container d-none'>
+						<form id='save-form' action='#'>
+							<div class='row no-gutters'>
+								<div class='input-group'>							
+									<input type='text' class='form-control' placeholder='Title' id='date-title' aria-label='date-title' aria-describedby='date-title-input-text' required>
+									<div class='input-group-append'>
+										<button type='submit' class='btn btn-success font-weight-bold' id='date-btn-save'><i class="fas fa-save"></i> SAVE</button>
+									</div>
+								</div>
+							</div>
+							<div class='row no-gutters justify-content-end'>
+								<button type='reset' class='btn btn-danger col-12' id='date-btn-clear'><i class="fas fa-trash"></i> Clear</button>
+								<!--ask are you sure??-->
+							</div>							
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>		
+	</section>
+	<br>
+	<section>
+		<div class='row'>
+			<div class='results col-10 offset-1 no-paddings flex-row-wrap'>
+			<!--list of results-->
+			</div>
+		</div>
+		
+	</section>
+	
+</body>
+
+<div id='login-page' class='modal fade login-page' tabindex='-1'>
+	<div class='modal-dialog'>
+		<div class='modal-content'>
+			<div class='modal-body'>
+				<form class='js-form-login'>
+					<div class='form-group'>
+						<label for='userid'>Username</label>
+						<input type="text" class='form-control' id='user_id' name='userid' required>
+					</div>
+					<div class='form-group'>
+						<label for='userpw'>Password</label>
+						<input type="password" class='form-control' id='user_pw' name='userpw' required>
+					</div>
+					<div class='row justify-content-around'>
+						<button type='submit' class='login-submit btn btn-primary' data-dismiss='modal'><i class="fas fa-sign-in-alt"></i> Login</button>
+						<button type='button' class='btn btn-primary' id='register-btn' data-toggle='modal' data-target='#register-page'><i class="fas fa-user-plus"></i> Register</button>
+						<button type='button' class='btn btn-danger' id='login-cancel'>Cancel</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id='register-page' class='modal fade register-page' tabindex="-1">
+	<div class='modal-dialog'>
+		<div class='modal-content'>
+			<div class='modal-body'>
+				<form class='js-register-form'>
+					<div class='form-group'>
+						<label for='reg-userid'>Username</label>
+						<input type='text' class='form-control' id='reg-userid' name='reg-userid' required>
+					</div>
+					<div class='form-group'>
+						<label for='reg-userpw'>Password</label>
+						<input type='password' class='form-control' id='reg-userpw' name='reg-userpw' required>
+					</div>
+					<div class='form-group'>
+						<label for='reg-userFirstname'>First Name</label>
+						<input type='text' class='form-control' id='reg-userFirstname' name='reg-userFirstname'>
+					</div>
+					<div class='form-group'>
+						<label for='reg-userLastname'>Last Name</label>
+						<input type='text' class='form-control' id='reg-userLastname' name='reg-userLastname'>
+					</div>
+					<button type='submit' id='register-submit' class='reg-submit btn btn-primary' data-dismiss='modal'>Register</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class='fade' tabindex="-1">
+	<form class='autocomplete-form' id='autoform'>
+		<div class='input-group'>
+			<input type='text' id='autocomplete-input' class="form-control" placeholder="Place to go">
+			<div class='input-group-append'>
+				<button class='btn btn-primary' type='submit'><i class="fas fa-paper-plane"></i> Go</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+<div class='fade modal' id='users_saved_list' tabindex='-1'>
+	<div class='modal-dialog' id='savedList-modal-dialog'>
+		<div class='modal-content'>
+			<div class='modal-body flex-row-wrap justify-content-around' id='users_saved_list_modal'>				
+				
+			</div>
+			<div class='modal-footer'>
+				<button type='button' class='btn btn-primary' id='users_saved_list_close'>Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class='fade modal' id='announcement' tabindex='-1'>
+	<div class='modal-dialog modal-dialog-centered'>
+		<div class='modal-content'>
+			<div class='modal-body text-center font-weight-bold text-uppercase'>
+				
+			</div>
+			<div class='modal-footer justify-content-center'>
+				<button type='button' class='btn btn-primary' id='announcement-close'>
+					OK
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js'></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBI0gg36wn9wYCNXdNHsrMmsGYCE6pmH-4&callback=initMap&libraries=places">
+</script>
+<script type="text/javascript" src='javascripts/mapStyles.js'></script>
+<script type="text/javascript" src="javascripts/js.js"></script>
+</html>
+
+
+

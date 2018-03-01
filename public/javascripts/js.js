@@ -125,7 +125,7 @@ function callback(results, status) {
 	if (status == google.maps.places.PlacesServiceStatus.OK) {
 		clearMarkers();
 	    saveToResultDB(results);
-	    renderPlaces();
+	    renderPlaces(resultDB);
 
 	    const bounds = new google.maps.LatLngBounds();
 	    resultDB.forEach(item=>{
@@ -211,43 +211,6 @@ function saveSuccess(xhr_sent, status, resFromServer){
 	//Save success!
 	return;
 }
-
-
-
-
-/**
-let hours_arr = [];
-	hours_arr = [
-		{
-			id: 12323,
-			hours: [
-					string,
-					string,
-					string
-				]
-		},
-		{
-			id: 12323,
-			hours: [
-					string,
-					string,
-					string
-				]
-		}
-	];
-
-function generateHours(arr_){
-	hours_arr.forEach((item,index)=>{
-
-	});
-}
-**/
-/**
-	GOOGLE PLACE - START
-**/
-
-//let service = new google.maps.places.PlacesService(map);
-//service.nearbySearch(request, callback);
 
 function saveToResultDB(data){
 	//clear DB
@@ -384,9 +347,9 @@ function renderOptions(arr){
 	RESULTS
 **/
 //renderPlaces->renderSinglePlace->$('.results').html
-function renderPlaces(){
+function renderPlaces(arr){
 	//display array to places
-	const myPlaces = resultDB.map((item,index)=>{
+	const myPlaces = arr.map((item,index)=>{
 		return renderSinglePlace(item, index);
 	});
 	
@@ -394,52 +357,30 @@ function renderPlaces(){
 	return;	
 }
 
-function renderHours(arr){
-	let string = '';
-	arr.forEach(item=>{
-		string += `<span>${item}</span>`;
-	});
-	return string;
-}
-
-
 function renderSinglePlace(item, index){	
 	let result = `
 		<div class='card res col-12 col-lg-4 justify-content-start no-paddings' db-index='${index}'>`;
-	if(item.photos_large!=undefined) {
+	if(item.photos_large) {
 		result+= `
 		<img class='card-img-top img-thumbnail img-responsive mh-25 d-flex align-self-center' src='${item.photos_large}' alt='card img'>
 		`;
-	}	
-	/*
-	id: ${item.id},
-	place_id: ${item.place_id},
-	location: ${item.location}
-	*/
-
-	//question: unable to access object array
-	console.log(item);	//object
-	let place_hours = '';
-	let arr_hour = item.hours;	//object.hours array
-	console.log('arr_hour:');
-	console.log(arr_hour);
-	
-	//hhhhhhhhhhhhhhhh
-	if(arr_hour.length>0){
-		place_hours = renderHours(item.hours);
-		console.log(place_hours);
-	}
-	
+	}		
 	result += `	
 		<div class='card-body'>
-			<h5 class='card-title'>${item.name}</h5>
-			${place_hours}
+			<h5 class='card-title'>${item.name}</h5>			
 		</div>
 		<div class='card-footer'>
 			<button class='col-12 btn btn-primary btn-add' targetID='${item.id}' result-index='${index}'><i class="fas fa-plus-square"></i> ADD</button>
 		</div>
 	</div>`;
 	return result;
+}
+function renderHours(arr){
+	let string = '';
+	arr.forEach(item=>{
+		string += `<span>${item}</span>`;
+	});
+	return string;
 }
 $('.results').on('click', `.card > .card-body, .card > img`, event=>{
 	let idx = $(event.currentTarget).parents('.card').attr('db-index');
@@ -468,6 +409,7 @@ function makeMarkerAndSaveDB(placeID, obj){
     listDB.push(obj);
     renderItem(obj);
     showList();
+    renderPlaces(listDB);
 }
 function showList(){
 	if($('#map-container').hasClass('col-lg-10')){
