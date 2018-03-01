@@ -212,10 +212,9 @@ function saveSuccess(xhr_sent, status, resFromServer){
 	return;
 }
 
-function saveToResultDB(data){
+function saveToResultDB(data){	
 	//clear DB
-	while(resultDB.length) resultDB.pop();
-	//console.log(data[0]);
+	while(resultDB.length) resultDB.pop();	
 	data.forEach((item,index)=>{
 		const place_lat = item.geometry.location.lat();
 	    const place_lng = item.geometry.location.lng();
@@ -254,8 +253,7 @@ function saveToResultDB(data){
 				<img src='${element.photos_small}'/>
 				`;
 		}
-		service.getDetails(request, function(place,status){
-			
+		service.getDetails(request, function(place,status){			
 			if (status == google.maps.places.PlacesServiceStatus.OK) {
 				if(place.opening_hours!=null){
 					let arr_hours = place.opening_hours.weekday_text;
@@ -408,8 +406,7 @@ function makeMarkerAndSaveDB(placeID, obj){
 	marker_arr.push(item_marker);	
     listDB.push(obj);
     renderItem(obj);
-    showList();
-    renderPlaces(listDB);
+    showList();    
 }
 function showList(){
 	if($('#map-container').hasClass('col-lg-10')){
@@ -532,6 +529,7 @@ function hideList(){
 function clearDate(){
 	clearListDB();	
 	hideList();
+
 }
 function clearListDB(){	
 	let pop;
@@ -540,6 +538,7 @@ function clearListDB(){
 		pop.marker.setMap(null);
 		pop.marker = null;
 	}
+	while(listDB.length>0) listDB.pop();
 	$('#place-list').html('');
 }
 
@@ -638,6 +637,11 @@ function loadDestination(data){
 	data[0].destinations.forEach((item)=>{
 		makeMarkerAndSaveDB(item.id, item);
 	});
+	renderPlaces(listDB);
+    clearResultDB();
+    listDB.forEach((item,index)=>{
+    	resultDB[index] = item;
+    });
 	$('#users_saved_list').modal('hide');
 }
 
