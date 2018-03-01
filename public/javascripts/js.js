@@ -47,9 +47,9 @@ const arr_options = [
 	{ id: "zoo", name: "Zoo" }
 ];
 
-let base_url = 'http://100.33.50.170:8080/';
+//let base_url = 'http://100.33.50.170:8080/';
 //let base_url = 'http://192.168.2.199:8080/';
-//let base_url = 'http://localhost:8080/';
+let base_url = 'http://localhost:8080/';
 //let base_url = 'http://192.168.1.100:8080';
 //let localhost_url = 'http://localhost:8080';
 
@@ -168,14 +168,15 @@ $('.submit-go').on('submit', event=>{
 //save the date
 $('#save-form').on('submit', event=>{
 	event.preventDefault();
-	if(localToken==='') {	
-		$('#login-page').modal('show')
-		return;
-	}
 	if(listDB.length<2){
 		alert('Need at least 2 places!');
 		return;
 	}
+	if(localToken==='') {	
+		$('#login-page').modal('show');
+		return;
+	}
+	
 	let item_title = $('#date-title').val();
 	let post_url = base_url+'api/destination/' + local_username;
 	listDB.forEach((item,index)=>{
@@ -653,7 +654,10 @@ function ajaxlogin(item){
 		dataType: 'json',
 		data: JSON.stringify(item)		
 	})
-	.done(logmein)
+	.done((data)=>{
+		local_username = item.username;
+		logmein(data);
+	})
 	.fail(alertFail);
 }
 
@@ -758,7 +762,7 @@ function getSavedLists(){
 
 function logmein(data){	
 	localToken = data.authToken;	
-	local_username = $('#user_id').val();
+	//local_username = $('#user_id').val();
 	
 	isLogged = true;
 	
@@ -796,7 +800,7 @@ $('#register-submit').on('click', event=>{
 
 
 
-$('#register-btn').on('click', ()=>{
+$('#register-btn, #login-cancel').on('click', ()=>{
 	$('#login-page').modal('hide');
 });
 $('#logout-btn').on('click', ()=>{
