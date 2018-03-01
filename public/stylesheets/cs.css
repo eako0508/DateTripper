@@ -35,6 +35,9 @@
 #place-list::-webkit-scrollbar {	
 	width: 5px;	
 }
+.flex-column{
+	flex-direction: column;
+}
 #place-list::-webkit-scrollbar-thumb {
 	//background-color: sandybrown;
 	background-color: darkgray;

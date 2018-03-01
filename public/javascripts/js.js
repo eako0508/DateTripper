@@ -47,9 +47,9 @@ const arr_options = [
 	{ id: "zoo", name: "Zoo" }
 ];
 
-//let base_url = 'http://100.33.50.170:8080/';
+let base_url = 'http://100.33.50.170:8080/';
 //let base_url = 'http://192.168.2.199:8080/';
-let base_url = 'http://localhost:8080/';
+//let base_url = 'http://localhost:8080/';
 //let base_url = 'http://192.168.1.100:8080';
 //let localhost_url = 'http://localhost:8080';
 
@@ -124,7 +124,9 @@ function callback(results, status) {
 	}
 	if (status == google.maps.places.PlacesServiceStatus.OK) {
 		clearMarkers();
-	    saveToResultDB(results);
+	    //saveToResultDB(results);
+	    buildDB(results);
+
 	    renderPlaces(resultDB);
 
 	    const bounds = new google.maps.LatLngBounds();
@@ -212,35 +214,80 @@ function saveSuccess(xhr_sent, status, resFromServer){
 	return;
 }
 
+function buildDB(data){
+	saveToResultDB(data);	//resultDB is filled with elements	
+	for(let i=0;i<resultDB.length;i++){		
+		getPlaceDetail(resultDB[i]);
+	}
+	return;	
+}
+
+function getPlaceDetail(element){
+	if(!element){
+		return;
+	}
+	let request = {
+		"placeId": element.place_id
+	};
+	service.getDetails(request, function(place,status){				
+		if (status == google.maps.places.PlacesServiceStatus.OK) {
+			if(place.opening_hours){
+				console.log(place);
+				element.hours = renderHours(place.opening_hours.weekday_text);
+				let content = `<div class='info-div d-flex flex-column'>`;
+				content += `<div class='div-info-title'>${place.name}</div>`;
+				content += `<div class='div-info-vicinity'>${place.vicinity}</div>`;				
+				content += `<img src='${element.photos_small}'/>`;
+
+				content += element.hours;
+				content += `<a href='${place.website}'>Website</a>`;
+
+				content += '</div>';
+				let marker = new google.maps.Marker({
+				    position: new google.maps.LatLng(
+				    		element.location.lat, element.location.lng
+				    	),
+				    map: map
+			    });
+			    let infowindow = new google.maps.InfoWindow();    
+			    infowindow.setContent(content);
+			    marker.addListener('click', function(){
+			    	infowindow.open(map, marker);
+			    });
+			    info.push(infowindow);
+			    markers.push(marker);
+			}
+		}
+	});
+	return element;
+}
+
 function saveToResultDB(data){	
 	//clear DB
-	while(resultDB.length) resultDB.pop();	
+	while(resultDB.length) resultDB.pop();
+	//generate element
 	data.forEach((item,index)=>{
+		if(!item.photos){
+			return;
+		}
 		const place_lat = item.geometry.location.lat();
 	    const place_lng = item.geometry.location.lng();
-
-	    let marker = new google.maps.Marker({
-		    position: new google.maps.LatLng(place_lat, place_lng),
-		    map: map
-	    });
-	    
-	    let request = {
-			"placeId": item.place_id
-		};
-
 		const element = {
 			name: item.name,
 			id: item.id,
 			place_id: item.place_id,
 			location: {
-				lat: item.geometry.location.lat(),
-				lng: item.geometry.location.lng(),
+				lat: place_lat,
+				lng: place_lng,
 			},
-			hours: []
-		}
-		//put name, pic, and hours
-		let content = '<div>';
-		if(item.photos!=undefined) {
+			photos_large: '',
+			photos_small: '',
+			hours: '',
+			mapObj: new google.maps.LatLng(
+					place_lat, place_lng
+				)
+		};				
+		if(item.photos) {
 			element.photos_large = item.photos[0].getUrl({
 				'maxHeight':200, 
 				'minWidth':300
@@ -249,50 +296,10 @@ function saveToResultDB(data){
 				'maxHeight':100, 
 				'minWidth':150
 			});
-			content += `
-				<img src='${element.photos_small}'/>
-				`;
 		}
-		service.getDetails(request, function(place,status){			
-			if (status == google.maps.places.PlacesServiceStatus.OK) {
-				if(place.opening_hours!=null){
-					let arr_hours = place.opening_hours.weekday_text;
-					element.hours = arr_hours;
-					//let append_hours = renderHours(arr_hours);
-					//let append_hours='';
-					for(let j=0;j<arr_hours;j++){
-						content += arr_hours[j];
-					}
-				}
-			}
-		});
-		element.mapObj = new google.maps.LatLng(element.location.lat, element.location.lng);
-
-		content += '</div>';
 		resultDB[index] = element;
-
-	    let infowindow = new google.maps.InfoWindow();
-	    //console.log(content);
-	    infowindow.setContent(content);
-	    marker.addListener('click', function(){
-	    	infowindow.open(map, marker);
-	    });
-	    info.push(infowindow);
-	    markers.push(marker);
 	});
 	return;
-}
-
-function renderHours(arr){
-	//let temp = '<div>'
-	let temp = ''
-	for(let i=0;i<arr.length;i++){
-		//temp += `<div>${arr[i]}</div>`;
-		temp += arr[i];
-	}
-	temp += '';
-	//temp += '</div>';
-	return temp;
 }
 
 /**
@@ -374,10 +381,11 @@ function renderSinglePlace(item, index){
 	return result;
 }
 function renderHours(arr){
-	let string = '';
+	let string = `<div class='div-info-hours'>`;
 	arr.forEach(item=>{
-		string += `<span>${item}</span>`;
+		string += `<div class='div-info-hours-element'>${item}</div>`;
 	});
+	string += `</div>`;
 	return string;
 }
 $('.results').on('click', `.card > .card-body, .card > img`, event=>{
