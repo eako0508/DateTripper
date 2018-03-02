@@ -254,24 +254,26 @@ function makeContent(element){
 
 
 function makeMapInfo(element, map_arr){
+	const mapinfo_item = {};
 	let marker = new google.maps.Marker({
-	    position: new google.maps.LatLng(
-	    		element.location.lat, element.location.lng
-	    	),
+	    position: element.mapObj,
 	    map: map
     });
+	
     let content = makeContent(element);
     let infowindow = new google.maps.InfoWindow();
     infowindow.setContent(content);
+
     marker.addListener('click', function(){
-    	clearInfoWindow();
+    	clearAllInfoWindow();
     	infowindow.open(map, marker);
     });
-    const mapinfo_item = {
-    	id: element.id,
-    	marker: marker,
-    	info: infowindow
-    }
+    mapinfo_item.id = element.id;
+    mapinfo_item.marker = marker;
+    mapinfo_item.infowindow = infowindow;
+    mapinfo_item.mapObj = element.mapObj;
+
+    console.log(mapinfo_item);
     map_arr.push(mapinfo_item);	
 }
 
@@ -308,6 +310,7 @@ function getPlaceDetail(item, index, database){
 							place_lat, place_lng
 						)
 				};
+				//console.log(element.mapObj);
 				element.photos_large = item.photos[0].getUrl({
 					'maxHeight':200, 
 					'minWidth':350
@@ -316,7 +319,7 @@ function getPlaceDetail(item, index, database){
 					'maxHeight':100, 
 					'minWidth':150
 				});
-				element.web = `<a href='${place.website}'>Website</a>`;
+				element.website = `<a href='${place.website}'>Website</a>`;
 				element.vicinity = `<div>${place.vicinity}</div>`;
 
 				makeMapInfo(element, mapinfo_results);
@@ -390,7 +393,7 @@ function renderPlaces(arr){
 
 function renderSinglePlace(item, index){	
 	let result = `
-		<div class='card res col-12 col-lg-4 justify-content-start no-paddings' db-index='${index}'>`;
+		<div class='card res col-12 col-lg-4 justify-content-start no-paddings' item-ID='${item.id}'>`;
 	if(item.photos_large) {
 		result+= `
 		<img class='card-img-top img-thumbnail img-responsive mh-25 d-flex align-self-center result-img' src='${item.photos_large}' alt='card img'>
@@ -417,21 +420,27 @@ function renderHours(arr){
 	string += `</div>`;
 	return string;
 }
-function clearInfoWindow(){
-	for(let i=0;i<info.length;i++){
-		info[i].close();
+function clearAllInfoWindow(){
+	clearInfoWindow(mapinfo_results);
+	clearInfoWindow(mapinfo_lists);
+}
+function clearInfoWindow(arr){
+	for(let i=0;i<arr.length;i++){
+		arr[i].infowindow.close();
 	}
 }
 $('.results').on('click', `.card > .card-body, .card > img`, event=>{
-	let idx = $(event.currentTarget).parents('.card').attr('db-index');
-	let target_map_obj = resultDB[idx].mapObj;
-	map.panTo(target_map_obj);
-	map.setZoom(15);
-	clearInfoWindow();
-	info[idx].open(map, markers[idx]);
-	//infowindow.open(map, marker);
-
-
+	let targetID = $(event.currentTarget).parents('.card').attr('item-ID');		
+	for(let i=0;i<mapinfo_results.length;i++){		
+		if(mapinfo_results[i].id == targetID){			
+			let targetObj = mapinfo_results[i];
+			clearAllInfoWindow();
+			targetObj.infowindow.open(map, targetObj.marker);
+			map.panTo(targetObj.mapObj);
+			map.setZoom(15);
+		}
+	}
+	
 	/* this feature zooms in too much...
 		Nearby button already bounds nearby area before anyway.
 
@@ -442,7 +451,7 @@ $('.results').on('click', `.card > .card-body, .card > img`, event=>{
 	$('html, body').animate({ scrollTop: 0});
 });
 
-function makeMarkerAndSaveDB(objID, element){	
+function makeMarkerAndSaveDB(element){	
     makeMapInfo(element, mapinfo_lists);
     listDB.push(element);
     renderItem(obj);
@@ -458,12 +467,12 @@ function showList(){
 }
 
 $('.results').on('click', '.btn-add', event=>{	
-	showList();		
+	showList();
 	const index = $(event.currentTarget).attr('result-index');
 	const targetID = $(event.currentTarget).attr('targetID');
 	const item = resultDB[index];
 	
-	makeMarkerAndSaveDB(targetID, item);
+	makeMarkerAndSaveDB(item);
     
 	//replace add button to check icon button
 	const theButton = `<button class='col-12 btn btn-success btn-add' result-index='${index}' disabled>
@@ -687,7 +696,7 @@ $('#users_saved_list_modal').on('click', '.delete-load-btn', event=>{
 function loadDestination(data){
 	clearDate();
 	data[0].destinations.forEach((item)=>{
-		makeMarkerAndSaveDB(item.id, item);
+		makeMarkerAndSaveDB(item);
 	});
 	renderPlaces(listDB);
     clearResultDB();
@@ -725,7 +734,7 @@ $('#users_saved_list_close').on('click', ()=>{
 function renderSaved_card(item){
 	
 	let thething = `
-	<div class='card col-12 col-lg-5 no-paddings' savedLists-id=${item.id}>
+	<div class='card col-12 col-lg-5 no-paddings' item-ID=${item.id}>
 		<div class='card-body'>${item.title}</div>
 		<div class='card-footer justify-content-around'>
 			<button type='button' class='btn btn-primary save-load-btn'><i class="fas fa-folder-open"></i> LOAD</button>
