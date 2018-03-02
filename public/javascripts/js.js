@@ -247,7 +247,7 @@ function getPlaceDetail(item, index, database){
 		if (status == google.maps.places.PlacesServiceStatus.OK) {
 			
 			if(place.opening_hours && item.photos){
-				//console.log(place);
+				console.log(place);
 				const place_lat = item.geometry.location.lat();
 		    	const place_lng = item.geometry.location.lng();
 
@@ -283,7 +283,7 @@ function getPlaceDetail(item, index, database){
 				content += `<div class='div-info-vicinity'>${element.vicinity}</div>`;				
 				content += `<img src='${element.photos_small}'/>`;
 				content += element.hours;
-				content += `<a href='${element.website}'>Website</a>`;
+				content += `<a href='${element.web}'>Website</a>`;
 				content += '</div>';
 
 				let marker = new google.maps.Marker({
@@ -482,7 +482,7 @@ function renderItem(item){
 					<i class="fas fa-angle-down" id='up-${item.id}'></i>
 				</button>
 			</div>
-			<div class='list-name col-8 tex-truncate'>
+			<div class='list-name col-8 text-truncate'>
 				${item.name}
 					
 				

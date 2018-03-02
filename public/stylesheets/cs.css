@@ -50,6 +50,16 @@
 	margin-top: 1px;
 	margin-bottom: 1px;
 }
+.list > .row {
+	flex-wrap: nowrap;
+}
+.list-name {
+	margin-top: auto;
+	margin-bottom: auto;
+}
+.btn-delete {
+	align-self: stretch;
+}
 /*
 .list-container > .row,
 #place-list,
