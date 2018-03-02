@@ -247,6 +247,7 @@ function getPlaceDetail(item, index, database){
 		if (status == google.maps.places.PlacesServiceStatus.OK) {
 			
 			if(place.opening_hours && item.photos){
+				
 				console.log(place);
 				const place_lat = item.geometry.location.lat();
 		    	const place_lng = item.geometry.location.lng();
@@ -262,20 +263,22 @@ function getPlaceDetail(item, index, database){
 					photos_large: '',
 					photos_small: '',
 					hours: renderHours(place.opening_hours.weekday_text),
-					web: place.website,
-					vicinity: place.vicinity,
+					website: '',
+					vicinity: '',
 					mapObj: new google.maps.LatLng(
 							place_lat, place_lng
 						)
 				};
 				element.photos_large = item.photos[0].getUrl({
 					'maxHeight':200, 
-					'minWidth':300
+					'minWidth':350
 				});
 				element.photos_small = item.photos[0].getUrl({
 					'maxHeight':100, 
 					'minWidth':150
 				});
+				element.web = `<a href='${place.website}'>Website</a>`;
+				element.vicinity = `<div>${place.vicinity}</div>`;
 
 				let content = '';
 				content += `<div class='info-div d-flex flex-column'>`;
@@ -283,7 +286,8 @@ function getPlaceDetail(item, index, database){
 				content += `<div class='div-info-vicinity'>${element.vicinity}</div>`;				
 				content += `<img src='${element.photos_small}'/>`;
 				content += element.hours;
-				content += `<a href='${element.web}'>Website</a>`;
+				content += element.vicinity;
+				content += element.website;
 				content += '</div>';
 
 				let marker = new google.maps.Marker({
@@ -295,10 +299,13 @@ function getPlaceDetail(item, index, database){
 			    let infowindow = new google.maps.InfoWindow();    
 			    infowindow.setContent(content);
 			    marker.addListener('click', function(){
+			    	clearInfoWindow();
 			    	infowindow.open(map, marker);
 			    });
-			    info.push(infowindow);
-			    markers.push(marker);
+			    //info.push(infowindow);
+			    //markers.push(marker);
+			    info[index] = infowindow;
+			    markers[index] = marker;
 			    database[index] = element;
 			}
 		}
@@ -371,12 +378,15 @@ function renderSinglePlace(item, index){
 		<div class='card res col-12 col-lg-4 justify-content-start no-paddings' db-index='${index}'>`;
 	if(item.photos_large) {
 		result+= `
-		<img class='card-img-top img-thumbnail img-responsive mh-25 d-flex align-self-center' src='${item.photos_large}' alt='card img'>
+		<img class='card-img-top img-thumbnail img-responsive mh-25 d-flex align-self-center result-img' src='${item.photos_large}' alt='card img'>
 		`;
 	}		
 	result += `	
 		<div class='card-body'>
-			<h5 class='card-title'>${item.name}</h5>			
+			<h5 class='card-title'>${item.name}</h5>
+			${item.hours}
+			${item.web}
+			${item.vicinity}
 		</div>
 		<div class='card-footer'>
 			<button class='col-12 btn btn-primary btn-add' targetID='${item.id}' result-index='${index}'><i class="fas fa-plus-square"></i> ADD</button>
@@ -392,10 +402,20 @@ function renderHours(arr){
 	string += `</div>`;
 	return string;
 }
+function clearInfoWindow(){
+	for(let i=0;i<info.length;i++){
+		info[i].close();
+	}
+}
 $('.results').on('click', `.card > .card-body, .card > img`, event=>{
 	let idx = $(event.currentTarget).parents('.card').attr('db-index');
 	let target_map_obj = resultDB[idx].mapObj;
 	map.panTo(target_map_obj);
+	clearInfoWindow();
+	info[idx].open(map, markers[idx]);
+	//infowindow.open(map, marker);
+
+
 	/* this feature zooms in too much...
 		Nearby button already bounds nearby area before anyway.
 
@@ -449,8 +469,16 @@ $('#clear-search').on('click', function(){
 	clearResultDB();
 	$('.results').html('');
 });
+function clearArray(arr){
+	while(arr.length) arr.pop();
+	return;
+}
+
 function clearResultDB(){
-	while(resultDB.length) resultDB.pop();
+	//while(resultDB.length) resultDB.pop();
+	clearArray(resultDB);
+	clearArray(info);
+	clearArray(markers);
 	return;
 }
 

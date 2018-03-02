@@ -68,8 +68,9 @@
 	border-radius: .25rem;
 }
 */
-.img-thumbnail{
+.result-img{
 	max-width: 350px;
+	max-height: 200px;				
 }
 #page-title {
 	font-family: 'Amatic SC', cursive;
