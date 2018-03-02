@@ -272,8 +272,6 @@ function makeMapInfo(element, map_arr){
     mapinfo_item.marker = marker;
     mapinfo_item.infowindow = infowindow;
     mapinfo_item.mapObj = element.mapObj;
-
-    console.log(mapinfo_item);
     map_arr.push(mapinfo_item);	
 }
 
@@ -454,7 +452,7 @@ $('.results').on('click', `.card > .card-body, .card > img`, event=>{
 function makeMarkerAndSaveDB(element){	
     makeMapInfo(element, mapinfo_lists);
     listDB.push(element);
-    renderItem(obj);
+    renderItem(element);
     showList();    
 }
 function showList(){
@@ -468,16 +466,23 @@ function showList(){
 
 $('.results').on('click', '.btn-add', event=>{	
 	showList();
+	/*
 	const index = $(event.currentTarget).attr('result-index');
 	const targetID = $(event.currentTarget).attr('targetID');
 	const item = resultDB[index];
-	
-	makeMarkerAndSaveDB(item);
+	*/
+	const targetID = $(event.currentTarget).parents('card').attr('item-id');
+	for(let i=0;i<resultDB.length;i++){
+		if(resultDB[i].id === targetID){
+			makeMarkerAndSaveDB(resultDB[i]);
+		}
+	}
+
+	//makeMarkerAndSaveDB(item);
     
 	//replace add button to check icon button
 	const theButton = `<button class='col-12 btn btn-success btn-add' result-index='${index}' disabled>
-	<i class="fas fa-check"></i> ADDED
-	</button>`
+	<i class="fas fa-check"></i> ADDED</button>`
 	$(event.currentTarget).replaceWith(theButton);
 	//renderItem(item);
 });
