@@ -239,6 +239,45 @@ function buildDB(data, arr){
 	return arr;
 }
 
+function makeContent(element){
+	let content = '';
+	content += `<div class='info-div d-flex flex-column'>`;
+	content += `<div class='div-info-title'>${element.name}</div>`;
+	content += `<div class='div-info-vicinity'>${element.vicinity}</div>`;				
+	content += `<img src='${element.photos_small}'/>`;
+	content += element.hours;
+	content += element.vicinity;
+	content += element.website;
+	content += '</div>';
+	return content;
+}
+
+
+function makeMapInfo(element, map_arr){
+	let marker = new google.maps.Marker({
+	    position: new google.maps.LatLng(
+	    		element.location.lat, element.location.lng
+	    	),
+	    map: map
+    });
+    let content = makeContent(element);
+    let infowindow = new google.maps.InfoWindow();
+    infowindow.setContent(content);
+    marker.addListener('click', function(){
+    	clearInfoWindow();
+    	infowindow.open(map, marker);
+    });
+    const mapinfo_item = {
+    	id: element.id,
+    	marker: marker,
+    	info: infowindow
+    }
+    map_arr.push(mapinfo_item);	
+}
+
+const mapinfo_results = [];
+const mapinfo_lists = [];
+
 function getPlaceDetail(item, index, database){	
 	let request = {
 		"placeId": item.place_id
@@ -248,7 +287,7 @@ function getPlaceDetail(item, index, database){
 			
 			if(place.opening_hours && item.photos){
 				
-				console.log(place);
+				//console.log(place);
 				const place_lat = item.geometry.location.lat();
 		    	const place_lng = item.geometry.location.lng();
 
@@ -280,32 +319,8 @@ function getPlaceDetail(item, index, database){
 				element.web = `<a href='${place.website}'>Website</a>`;
 				element.vicinity = `<div>${place.vicinity}</div>`;
 
-				let content = '';
-				content += `<div class='info-div d-flex flex-column'>`;
-				content += `<div class='div-info-title'>${element.name}</div>`;
-				content += `<div class='div-info-vicinity'>${element.vicinity}</div>`;				
-				content += `<img src='${element.photos_small}'/>`;
-				content += element.hours;
-				content += element.vicinity;
-				content += element.website;
-				content += '</div>';
-
-				let marker = new google.maps.Marker({
-				    position: new google.maps.LatLng(
-				    		element.location.lat, element.location.lng
-				    	),
-				    map: map
-			    });
-			    let infowindow = new google.maps.InfoWindow();    
-			    infowindow.setContent(content);
-			    marker.addListener('click', function(){
-			    	clearInfoWindow();
-			    	infowindow.open(map, marker);
-			    });
-			    //info.push(infowindow);
-			    //markers.push(marker);
-			    info[index] = infowindow;
-			    markers[index] = marker;
+				makeMapInfo(element, mapinfo_results);
+				
 			    database[index] = element;
 			}
 		}
@@ -411,6 +426,7 @@ $('.results').on('click', `.card > .card-body, .card > img`, event=>{
 	let idx = $(event.currentTarget).parents('.card').attr('db-index');
 	let target_map_obj = resultDB[idx].mapObj;
 	map.panTo(target_map_obj);
+	map.setZoom(15);
 	clearInfoWindow();
 	info[idx].open(map, markers[idx]);
 	//infowindow.open(map, marker);
@@ -426,17 +442,9 @@ $('.results').on('click', `.card > .card-body, .card > img`, event=>{
 	$('html, body').animate({ scrollTop: 0});
 });
 
-function makeMarkerAndSaveDB(placeID, obj){
-	let marker = new google.maps.Marker({
-	    position: obj.mapObj,
-	    map: map
-    });    
-	let item_marker = {
-		marker: marker,
-		id: placeID
-	}
-	marker_arr.push(item_marker);	
-    listDB.push(obj);
+function makeMarkerAndSaveDB(objID, element){	
+    makeMapInfo(element, mapinfo_lists);
+    listDB.push(element);
     renderItem(obj);
     showList();    
 }
@@ -464,9 +472,11 @@ $('.results').on('click', '.btn-add', event=>{
 	$(event.currentTarget).replaceWith(theButton);
 	//renderItem(item);
 });
+
+
 $('#clear-search').on('click', function(){
 	clearMarkers();
-	clearResultDB();
+	clearResultDB();	
 	$('.results').html('');
 });
 function clearArray(arr){
@@ -477,8 +487,10 @@ function clearArray(arr){
 function clearResultDB(){
 	//while(resultDB.length) resultDB.pop();
 	clearArray(resultDB);
-	clearArray(info);
-	clearArray(markers);
+
+	clearArray(mapinfo_results);
+	//clearArray(info);
+	//clearArray(markers);
 	return;
 }
 
