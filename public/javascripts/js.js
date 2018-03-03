@@ -47,11 +47,9 @@ const arr_options = [
 	{ id: "zoo", name: "Zoo" }
 ];
 
-let base_url = 'http://100.33.50.170:8080/';
+//let base_url = 'http://100.33.50.170:8080/';
 //let base_url = 'http://192.168.2.199:8080/';
-//let base_url = 'http://localhost:8080/';
-//let base_url = 'http://192.168.1.100:8080';
-//let localhost_url = 'http://localhost:8080';
+let base_url = 'http://localhost:8080/';
 
 
 /**
@@ -96,11 +94,11 @@ function initMap() {
 	autocomplete = new google.maps.places.Autocomplete(user_input);
 
 }
-function clearMarkers(){
+function clearMarkers(mapinfo_arr){
 	let pop;
-	while(markers.length){
-		pop = markers.pop();
-		pop.setMap(null);
+	while(mapinfo_arr.length){
+		pop = mapinfo_arr.pop();		
+		pop.marker.setMap(null);
 		pop = null;
 	}
 	return;
@@ -130,7 +128,8 @@ function callback(results, status) {
 		return;
 	}
 	if (status == google.maps.places.PlacesServiceStatus.OK) {
-		clearMarkers();	    
+		clearMarkers(mapinfo_results);	
+
 	    buildDB(results, resultDB);
 	    renderPlaces(resultDB);	//<- this doesn't run...
 	    //resultPromise.then(renderPlaces);
@@ -162,7 +161,7 @@ $('#search-nearby').on('click', function(event){
 		//SEARCH KEYWORD
 $('#custom_query_submit').on('click', event=>{	
 	const keyword = $('#custom_query').val();
-	$('#custom_query').val('');
+	//$('#custom_query').val('');
 
 	const search_query = {
 		location: map.getCenter(),
@@ -231,12 +230,13 @@ function setBound(arr){
     });    
 }
 
-function buildDB(data, arr){
-	while(arr.length) arr.pop();
+function buildDB(data, database){
+	//while(database.length) database.pop();
+	clearArray(database);
 	for(let i=0;i<data.length;i++){
-		getPlaceDetail(data[i], i, arr);
+		getPlaceDetail(data[i], i, database);
 	}
-	return arr;
+	return database;
 }
 
 function makeContent(element){
@@ -253,10 +253,11 @@ function makeContent(element){
 }
 
 
-function makeMapInfo(element, map_arr){
+function makeMapInfo(element, map_arr, iconUrl){
 	const mapinfo_item = {};
 	let marker = new google.maps.Marker({
 	    position: element.mapObj,
+	    icon: iconUrl,
 	    map: map
     });
 	
@@ -320,7 +321,7 @@ function getPlaceDetail(item, index, database){
 				element.website = `<a href='${place.website}'>Website</a>`;
 				element.vicinity = `<div>${place.vicinity}</div>`;
 
-				makeMapInfo(element, mapinfo_results);
+				makeMapInfo(element, mapinfo_results, '');
 				
 			    database[index] = element;
 			}
@@ -449,11 +450,12 @@ $('.results').on('click', `.card > .card-body, .card > img`, event=>{
 	$('html, body').animate({ scrollTop: 0});
 });
 
-function makeMarkerAndSaveDB(element){	
-    makeMapInfo(element, mapinfo_lists);
+function makeMarkerAndSaveDB(element, database){
+	let iconUrl = '/images/icon/green2.png';
+    makeMapInfo(element, database, iconUrl);
     listDB.push(element);
-    renderItem(element);
-    showList();    
+    renderList(element);
+    showList();
 }
 function showList(){
 	if($('#map-container').hasClass('col-lg-10')){
@@ -464,50 +466,57 @@ function showList(){
 	}
 }
 
-$('.results').on('click', '.btn-add', event=>{	
-	showList();
-	/*
-	const index = $(event.currentTarget).attr('result-index');
-	const targetID = $(event.currentTarget).attr('targetID');
-	const item = resultDB[index];
-	*/
-	const targetID = $(event.currentTarget).parents('card').attr('item-id');
-	for(let i=0;i<resultDB.length;i++){
-		if(resultDB[i].id === targetID){
-			makeMarkerAndSaveDB(resultDB[i]);
+function removeSingleInfo(targetID){
+	for(let i=0;i<mapinfo_results.length;i++){
+		if(mapinfo_results[i].id === targetID){
+			let temp = mapinfo_results.splice(i,1);
+			console.log(temp);
+			temp[0].marker.setMap(null);
+			delete temp.map;
+			delete temp.mapObj;
+			delete temp.infowindow;
+			break;
 		}
 	}
+	return;
+}
 
-	//makeMarkerAndSaveDB(item);
-    
+$('.results').on('click', '.btn-add', event=>{	
+	//add item from results and save to list db and render list.
+	showList();	
+	const targetID = $(event.currentTarget).parents('.card').attr('item-id');
+
+	for(let i=0;i<resultDB.length;i++){
+		if(resultDB[i].id == targetID){
+			removeSingleInfo(targetID);
+			makeMarkerAndSaveDB(resultDB[i], mapinfo_lists);
+			break;
+		}
+	}
 	//replace add button to check icon button
-	const theButton = `<button class='col-12 btn btn-success btn-add' result-index='${index}' disabled>
+	const theButton = `<button class='col-12 btn btn-success btn-add' result-index='' disabled>
 	<i class="fas fa-check"></i> ADDED</button>`
-	$(event.currentTarget).replaceWith(theButton);
-	//renderItem(item);
+	$(event.currentTarget).replaceWith(theButton);	
 });
 
 
 $('#clear-search').on('click', function(){
-	clearMarkers();
-	clearResultDB();	
+	clearMarkers(mapinfo_results);
+	clearArray(resultDB);
+	//clearResultDB();	
 	$('.results').html('');
 });
 function clearArray(arr){
 	while(arr.length) arr.pop();
 	return;
 }
-
-function clearResultDB(){
-	//while(resultDB.length) resultDB.pop();
+/*
+function clearResultDB(){	
 	clearArray(resultDB);
-
-	clearArray(mapinfo_results);
-	//clearArray(info);
-	//clearArray(markers);
+	clearArray(mapinfo_results);	
 	return;
 }
-
+*/
 
 
 
@@ -515,18 +524,23 @@ function clearResultDB(){
 	PLACE LIST
 **/
 $('#place-list').on('click', '.list-name', event=>{
-	let idx = $(event.currentTarget).parent('div').children('button').attr('place-list-id');
-	const aPlace = listDB.find(item=>{
-		return item.id === idx;
-	});
-	
 
-	map.panTo(aPlace.mapObj);
+	let targetID = $(event.currentTarget).parents('.list').attr('list-id');
+
+	for(let i=0;i<mapinfo_lists.length;i++){		
+		if(mapinfo_lists[i].id == targetID){			
+			let targetObj = mapinfo_lists[i];
+			clearAllInfoWindow();
+			targetObj.infowindow.open(map, targetObj.marker);
+			map.panTo(targetObj.mapObj);
+			map.setZoom(15);
+		}
+	}
 });
 
-function renderItem(item){	
+function renderList(item){	
 	let place = `
-	<div class='list' id='rank-${rank}'>
+	<div class='list' list-id='${item.id}'>
 		<div class='row no-gutters align-items-center justify-content-between bg-light'>
 			<div class='btn-group-vertical bg-light' id="updown">				
 				<button type='button' class='btn btn-outline-primary align-self-center btn-up' id='up-${item.id}'>
@@ -550,8 +564,7 @@ function renderItem(item){
 }
 
 $('#place-list').on('click', '.btn-up', event=>{
-	let targetID = $(event.currentTarget).attr('id');
-	targetID = targetID.substring(3,targetID.length);
+	let targetID = $(event.currentTarget).parents('.list').attr('list-id');	
 	let temp;
 	if(listDB.length<2){
 		return;
@@ -566,9 +579,8 @@ $('#place-list').on('click', '.btn-up', event=>{
 	renderDestination();
 });
 
-$('#place-list').on('click', '.btn-dn', event=>{
-	let targetID = $(event.currentTarget).attr('id');
-	targetID = targetID.substring(3,targetID.length);
+$('#place-list').on('click', '.btn-dn', event=>{	
+	let targetID = $(event.currentTarget).parents('.list').attr('list-id');	
 	let temp;
 	if(listDB.length<2){
 		return;
@@ -593,30 +605,19 @@ function hideList(){
 	$('#list-container').addClass('d-none');
 }
 function clearDate(){
-	clearListDB();	
-	hideList();
-
-}
-function clearListDB(){	
-	let pop;
-	while(marker_arr.length){
-		pop = marker_arr.pop();
-		pop.marker.setMap(null);
-		pop.marker = null;
-	}
-	while(listDB.length>0) listDB.pop();
+	clearMarkers(mapinfo_lists);	
+	clearArray(listDB);	
 	$('#place-list').html('');
+	hideList();
 }
-
-
 function renderDestination(){
 	$('#place-list').html('');	
 	for(let i=0;i<listDB.length;i++){
-		renderItem(listDB[i]);
+		renderList(listDB[i]);
 	}
 }
 $('#place-list').on('click', '.btn-delete', event=>{
-	let targetID = $(event.currentTarget).attr('place-list-id');	
+	let targetID = $(event.currentTarget).parents('.list').attr('list-id');	
 	listDB.forEach((item,index)=>{
 		if(targetID === item.id){
 			listDB.splice(index, 1);
@@ -704,10 +705,14 @@ function loadDestination(data){
 		makeMarkerAndSaveDB(item);
 	});
 	renderPlaces(listDB);
-    clearResultDB();
+    
+    clearArray(resultDB);
+    clearMarkers(mapinfo_results);
+
     listDB.forEach((item,index)=>{
     	resultDB[index] = item;
     });
+
 	$('#users_saved_list').modal('hide');
 }
 
