@@ -238,16 +238,31 @@ function buildDB(data, database){
 	}
 	return database;
 }
+/*
+$('#map').on('click','.add-btn', event=>{
+	event.stopPropagation();
+	console.log('triggered!');
+	//let targetID = $(event.currentTarget).parent('.info-div').attr('item-id');
+	let targetID = $(event.currentTarget).attr('item-id');
+	console.log(targetID);
+	addFromResults(targetID);
+});
+*/
+
 
 function makeContent(element){
 	let content = '';
-	content += `<div class='info-div d-flex flex-column'>`;
-	content += `<div class='div-info-title'>${element.name}</div>`;
-	content += `<div class='div-info-vicinity'>${element.vicinity}</div>`;				
-	content += `<img src='${element.photos_small}'/>`;
+	content += `<div class='info-div d-flex flex-column' item-id='${element.id}'>`;
+	content += `<div class='div-info-title font-weight-bold text-center'>${element.name}</div>`;
+	content += `<img class='d-none d-lg-block' src='${element.photos_small}'/>`;
+	content += `<div class='div-info-hours d-none d-lg-block'>`;
 	content += element.hours;
-	content += element.vicinity;
-	content += element.website;
+	content += `</div>`;
+	content += `<div>${element.vicinity}</div>`;
+	content += `<div class='btns d-flex'>`;
+	content += `<a class='badge badge-primary col-12' href='${element.website}'>Website</a>`;
+	//content += `<a href='#' class='badge badge-primary add-btn col-12 item-id='${element.id}'>ADD</a>`;
+	//content += `</div>`;
 	content += '</div>';
 	return content;
 }
@@ -257,9 +272,7 @@ function makeMapInfo(element, map_arr, iconUrl){
 	const mapinfo_item = {};
 	let icon_ = {
 		url: iconUrl,
-		scaledSize: new google.maps.Size(50,50)
-		//origin: new google.maps.Point(0,0),
-		//anchor: new google.maps.Point(0,0)
+		scaledSize: new google.maps.Size(50,50)		
 	};
 	let marker = new google.maps.Marker({
 	    position: element.mapObj,
@@ -324,8 +337,8 @@ function getPlaceDetail(item, index, database){
 					'maxHeight':100, 
 					'minWidth':150
 				});
-				element.website = `<a href='${place.website}'>Website</a>`;
-				element.vicinity = `<div>${place.vicinity}</div>`;
+				element.website = place.website;
+				element.vicinity = place.vicinity;
 				let iconUrl = '/images/icon/green1.png';
 				makeMapInfo(element, mapinfo_results, iconUrl);
 				
@@ -406,10 +419,10 @@ function renderSinglePlace(item, index){
 	}		
 	result += `	
 		<div class='card-body'>
-			<h5 class='card-title'>${item.name}</h5>
-			${item.hours}
-			${item.web}
-			${item.vicinity}
+			<h5 class='card-title text-center text-lg-left'>${item.name}</h5>
+			<div class='text-center text-lg-left'>${item.hours}</div>
+			<div>${item.vicinity}</div>
+			<a href='${item.website} class='d-block text-center'>Webiste</a>			
 		</div>
 		<div class='card-footer'>
 			<button class='col-12 btn btn-primary btn-add' targetID='${item.id}' result-index='${index}'><i class="fas fa-plus-square"></i> ADD</button>
@@ -418,7 +431,7 @@ function renderSinglePlace(item, index){
 	return result;
 }
 function renderHours(arr){
-	let string = `<div class='div-info-hours'>`;
+	let string = `<div>`;
 	arr.forEach(item=>{
 		string += `<div class='div-info-hours-element'>${item}</div>`;
 	});
@@ -488,11 +501,7 @@ function removeSingleInfo(targetID, mapinfo_arr){
 	return;
 }
 
-$('.results').on('click', '.btn-add', event=>{	
-	//add item from results and save to list db and render list.
-	showList();	
-	const targetID = $(event.currentTarget).parents('.card').attr('item-id');
-
+function addFromResults(targetID){
 	for(let i=0;i<resultDB.length;i++){
 		if(resultDB[i].id == targetID){
 			removeSingleInfo(targetID, mapinfo_results);
@@ -500,6 +509,13 @@ $('.results').on('click', '.btn-add', event=>{
 			break;
 		}
 	}
+}
+
+$('.results').on('click', '.btn-add', event=>{	
+	//add item from results and save to list db and render list.
+	showList();	
+	const targetID = $(event.currentTarget).parents('.card').attr('item-id');
+	addFromResults(targetID);	
 	//replace add button to check icon button
 	const theButton = `<button class='col-12 btn btn-success btn-add' result-index='' disabled>
 	<i class="fas fa-check"></i> ADDED</button>`
@@ -517,14 +533,6 @@ function clearArray(arr){
 	while(arr.length) arr.pop();
 	return;
 }
-/*
-function clearResultDB(){	
-	clearArray(resultDB);
-	clearArray(mapinfo_results);	
-	return;
-}
-*/
-
 
 
 /**
