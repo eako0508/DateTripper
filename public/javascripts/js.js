@@ -113,14 +113,7 @@ function alertMessage(msg){
 	$('#announcement').modal('show');
 }
 
-/*
-function runPromises(results, arr){
-	return Promise(function (resolve, reject){
-		buildDB(results, arr);
-		resolve(arr);
-	});
-}
-*/
+
 function callback(results, status) {
 	
 	if (status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
@@ -132,16 +125,14 @@ function callback(results, status) {
 
 	    buildDB(results, resultDB);
 	    renderPlaces(resultDB);	//<- this doesn't run...
-	    //resultPromise.then(renderPlaces);
-	    //runPromises(results, resultDB).then(renderPlaces);
-
-	    /*
+	    
+	    
 	    const bounds = new google.maps.LatLngBounds();
 	    resultDB.forEach(item=>{
 	    	bounds.extend(item.mapObj);
 	    })
 	    map.fitBounds(bounds);
-	    */
+	    
 	}
 }
 
@@ -230,43 +221,30 @@ function setBound(arr){
     });    
 }
 
-function buildDB(data, database){
-	//while(database.length) database.pop();
+function buildDB(data, database){	
 	clearArray(database);
 	for(let i=0;i<data.length;i++){
-		getPlaceDetail(data[i], i, database);
+		getPlaceDetail(data[i], database);
 	}
 	return database;
 }
-/*
-$('#map').on('click','.add-btn', event=>{
-	event.stopPropagation();
-	console.log('triggered!');
-	//let targetID = $(event.currentTarget).parent('.info-div').attr('item-id');
-	let targetID = $(event.currentTarget).attr('item-id');
-	console.log(targetID);
-	addFromResults(targetID);
-});
-*/
-
 
 function makeContent(element){
 	let content = '';
 	content += `<div class='info-div d-flex flex-column' item-id='${element.id}'>`;
 	content += `<div class='div-info-title font-weight-bold text-center'>${element.name}</div>`;
 	content += `<img class='d-none d-lg-block' src='${element.photos_small}'/>`;
-	content += `<div class='div-info-hours d-none d-lg-block'>`;
-	content += element.hours;
-	content += `</div>`;
+	//content += `<div class='div-info-hours d-none d-lg-block'>`;
+	//content += element.hours;
+	//content += `</div>`;
 	content += `<div>${element.vicinity}</div>`;
-	content += `<div class='btns d-flex'>`;
-	content += `<a class='badge badge-primary col-12' href='${element.website}'>Website</a>`;
+	//content += `<div class='btns d-flex'>`;
+	//content += `<a class='badge badge-primary col-12' href='${element.website}'>Website</a>`;
 	//content += `<a href='#' class='badge badge-primary add-btn col-12 item-id='${element.id}'>ADD</a>`;
 	//content += `</div>`;
-	content += '</div>';
+	//content += '</div>';
 	return content;
 }
-
 
 function makeMapInfo(element, map_arr, iconUrl){
 	const mapinfo_item = {};
@@ -298,18 +276,13 @@ function makeMapInfo(element, map_arr, iconUrl){
 const mapinfo_results = [];
 const mapinfo_lists = [];
 
-function getPlaceDetail(item, index, database){	
-	let request = {
-		"placeId": item.place_id
-	};
-	service.getDetails(request, function(place,status){
-		if (status == google.maps.places.PlacesServiceStatus.OK) {
-			
-			if(place.opening_hours && item.photos){
+function getPlaceDetail(place, database){	
+	
+			if(place.photos){
 				
-				//console.log(place);
-				const place_lat = item.geometry.location.lat();
-		    	const place_lng = item.geometry.location.lng();
+				console.log(place);
+				const place_lat = place.geometry.location.lat();
+		    	const place_lng = place.geometry.location.lng();
 
 				const element = {
 					name: place.name,
@@ -321,31 +294,31 @@ function getPlaceDetail(item, index, database){
 					},
 					photos_large: '',
 					photos_small: '',
-					hours: renderHours(place.opening_hours.weekday_text),
-					website: '',
+					//hours: renderHours(place.opening_hours.weekday_text),
+					//website: '',
 					vicinity: '',
 					mapObj: new google.maps.LatLng(
 							place_lat, place_lng
 						)
 				};
 				//console.log(element.mapObj);
-				element.photos_large = item.photos[0].getUrl({
+				element.photos_large = place.photos[0].getUrl({
 					'maxHeight':200, 
 					'minWidth':350
 				});
-				element.photos_small = item.photos[0].getUrl({
+				element.photos_small = place.photos[0].getUrl({
 					'maxHeight':100, 
 					'minWidth':150
 				});
-				element.website = place.website;
+				//element.website = place.website;
 				element.vicinity = place.vicinity;
 				let iconUrl = '/images/icon/green1.png';
 				makeMapInfo(element, mapinfo_results, iconUrl);
 				
-			    database[index] = element;
+			    database.push(element);
 			}
-		}
-	});	
+	//	}
+	//});	
 }
 
 
@@ -408,6 +381,11 @@ function renderPlaces(arr){
 	$('.results').html(myPlaces);
 	return;	
 }
+/*
+<div class='text-center text-lg-left'>${item.hours}</div>
+
+<a href='${item.website} class='d-block text-center'>Webiste</a>
+*/
 
 function renderSinglePlace(item, index){	
 	let result = `
@@ -420,9 +398,7 @@ function renderSinglePlace(item, index){
 	result += `	
 		<div class='card-body'>
 			<h5 class='card-title text-center text-lg-left'>${item.name}</h5>
-			<div class='text-center text-lg-left'>${item.hours}</div>
 			<div>${item.vicinity}</div>
-			<a href='${item.website} class='d-block text-center'>Webiste</a>			
 		</div>
 		<div class='card-footer'>
 			<button class='col-12 btn btn-primary btn-add' targetID='${item.id}' result-index='${index}'><i class="fas fa-plus-square"></i> ADD</button>
