@@ -130,27 +130,25 @@ function callback(results, status) {
 	if (status == google.maps.places.PlacesServiceStatus.OK) {
 		clearMarkers(mapinfo_results);	
 
-	    buildDB(results, resultDB);
-	    renderPlaces(resultDB);	//<- this doesn't run...
-	    //resultPromise.then(renderPlaces);
-	    //runPromises(results, resultDB).then(renderPlaces);
-
-	    /*
-	    const bounds = new google.maps.LatLngBounds();
-	    resultDB.forEach(item=>{
-	    	bounds.extend(item.mapObj);
-	    })
-	    map.fitBounds(bounds);
-	    */
+	    buildDB(results, resultDB);	    
+	    setTimeout(showResults,500);	    
 	}
 }
 
-
+function showResults(){
+	renderPlaces(resultDB);
+    const bounds = new google.maps.LatLngBounds();
+    resultDB.forEach(item=>{
+    	bounds.extend(item.mapObj);
+    });
+    map.fitBounds(bounds);    
+}
 
 
 		//SEARCH NEARBY
 
 $('#search-nearby').on('click', function(event){
+	
 	const query = {
 		location: map.getCenter(),
 		radius: 500,
@@ -160,8 +158,7 @@ $('#search-nearby').on('click', function(event){
 });
 		//SEARCH KEYWORD
 $('#custom_query_submit').on('click', event=>{	
-	const keyword = $('#custom_query').val();
-	//$('#custom_query').val('');
+	const keyword = $('#custom_query').val();	
 
 	const search_query = {
 		location: map.getCenter(),
@@ -231,7 +228,7 @@ function setBound(arr){
 }
 
 function buildDB(data, database){
-	//while(database.length) database.pop();
+	
 	clearArray(database);
 	for(let i=0;i<data.length;i++){
 		getPlaceDetail(data[i], i, database);
@@ -306,7 +303,7 @@ function getPlaceDetail(item, index, database){
 		if (status == google.maps.places.PlacesServiceStatus.OK) {
 			
 			if(place.opening_hours && item.photos){
-				
+				console.log('at making db');
 				//console.log(place);
 				const place_lat = item.geometry.location.lat();
 		    	const place_lng = item.geometry.location.lng();
@@ -400,6 +397,7 @@ function renderOptions(arr){
 **/
 //renderPlaces->renderSinglePlace->$('.results').html
 function renderPlaces(arr){
+	console.log('at renderPlaces');
 	//display array to places
 	const myPlaces = arr.map((item,index)=>{
 		return renderSinglePlace(item, index);
