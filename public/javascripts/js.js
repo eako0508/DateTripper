@@ -255,9 +255,15 @@ function makeContent(element){
 
 function makeMapInfo(element, map_arr, iconUrl){
 	const mapinfo_item = {};
+	let icon_ = {
+		url: iconUrl,
+		scaledSize: new google.maps.Size(50,50)
+		//origin: new google.maps.Point(0,0),
+		//anchor: new google.maps.Point(0,0)
+	};
 	let marker = new google.maps.Marker({
 	    position: element.mapObj,
-	    icon: iconUrl,
+	    icon: icon_,
 	    map: map
     });
 	
@@ -320,8 +326,8 @@ function getPlaceDetail(item, index, database){
 				});
 				element.website = `<a href='${place.website}'>Website</a>`;
 				element.vicinity = `<div>${place.vicinity}</div>`;
-
-				makeMapInfo(element, mapinfo_results, '');
+				let iconUrl = '/images/icon/green1.png';
+				makeMapInfo(element, mapinfo_results, iconUrl);
 				
 			    database[index] = element;
 			}
@@ -436,7 +442,8 @@ $('.results').on('click', `.card > .card-body, .card > img`, event=>{
 			clearAllInfoWindow();
 			targetObj.infowindow.open(map, targetObj.marker);
 			map.panTo(targetObj.mapObj);
-			map.setZoom(15);
+			//map.setZoom(15);
+			if(map.getZoom()<=15) map.setZoom(15);
 		}
 	}
 	
@@ -451,7 +458,7 @@ $('.results').on('click', `.card > .card-body, .card > img`, event=>{
 });
 
 function makeMarkerAndSaveDB(element, database){
-	let iconUrl = '/images/icon/green2.png';
+	let iconUrl = '/images/icon/red1.png';
     makeMapInfo(element, database, iconUrl);
     listDB.push(element);
     renderList(element);
@@ -466,10 +473,10 @@ function showList(){
 	}
 }
 
-function removeSingleInfo(targetID){
-	for(let i=0;i<mapinfo_results.length;i++){
-		if(mapinfo_results[i].id === targetID){
-			let temp = mapinfo_results.splice(i,1);
+function removeSingleInfo(targetID, mapinfo_arr){
+	for(let i=0;i<mapinfo_arr.length;i++){
+		if(mapinfo_arr[i].id === targetID){
+			let temp = mapinfo_arr.splice(i,1);
 			console.log(temp);
 			temp[0].marker.setMap(null);
 			delete temp.map;
@@ -488,7 +495,7 @@ $('.results').on('click', '.btn-add', event=>{
 
 	for(let i=0;i<resultDB.length;i++){
 		if(resultDB[i].id == targetID){
-			removeSingleInfo(targetID);
+			removeSingleInfo(targetID, mapinfo_results);
 			makeMarkerAndSaveDB(resultDB[i], mapinfo_lists);
 			break;
 		}
@@ -533,7 +540,8 @@ $('#place-list').on('click', '.list-name', event=>{
 			clearAllInfoWindow();
 			targetObj.infowindow.open(map, targetObj.marker);
 			map.panTo(targetObj.mapObj);
-			map.setZoom(15);
+			if(map.getZoom()<=15) map.setZoom(15);
+			
 		}
 	}
 });
@@ -616,6 +624,7 @@ function renderDestination(){
 		renderList(listDB[i]);
 	}
 }
+
 $('#place-list').on('click', '.btn-delete', event=>{
 	let targetID = $(event.currentTarget).parents('.list').attr('list-id');	
 	listDB.forEach((item,index)=>{
@@ -623,13 +632,7 @@ $('#place-list').on('click', '.btn-delete', event=>{
 			listDB.splice(index, 1);
 		}
 	});	
-	marker_arr.forEach((item,index)=>{
-		if(targetID === item.id){
-			item.marker.setMap(null);
-			item.marker = null;
-			marker_arr.splice(index, 1);
-		}
-	})
+	removeSingleInfo(targetID, mapinfo_lists);	
 	$(event.currentTarget).closest('.list').remove();
 	if(listDB.length<1) clearDate();		
 });
