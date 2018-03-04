@@ -137,13 +137,17 @@ function placeServiceProcessor(results, status) {
 
 function showResults(){
 	renderPlaces(resultDB);
-    const bounds = new google.maps.LatLngBounds();
-    resultDB.forEach(item=>{
-    	bounds.extend(item.mapObj);
-    });
-    map.fitBounds(bounds);    
+    bounds(resultDB);
 }
 
+function bounds(arr){
+	if(arr.length<1) return;
+	const bounds = new google.maps.LatLngBounds();
+    arr.forEach(item=>{
+    	bounds.extend(item.mapObj);
+    });
+    map.fitBounds(bounds);
+}
 
 		//SEARCH NEARBY
 
@@ -152,7 +156,7 @@ $('#search-nearby').on('click', function(event){
 	const query = {
 		location: map.getCenter(),
 		radius: 500,
-		type: checked_options
+		type: checked_options[0]
 	}
 	service.nearbySearch(query, placeServiceProcessor);
 });
@@ -172,20 +176,7 @@ $('.submit-go').on('submit', event=>{
 
 });
 
-//date-btn-save
-//save the date
-$('#save-form').on('submit', event=>{
-	event.preventDefault();
-	if(listDB.length<2){
-		alert('Need at least 2 places!');
-		return;
-	}
-	if(localToken==='') {	
-		$('#login-page').modal('show');
-		return;
-	}
-	
-	let item_title = $('#date-title').val();
+function saveTheDate(date_title){	
 	let post_url = base_url+'api/destination/' + local_username;
 	listDB.forEach((item,index)=>{
 		if(item.marker!=null){
@@ -195,7 +186,7 @@ $('#save-form').on('submit', event=>{
 		}		
 	});
 	const item = {
-		"title": item_title,
+		"title": date_title,
 		"destinations": listDB
 	}	
 	$.ajax({
@@ -210,6 +201,63 @@ $('#save-form').on('submit', event=>{
 	})
 	.done(saveSuccess)
 	.fail(alertFail);
+}
+function updateTheDate(targetID, item_title){
+	let post_url = base_url+'api/destination/';
+	listDB.forEach((item,index)=>{
+		if(item.marker!=null){
+			item.marker.setMap(null);
+			item.marker = null;
+			item = null;	
+		}		
+	});
+	const item = {
+		"title": item_title,
+		"destinations": listDB
+	}	
+	$.ajax({
+		url: post_url,
+		method:"PUT",
+		contentType: 'application/json',
+		dataType: 'json',
+		data: JSON.stringify(item),		
+		beforeSend: function(xhr, settings) { 
+			xhr.setRequestHeader('Authorization','Bearer ' + localToken); 
+		}
+	})
+	.done(updateSuccess)
+	.fail(alertFail);
+}
+
+function updateSuccess(xhr_sent, status, resFromServer){
+	const newEntry = renderSaved_card(xhr_sent);
+	alertMessage('update success');	
+	return;
+}
+
+//date-btn-save
+//save the date
+$('#save-form').on('click', '#date-btn-save', event=>{
+	event.preventDefault();
+	if(listDB.length<2){
+		alert('Need at least 2 places!');
+		return;
+	}
+	if(localToken==='') {	
+		$('#login-page').modal('show');
+		return;
+	}
+	
+	let item_title = $('#date-title').val();
+
+	for(let i=0;i<loaded_saved_list.length;i++){
+		if(loaded_saved_list[i].title === item_title){
+			alertMessage('same name found!');
+			updateTheDate(loaded_saved_list[i].id, item_title);
+			return;
+		}
+	}
+	saveTheDate(item_title);	
 });
 
 function saveSuccess(xhr_sent, status, resFromServer){
@@ -387,17 +435,12 @@ function renderOptions(arr){
 	$('#display-options').html(items);
 }
 
-
-
-
-
-
 /**
 	RESULTS
 **/
 //renderPlaces->renderSinglePlace->$('.results').html
 function renderPlaces(arr){
-	console.log('at renderPlaces');
+	//console.log('at renderPlaces');
 	//display array to places
 	const myPlaces = arr.map((item,index)=>{
 		return renderSinglePlace(item, index);
@@ -610,6 +653,7 @@ $('#place-list').on('click', '.btn-dn', event=>{
 });
 
 $('#date-btn-clear').on('click', event=>{
+	$('#date-btn-save').html('<i class="fas fa-save"></i> SAVE');
 	clearDate();
 });
 
@@ -708,20 +752,22 @@ $('#users_saved_list_modal').on('click', '.delete-load-btn', event=>{
 	deleteSavedListItem(loadID);
 });
 
+let loaded_saved_list;
+
 function loadDestination(data){
-	clearDate();
+	console.log(data);
+	clearDate();	
 	data[0].destinations.forEach((item)=>{
-		makeMarkerAndSaveDB(item);
+		makeMarkerAndSaveDB(item, mapinfo_lists);
 	});
 	renderPlaces(listDB);
     
     clearArray(resultDB);
     clearMarkers(mapinfo_results);
-
-    listDB.forEach((item,index)=>{
-    	resultDB[index] = item;
-    });
-
+    
+    bounds(listDB);
+    $('#date-title').val(data[0].title);
+    $('#date-btn-save').html('<i class="fas fa-save"></i> UPDATE');
 	$('#users_saved_list').modal('hide');
 }
 
@@ -753,7 +799,7 @@ $('#users_saved_list_close').on('click', ()=>{
 function renderSaved_card(item){
 	
 	let thething = `
-	<div class='card col-12 col-lg-5 no-paddings' item-ID=${item.id}>
+	<div class='card col-12 col-lg-5 no-paddings' savedLists-id=${item.id}>
 		<div class='card-body'>${item.title}</div>
 		<div class='card-footer justify-content-around'>
 			<button type='button' class='btn btn-primary save-load-btn'><i class="fas fa-folder-open"></i> LOAD</button>
@@ -765,6 +811,7 @@ function renderSaved_card(item){
 }
 
 function loadSavedLists(data){	
+	loaded_saved_list = data[0].savedLists;
 	const completeCards = 
 		data[0].savedLists.map(item=>{
 			return renderSaved_card(item);			
