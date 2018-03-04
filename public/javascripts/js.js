@@ -121,7 +121,7 @@ function runPromises(results, arr){
 	});
 }
 */
-function callback(results, status) {
+function placeServiceProcessor(results, status) {
 	
 	if (status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
 		alertMessage('no results');
@@ -154,7 +154,7 @@ $('#search-nearby').on('click', function(event){
 		radius: 500,
 		type: checked_options
 	}
-	service.nearbySearch(query, callback);
+	service.nearbySearch(query, placeServiceProcessor);
 });
 		//SEARCH KEYWORD
 $('#custom_query_submit').on('click', event=>{	
@@ -165,7 +165,7 @@ $('#custom_query_submit').on('click', event=>{
 		radius: 500,
 		query: keyword
 	}
-	service.textSearch(search_query, callback);
+	service.textSearch(search_query, placeServiceProcessor);
 });
 $('.submit-go').on('submit', event=>{
 	event.preventDefault();
@@ -339,7 +339,7 @@ function getPlaceDetail(item, index, database){
 				let iconUrl = '/images/icon/green1.png';
 				makeMapInfo(element, mapinfo_results, iconUrl);
 				
-			    database[index] = element;
+			    database.push(element);
 			}
 		}
 	});	
