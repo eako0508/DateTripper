@@ -1,3 +1,20 @@
+.indie-flower {
+	font-family: 'Indie Flower', cursive;
+}
+.cormorant {
+	font-family: 'Cormorant Garamond', serif;
+}
+#register-page label,
+#announcement .modal-body,
+#users_saved_list .modal-body,
+#confirmation .modal-body {
+	font-family: 'Cormorant Garamond', serif;
+	font-weight: bold;
+}
+.btn {
+	font-family: 'Cormorant Garamond', serif;
+	//font-weight: bold;
+}
 #page-title{
 	//color: darkred;
 	//color: darkgoldenrod;

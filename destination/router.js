@@ -108,6 +108,7 @@ router.route('/')
       {new: true}
       )
       .then(updated=>{
+        console.log(updated);
         /*
         User.findOneAndUpdate(
             {$and: {username: addedItem.username,savedLists.title:req.body.title}},

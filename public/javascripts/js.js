@@ -162,7 +162,9 @@ $('#search-nearby').on('click', function(event){
 	service.nearbySearch(query, placeServiceProcessor);
 });
 		//SEARCH KEYWORD
-$('#custom_query_submit').on('click', event=>{	
+$('#custom-form').on('submit', event=>{
+//$('#custom_query_submit').on('click', event=>{
+	event.preventDefault();
 	const keyword = $('#custom_query').val();	
 
 	const search_query = {
@@ -280,6 +282,9 @@ function saveSuccess(xhr_sent, status, resFromServer){
 	const newEntry = renderSaved_card(xhr_sent);
 	alertMessage('save success');
 	$('#users_saved_list_modal').append(newEntry);
+	$('#date-btn-save').html('<i class="fas fa-save"></i> UPDATE');
+	getSavedLists();
+	////
 	//Save success!
 	return;
 }
@@ -657,10 +662,27 @@ $('#place-list').on('click', '.btn-dn', event=>{
 	renderDestination();
 });
 
-$('#date-btn-clear').on('click', event=>{
-	$('#date-btn-save').html('<i class="fas fa-save"></i> SAVE');
-	clearDate();
+function promptConfirm(){
+
+}
+
+$('#confirmation').on('click', '#confirm-close', event=>{
+	$('#confirmation').modal('hide');
 });
+
+$('#date-btn-clear').on('click', event=>{	
+	$('#confirmation').find('#confirm-confirm').addClass('clearConfirm');
+	$('#confirmation').modal('show');
+});
+
+$('#confirmation').on('click', '.clearConfirm', function(event){
+	$(event.currentTarget).removeClass('clearConfirm');
+	clearDate();
+	$('#date-btn-save').html('<i class="fas fa-save"></i> SAVE');
+	$('#confirmation').modal('hide');
+});
+
+
 
 function hideList(){
 	$('#map-container').removeClass('col-lg-7');
@@ -752,9 +774,20 @@ function deleteSavedListItem(loadID){
 	
 }
 
+$('#confirmation').on('click', '.removeSavedListConfirm', event=>{
+	$(event.currentTarget).removeClass('removeSavedListConfirm');
+	let loadID = $(event.currentTarget).attr('rm-id');
+	$(event.currentTarget).attr('rm-id', '');
+	deleteSavedListItem(loadID);
+	$('#confirmation').modal('hide');
+	$('#date-btn-save').html('<i class="fas fa-save"></i> SAVE');
+});
+
 $('#users_saved_list_modal').on('click', '.delete-load-btn', event=>{
 	let loadID = $(event.currentTarget).parents('.card').attr('savedLists-id');
-	deleteSavedListItem(loadID);
+	$('#confirmation').find('#confirm-confirm').addClass('removeSavedListConfirm');
+	$('#confirmation').find('#confirm-confirm').attr('rm-id', loadID);
+	$('#confirmation').modal('show');
 });
 
 let loaded_saved_list;
@@ -805,7 +838,7 @@ function renderSaved_card(item){
 	
 	let thething = `
 	<div class='card col-12 col-lg-5 no-paddings' savedLists-id=${item.id}>
-		<div class='card-body'>${item.title}</div>
+		<div class='card-body cormorant font-weight-bold'>${item.title}</div>
 		<div class='card-footer justify-content-around'>
 			<button type='button' class='btn btn-primary save-load-btn'><i class="fas fa-folder-open"></i> LOAD</button>
 			<button type='button' class='btn btn-danger delete-load-btn'><i class="fas fa-trash-alt"></i></button>
@@ -815,7 +848,8 @@ function renderSaved_card(item){
 	return thething;
 }
 
-function loadSavedLists(data){	
+function loadSavedLists(data){
+	console.log('at loadSavedLists');
 	loaded_saved_list = data[0].savedLists;
 	const completeCards = 
 		data[0].savedLists.map(item=>{
@@ -825,7 +859,7 @@ function loadSavedLists(data){
 }
 
 function getSavedLists(){	
-	//console.log('at getSavedLists');
+	console.log('at getSavedLists');
 	$.ajax({
 		url: base_url+'api/destination/user/'+local_username,
 		method: 'GET',
