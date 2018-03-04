@@ -49,7 +49,8 @@ const arr_options = [
 
 //let base_url = 'http://100.33.50.170:8080/';
 //let base_url = 'http://192.168.2.199:8080/';
-let base_url = 'http://localhost:8080/';
+//let base_url = 'http://localhost:8080/';
+let base_url = 'http://192.168.1.100:8080';
 
 
 /**
@@ -888,7 +889,14 @@ $('#logout-btn').on('click', ()=>{
 	$('#login-btn').show();	
 });
 
-
+$('#btn-starttrippin').on('click', function(){
+	$('#curtain').animate({
+		bottom: `${$(window).height()}px`,
+		opacity: '0'
+	}, 1000, 'swing', function(){
+		$('#curtain').hide();
+	});
+});
 //INITIALIZATION
 function firstLoad(){
 	resizeWindow();	
@@ -907,7 +915,7 @@ $(window).on('resize', function(){
 function resizeWindow(){
 	let window_height = $(window).height();
 	let window_width = $(window).width();
-	$('.curtain').height(window_height);
+	$('#curtain').height(window_height*.87);
 	let resized_height = (window_height*.6);
 
 	$('#map').height(resized_height);
