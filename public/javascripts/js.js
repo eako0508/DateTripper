@@ -113,8 +113,15 @@ function alertMessage(msg){
 	$('#announcement').modal('show');
 }
 
-
-function callback(results, status) {
+/*
+function runPromises(results, arr){
+	return Promise(function (resolve, reject){
+		buildDB(results, arr);
+		resolve(arr);
+	});
+}
+*/
+function placeServiceProcessor(results, status) {
 	
 	if (status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
 		alertMessage('no results');
@@ -123,63 +130,53 @@ function callback(results, status) {
 	if (status == google.maps.places.PlacesServiceStatus.OK) {
 		clearMarkers(mapinfo_results);	
 
-	    buildDB(results, resultDB);
-	    renderPlaces(resultDB);	//<- this doesn't run...
-	    
-	    
-	    const bounds = new google.maps.LatLngBounds();
-	    resultDB.forEach(item=>{
-	    	bounds.extend(item.mapObj);
-	    })
-	    map.fitBounds(bounds);
-	    
+	    buildDB(results, resultDB);	    
+	    setTimeout(showResults,500);	    
 	}
 }
 
+function showResults(){
+	renderPlaces(resultDB);
+    bounds(resultDB);
+}
 
-
+function bounds(arr){
+	if(arr.length<1) return;
+	const bounds = new google.maps.LatLngBounds();
+    arr.forEach(item=>{
+    	bounds.extend(item.mapObj);
+    });
+    map.fitBounds(bounds);
+}
 
 		//SEARCH NEARBY
 
 $('#search-nearby').on('click', function(event){
+	
 	const query = {
 		location: map.getCenter(),
 		radius: 500,
-		type: checked_options
+		type: checked_options[0]
 	}
-	service.nearbySearch(query, callback);
+	service.nearbySearch(query, placeServiceProcessor);
 });
 		//SEARCH KEYWORD
 $('#custom_query_submit').on('click', event=>{	
-	const keyword = $('#custom_query').val();
-	//$('#custom_query').val('');
+	const keyword = $('#custom_query').val();	
 
 	const search_query = {
 		location: map.getCenter(),
 		radius: 500,
 		query: keyword
 	}
-	service.textSearch(search_query, callback);
+	service.textSearch(search_query, placeServiceProcessor);
 });
 $('.submit-go').on('submit', event=>{
 	event.preventDefault();
 
 });
 
-//date-btn-save
-//save the date
-$('#save-form').on('submit', event=>{
-	event.preventDefault();
-	if(listDB.length<2){
-		alert('Need at least 2 places!');
-		return;
-	}
-	if(localToken==='') {	
-		$('#login-page').modal('show');
-		return;
-	}
-	
-	let item_title = $('#date-title').val();
+function saveTheDate(date_title){	
 	let post_url = base_url+'api/destination/' + local_username;
 	listDB.forEach((item,index)=>{
 		if(item.marker!=null){
@@ -189,7 +186,7 @@ $('#save-form').on('submit', event=>{
 		}		
 	});
 	const item = {
-		"title": item_title,
+		"title": date_title,
 		"destinations": listDB
 	}	
 	$.ajax({
@@ -204,6 +201,78 @@ $('#save-form').on('submit', event=>{
 	})
 	.done(saveSuccess)
 	.fail(alertFail);
+}
+function updateTheDate(targetID, item_title){
+	let post_url = base_url+'api/destination/';
+	listDB.forEach((item,index)=>{
+		if(item.marker!=null){
+			item.marker.setMap(null);
+			item.marker = null;
+			item = null;	
+		}		
+	});
+	const item = {
+		"title": item_title,
+		"destinations": listDB
+	}	
+	$.ajax({
+		url: post_url,
+		method:"PUT",
+		contentType: 'application/json',
+		dataType: 'json',
+		data: JSON.stringify(item),		
+		beforeSend: function(xhr, settings) { 
+			xhr.setRequestHeader('Authorization','Bearer ' + localToken); 
+		}
+	})
+	.done(updateSuccess)
+	.fail(alertFail);
+}
+
+function updateSuccess(xhr_sent, status, resFromServer){
+	//const newEntry = renderSaved_card(xhr_sent);
+	console.log(xhr_sent);
+	$('#date-btn-save').html('<i class="fas fa-save"></i> UPDATE');
+	console.log('before getsavedlists');
+	getSavedLists();
+	alertMessage('update success');
+	
+	return;
+}
+/*
+function loadSavedLists(data){	
+	loaded_saved_list = data[0].savedLists;
+	const completeCards = 
+		data[0].savedLists.map(item=>{
+			return renderSaved_card(item);			
+		});	
+	$('#users_saved_list_modal').html(completeCards);
+}*/
+
+
+//date-btn-save
+//save the date
+$('#save-form').on('click', '#date-btn-save', event=>{
+	event.preventDefault();
+	if(listDB.length<2){
+		alert('Need at least 2 places!');
+		return;
+	}
+	if(localToken==='') {	
+		$('#login-page').modal('show');
+		return;
+	}
+	
+	let item_title = $('#date-title').val();
+
+	for(let i=0;i<loaded_saved_list.length;i++){
+		if(loaded_saved_list[i].title === item_title){
+			alertMessage('same name found!');
+			updateTheDate(loaded_saved_list[i].id, item_title);
+			return;
+		}
+	}
+	saveTheDate(item_title);	
 });
 
 function saveSuccess(xhr_sent, status, resFromServer){
@@ -221,7 +290,7 @@ function setBound(arr){
     });    
 }
 
-function buildDB(data, database){	
+function buildDB(data, database){
 	clearArray(database);
 	for(let i=0;i<data.length;i++){
 		getPlaceDetail(data[i], database);
@@ -234,12 +303,12 @@ function makeContent(element){
 	content += `<div class='info-div d-flex flex-column' item-id='${element.id}'>`;
 	content += `<div class='div-info-title font-weight-bold text-center'>${element.name}</div>`;
 	content += `<img class='d-none d-lg-block' src='${element.photos_small}'/>`;
-	//content += `<div class='div-info-hours d-none d-lg-block'>`;
-	//content += element.hours;
-	//content += `</div>`;
+	content += `<div class='div-info-hours d-none d-lg-block'>`;
+	content += element.hours;
+	content += `</div>`;
 	content += `<div>${element.vicinity}</div>`;
 	//content += `<div class='btns d-flex'>`;
-	//content += `<a class='badge badge-primary col-12' href='${element.website}'>Website</a>`;
+	content += `<a class='badge badge-primary col-12' href='${element.website}'>Website</a>`;
 	//content += `<a href='#' class='badge badge-primary add-btn col-12 item-id='${element.id}'>ADD</a>`;
 	//content += `</div>`;
 	//content += '</div>';
@@ -276,13 +345,17 @@ function makeMapInfo(element, map_arr, iconUrl){
 const mapinfo_results = [];
 const mapinfo_lists = [];
 
-function getPlaceDetail(place, database){	
-	
-			if(place.photos){
-				
-				console.log(place);
-				const place_lat = place.geometry.location.lat();
-		    	const place_lng = place.geometry.location.lng();
+
+function getPlaceDetail(item, database){
+	let request = {
+		"placeId": item.place_id
+	};
+	service.getDetails(request, function(place,status){
+		if (status == google.maps.places.PlacesServiceStatus.OK) {
+			
+			if(place.opening_hours && item.photos){
+				const place_lat = item.geometry.location.lat();
+		    	const place_lng = item.geometry.location.lng();
 
 				const element = {
 					name: place.name,
@@ -294,14 +367,14 @@ function getPlaceDetail(place, database){
 					},
 					photos_large: '',
 					photos_small: '',
-					//hours: renderHours(place.opening_hours.weekday_text),
-					//website: '',
+					hours: renderHours(place.opening_hours.weekday_text),
+					website: '',
 					vicinity: '',
 					mapObj: new google.maps.LatLng(
 							place_lat, place_lng
 						)
 				};
-				//console.log(element.mapObj);
+				
 				element.photos_large = place.photos[0].getUrl({
 					'maxHeight':200, 
 					'minWidth':350
@@ -317,8 +390,8 @@ function getPlaceDetail(place, database){
 				
 			    database.push(element);
 			}
-	//	}
-	//});	
+		}
+	})
 }
 
 
@@ -363,17 +436,11 @@ function renderOptions(arr){
 	$('#display-options').html(items);
 }
 
-
-
-
-
-
 /**
 	RESULTS
 **/
 //renderPlaces->renderSinglePlace->$('.results').html
-function renderPlaces(arr){
-	//display array to places
+function renderPlaces(arr){	
 	const myPlaces = arr.map((item,index)=>{
 		return renderSinglePlace(item, index);
 	});
@@ -398,7 +465,9 @@ function renderSinglePlace(item, index){
 	result += `	
 		<div class='card-body'>
 			<h5 class='card-title text-center text-lg-left'>${item.name}</h5>
+			<div class='text-center text-lg-left'>${item.hours}</div>
 			<div>${item.vicinity}</div>
+			<a href='${item.website} class='d-block text-center'>Webiste</a>
 		</div>
 		<div class='card-footer'>
 			<button class='col-12 btn btn-primary btn-add' targetID='${item.id}' result-index='${index}'><i class="fas fa-plus-square"></i> ADD</button>
@@ -466,7 +535,7 @@ function removeSingleInfo(targetID, mapinfo_arr){
 	for(let i=0;i<mapinfo_arr.length;i++){
 		if(mapinfo_arr[i].id === targetID){
 			let temp = mapinfo_arr.splice(i,1);
-			console.log(temp);
+			//console.log(temp);
 			temp[0].marker.setMap(null);
 			delete temp.map;
 			delete temp.mapObj;
@@ -588,6 +657,7 @@ $('#place-list').on('click', '.btn-dn', event=>{
 });
 
 $('#date-btn-clear').on('click', event=>{
+	$('#date-btn-save').html('<i class="fas fa-save"></i> SAVE');
 	clearDate();
 });
 
@@ -686,20 +756,22 @@ $('#users_saved_list_modal').on('click', '.delete-load-btn', event=>{
 	deleteSavedListItem(loadID);
 });
 
+let loaded_saved_list;
+
 function loadDestination(data){
-	clearDate();
+	//console.log(data);
+	clearDate();	
 	data[0].destinations.forEach((item)=>{
-		makeMarkerAndSaveDB(item);
+		makeMarkerAndSaveDB(item, mapinfo_lists);
 	});
 	renderPlaces(listDB);
     
     clearArray(resultDB);
     clearMarkers(mapinfo_results);
-
-    listDB.forEach((item,index)=>{
-    	resultDB[index] = item;
-    });
-
+    
+    bounds(listDB);
+    $('#date-title').val(data[0].title);
+    $('#date-btn-save').html('<i class="fas fa-save"></i> UPDATE');
 	$('#users_saved_list').modal('hide');
 }
 
@@ -731,7 +803,7 @@ $('#users_saved_list_close').on('click', ()=>{
 function renderSaved_card(item){
 	
 	let thething = `
-	<div class='card col-12 col-lg-5 no-paddings' item-ID=${item.id}>
+	<div class='card col-12 col-lg-5 no-paddings' savedLists-id=${item.id}>
 		<div class='card-body'>${item.title}</div>
 		<div class='card-footer justify-content-around'>
 			<button type='button' class='btn btn-primary save-load-btn'><i class="fas fa-folder-open"></i> LOAD</button>
@@ -743,6 +815,7 @@ function renderSaved_card(item){
 }
 
 function loadSavedLists(data){	
+	loaded_saved_list = data[0].savedLists;
 	const completeCards = 
 		data[0].savedLists.map(item=>{
 			return renderSaved_card(item);			
@@ -751,6 +824,7 @@ function loadSavedLists(data){
 }
 
 function getSavedLists(){	
+	//console.log('at getSavedLists');
 	$.ajax({
 		url: base_url+'api/destination/user/'+local_username,
 		method: 'GET',
