@@ -1,4 +1,16 @@
-
+#page-title{
+	//color: darkred;
+	//color: darkgoldenrod;
+	color: black;
+	text-decoration: none;
+}
+#page-title:hover {
+	//color: darkred;
+	//color: black;
+	color: darkgoldenrod;
+	text-decoration: none;
+	transition: color .5s ease-in;
+}
 .nav {
 	//background-color: #ccc;
 	width: 100%;
@@ -62,7 +74,7 @@
 }
 #title-container{
 	//position: fixed;
-	width: 100%;
+	//width: 100%;
 	z-index: 4;
 }
 #curtain{

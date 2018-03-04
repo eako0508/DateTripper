@@ -49,8 +49,8 @@ const arr_options = [
 
 //let base_url = 'http://100.33.50.170:8080/';
 //let base_url = 'http://192.168.2.199:8080/';
-//let base_url = 'http://localhost:8080/';
-let base_url = 'http://192.168.1.100:8080';
+let base_url = 'http://localhost:8080/';
+//let base_url = 'http://192.168.1.100:8080';
 
 
 /**
@@ -312,7 +312,7 @@ function makeContent(element){
 	content += `<a class='badge badge-primary col-12' href='${element.website}'>Website</a>`;
 	//content += `<a href='#' class='badge badge-primary add-btn col-12 item-id='${element.id}'>ADD</a>`;
 	//content += `</div>`;
-	//content += '</div>';
+	content += '</div>';
 	return content;
 }
 
@@ -384,7 +384,7 @@ function getPlaceDetail(item, database){
 					'maxHeight':100, 
 					'minWidth':150
 				});
-				//element.website = place.website;
+				element.website = place.website;
 				element.vicinity = place.vicinity;
 				let iconUrl = '/images/icon/green1.png';
 				makeMapInfo(element, mapinfo_results, iconUrl);
@@ -693,9 +693,9 @@ $('#place-list').on('click', '.btn-delete', event=>{
 });
 
 
-function alertFail(xhr, textStatus, errThrown){
-	console.log(xhr);
-	alert(`${textStatus}: ${xhr.status} ${xhr.responseText}`);
+function alertFail(xhr, textStatus, errThrown){	
+	let msg = JSON.parse(xhr.responseText);	
+	alertMessage(`${msg.message}!`);
 }
 
 //login
@@ -851,8 +851,22 @@ function logmein(data){
 	getSavedLists();
 }
 
+$('#reg-userpw-confirm').on('blur', function(){
+	let pw = $('#reg-userpw').val();
+	let pwc = $('#reg-userpw-confirm').val();	
+	if($('#reg-userpw-confirm').val() != $('#reg-userpw').val()){
+		alertMessage('check');
+	}
+});
+
 $('#register-submit').on('click', event=>{
 	event.preventDefault();	
+
+	if($('#reg-userpw-confirm').val() != $('#reg-userpw').val()){
+		alertMessage('Password is not matching!');
+		return;
+	}
+
 	const item = {
 		username: $('#reg-userid').val(),
 		password: $('#reg-userpw').val(),
@@ -871,6 +885,7 @@ $('#register-submit').on('click', event=>{
 		data: JSON.stringify(item)
 	})
 	.done((res_)=>{
+		$('#register-page').modal('hide');
 		alertMessage(`A user ${item.username} is successfully created.`);
 		ajaxlogin(loginItem);
 	})
