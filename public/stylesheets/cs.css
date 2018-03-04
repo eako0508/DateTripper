@@ -60,6 +60,16 @@
 .btn-delete {
 	align-self: stretch;
 }
+#title-container{
+	position: fixed;
+	width: 100%;
+	z-index: 4;
+}
+.curtain{
+	//height: -webkit-fill-available;
+	position: absolute;
+	z-index: 3;
+}
 /*
 .list-container > .row,
 #place-list,
@@ -89,7 +99,7 @@
 html::-webkit-scrollbar {
 	//width: 0px;
 }
-body {
+body, .curtain {
 	//background-image: url('https://c.wallhere.com/photos/84/4a/blurred-179731.jpg!d');
 	//background-image: url('https://cdn.wallpapersafari.com/24/39/MI7mA0.jpg');
 	//background-image: url('http://sfwallpaper.com/images/background-hd-4.jpg');

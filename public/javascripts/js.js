@@ -893,6 +893,7 @@ $('#logout-btn').on('click', ()=>{
 function firstLoad(){
 	resizeWindow();	
 	renderOptions(arr_options);
+
 	$('#logout-btn').hide();
 	$('#savedlist-btn').hide();
 
@@ -906,7 +907,7 @@ $(window).on('resize', function(){
 function resizeWindow(){
 	let window_height = $(window).height();
 	let window_width = $(window).width();
-
+	$('.curtain').height(window_height);
 	let resized_height = (window_height*.6);
 
 	$('#map').height(resized_height);
