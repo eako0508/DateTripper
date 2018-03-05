@@ -50,10 +50,13 @@ router.route('/')
 
 //  GET /all/:username
 router.route('/all/:username')
+  
   .get((req,res)=>{
+    /*
     if(req.user.username!=req.params.username){
       res.status(403).send('Unauthorized');
     }
+    */
   	Destination.find({
   		username: req.params.username
   	}).then(entries=>{
@@ -68,9 +71,12 @@ router.route('/all/:username')
 //  GET /user/:username
 router.route('/user/:username')
   .get((req,res)=>{
+    /*
     if(req.user.username!=req.params.username){
       res.status(403).send('Unauthorized to view other user\'s list.');
+
     }
+    */
     return User.find({username: req.params.username})
       .then(users => res.json(users.map(user => user.serialize())))
       .catch(err => res.status(500).json({message: 'Internal server error'}));
@@ -154,12 +160,14 @@ router.route('/:id')
 
 router.route('/:username')
   //Check if the user exists 
-  .post((req,res)=>{    
+  .post((req,res)=>{
+    /*
     if(req.params.username != req.user.username){
       res.status(400).json({
         reason: `Username does not match.`
       });
     }
+    */
   //Check if the same title exists for the same user.
   	Destination
       .find({

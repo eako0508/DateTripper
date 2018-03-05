@@ -143,41 +143,57 @@ describe('/Destination', function(){
 		});
 	});
 	
-
-	
-// get all destination for userID
-// req:endpoint, res:json-array of all the destinations for userID.
-	describe('GET /api/destination/user/:username', function(){
-		
+	//dest result vs get result
+	describe('GET /api/destination/all/:username', function(){		
 		it('should return all the saved dates for a designated user', function(){
 			
-			let resDest;
-			return User.findOne().then(resUser_=>{
-				let resUser = resUser_;
+			let destResult;
+			return Destination.findOne().then(destResult_=>{
+				destResult = destResult_;
 				return chai.request(app)
-					.get(`/api/destination/user/${resUser.username}`)
-					.then(res=>{
-						expect(res).to.be.a('object');
-						expect(res).to.have.status(200);
-						res.body.forEach(obj=>{
-							expect(obj).to.be.a('object');
-							expect(obj).to.include.keys('username', 'title', 'destinations');
-						});
-						resDest = res.body[0];
-						return Destination.findById(resDest.id);
-					})
-					.then(res_=>{
-						expect(res_.username).to.be.equal(resDest.username);
-						expect(res_.title).to.be.equal(resDest.title);
-						expect(res_.destinations).to.deep.equal(resDest.destinations);
-					});
+				  .get(`/api/destination/all/${destResult.username}`)
+				  .then(apiResult=>{
+				  	expect(apiResult).to.be.status(200);
+				  	expect(apiResult).to.be.a('object');
+				  	apiResult.forEach(item=>{
+				  		expect(item).to.include.keys('username', 'title', 'savedLists');
+				  	});				  	
+				  })
+				  .catch(err=>{
+				  	console.error(err);
+				  });
 			});
-			
 		});
 	});
-	
 
+// get all destination for userID
+// req:endpoint, res:json-array of all the destinations for userID.
 
+	describe('GET /api/destination/user/:username', function(){
+		it('should return short version of the user\'s saved dates', function(){
+			return User.findOne().then(resUser_=>{
+				let resUser = resUser_;
+				console.log(resUser);
+				console.log("resUser");
+				return Destination.findOne({username: resUser.username})
+					.then(theone=>{
+						return chai.request(app)
+							.get(`/api/destination/user/${resUser.username}`)
+							.then(apiResult=>{
+								expect(apiResult).to.be.a('object');
+								expect(apiResult).to.have.status(200);
+								apiResult.body.forEach(obj=>{
+									expect(obj).to.be.a('object');
+									expect(obj).to.include.keys('username', 'savedLists');
+								});
+							})
+							.catch(err=>{
+								console.error(err);
+							});
+					});
+			});
+		});
+	});
 	
 //Create a new list of destinations for a single user
 //req:(username, title, DB), res: json-OK message
@@ -242,11 +258,8 @@ describe('/Destination', function(){
 
 	
 	//	DELETE WITH TITLE
-	describe('DELETE /api/destination/', function(){
-		
-		it('should delete a user\'s savedList item', function(){
-			
-
+	describe('DELETE /api/destination/', function(){		
+		it('should delete a user\'s savedList item', function(){			
 			return User.findOne()
 				.then(res=>{
 					let targetItem = {
@@ -265,7 +278,6 @@ describe('/Destination', function(){
 								.catch(err=>{
 									console.error(err);
 								})
-
 							User.find({"savedLists.title": targetItem.title})
 								.count()
 								.then(result_user=>{
@@ -280,111 +292,5 @@ describe('/Destination', function(){
 
 		});
 		
-	});
-	
-
-	
-
-
-	
-	//User
-	//let query = {"id": targetId};
-	/*
-	User.find({"savedLists.id": targetId})
-		.count()
-		.then(num=>{
-			expect(num).to.be.equal(0);
-		})
-	*/
-
-	/*
-	let targetId_ = res[0].savedLists[1];
-	User.find(
-			{"savedLists.id": targetId_}
-		)
-		.count()
-		.then(result_user=>{
-			expect(result_user).to.be.equal(1);
-		});
-	*/
-
-
-
-	
-});
-
-describe('/users', function(){
-	/*
-	before(function(){
-		return runServer(TEST_DATABASE_URL);
-	});
-	beforeEach(function(){
-		return establishUsersDB();
-	});
-	afterEach(function(){
-		return tearDown();
-	});
-	after(function(){
-		return closeServer();
-	});
-	*/
-	describe('GET /users:userID', function(){
-		/**	get userID's information
-		
-		req:
-			json: username
-
-		res: 
-			json for all destinations for userID.
-		**/
-	});
-	describe('POST /users', function(){
-		
-		/**	Create an account
-
-		req:
-			json: username, password, firstName, lastName
-		res: 
-			json: username, firstName, lastName
-		**/
-	});
-});
-
-describe('/auth', function(){
-	/*
-	before(function(){
-		return runServer(TEST_DATABASE_URL);
-	});
-	beforeEach(function(){
-		return establishDestinationsDB();
-	});
-	afterEach(function(){
-		return tearDown();
-	});
-	after(function(){
-		return closeServer();
-	});
-	*/
-
-	/** /auth **/
-	describe('POST /auth/login', function(){
-		
-		/**	login
-		req: 
-			json: username, password
-
-		res: 
-			json: token
-		**/
-	});
-	describe('POST /auth/refresh', function(){
-		
-		/**	login
-		req: 
-			json: username, auth:token
-
-		res: 
-			json: token
-		**/
 	});
 });
