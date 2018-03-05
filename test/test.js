@@ -4,6 +4,7 @@ const chaiHttp = require('chai-http');
 const faker = require('faker');
 const mongoose = require('mongoose');
 var ObjectId = require('mongoose').Types.ObjectId;
+const chaiJWT = require('chai-jwt');
 
 const expect = chai.expect;
 chai.use(chaiHttp);
@@ -12,6 +13,7 @@ const { app, runServer, closeServer } = require('../server');
 const { Destination } = require('../destination/models');
 const { User } = require('../users/models');
 const { TEST_DATABASE_URL } = require('../config');
+
 
 
 function generateDestinationStack(username_){
@@ -89,7 +91,7 @@ function tearDown(){
 	//return mongoose.connection.dropCollection('datetripper-test');
 }
 
-/*
+
 describe('First page', function(){
 	it('should display index.html with status 200', function(){
 		return chai.request(app)
@@ -99,7 +101,7 @@ describe('First page', function(){
 		  });
 	});
 });
-*/
+
 describe('/Destination', function(){
 
 	before(function(){
@@ -115,7 +117,7 @@ describe('/Destination', function(){
 		return closeServer();
 	});
 
-/*
+
 	
 // get all destination for all users
 // req:endpoint, res:json-array of all the destinations for all users.
@@ -149,14 +151,11 @@ describe('/Destination', function(){
 				  .get(`/api/destination/all/${destResult.username}`)
 				  .then(apiResult=>{
 				  	expect(apiResult).to.be.status(200);
-				  	expect(apiResult).to.be.a('object');
-				  	apiResult.forEach(item=>{
-				  		expect(item).to.include.keys('username', 'title', 'savedLists');
-				  	});				  	
-				  })
-				  .catch(err=>{
-				  	console.error(err);
-				  });
+				  	expect(apiResult.body).to.be.a('Array');
+				  	apiResult.body.forEach(item=>{
+				  		expect(item).to.include.keys('username', 'title', 'destinations');
+				  	});			  		
+				  })				  
 			});
 		});
 	});
@@ -168,8 +167,8 @@ describe('/Destination', function(){
 		it('should return short version of the user\'s saved dates', function(){
 			return User.findOne().then(resUser_=>{
 				let resUser = resUser_;
-				console.log(resUser);
-				console.log("resUser");
+				//console.log(resUser);
+				//console.log("resUser");
 				return Destination.findOne({username: resUser.username})
 					.then(theone=>{
 						return chai.request(app)
@@ -249,13 +248,15 @@ describe('/Destination', function(){
 		
 	});
 	
-*/
+
 	describe('DELETE /api/destination/', function(){		
 		it('should delete a user\'s savedList item with an id number', function(){			
 			return Destination.findOne()
 				.then(res=>{
 					let targetID = res._id;
-					let targetTitle = res.title;					
+					let targetTitle = res.title;
+					let targetUser = res.username;
+
 					return chai.request(app)
 						.delete(`/api/destination/${targetID}`)
 						.then(result=>{
@@ -280,6 +281,7 @@ describe('/Destination', function(){
 				});				
 		});		
 	});
+
 
 	/*
 	//	DELETE WITH TITLE

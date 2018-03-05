@@ -1,7 +1,7 @@
 'use strict';
 exports.DATABASE_URL = 
-	'mongodb://localhost/jwt-auth-demo';
-	//'mongodb://admin:admin@ds155288.mlab.com:55288/datetripper';
+	//'mongodb://localhost/jwt-auth-demo';
+	'mongodb://admin:admin@ds155288.mlab.com:55288/datetripper';
 	/* ||
     process.env.DATABASE_URL ||
     global.DATABASE_URL;*/

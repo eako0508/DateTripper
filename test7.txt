@@ -1,0 +1,34 @@
+
+> datetripper@0.0.0 test D:\Documents\datetripper
+> mocha --exit
+
+
+
+  /Destination
+Your app is listening on port 8080
+    GET /api/destination/all/:username
+::ffff:127.0.0.1 - - [05/Mar/2018:02:34:28 +0000] "GET /api/destination/all/Houston HTTP/1.1" 200 1626
+{ AssertionError: expected [ Array(2) ] to have property 'status'
+    at Proxy.<anonymous> (D:\Documents\datetripper\node_modules\chai-http\lib\http.js:80:38)
+    at Proxy.methodWrapper (D:\Documents\datetripper\node_modules\chai\lib\chai\utils\addMethod.js:57:25)
+    at chai.request.get.then.apiResult (D:\Documents\datetripper\test\test.js:153:37)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7)
+  message: 'expected [ Array(2) ] to have property \'status\'',
+  showDiff: false,
+  actual: 
+   [ { id: '5a9cacb4bc83d90ea0f1c750',
+       username: 'Houston',
+       title: 'velit maiores aut',
+       destinations: [Array] },
+     { id: '5a9cacb4bc83d90ea0f1c751',
+       username: 'Houston',
+       title: 'accusantium praesentium quia',
+       destinations: [Array] } ],
+  expected: undefined }
+      √ should return all the saved dates for a designated user (97ms)
+Closing server
+
+
+  1 passing (855ms)
+

@@ -232,9 +232,7 @@ router.route('/:id')
                 }
               }              
             )
-            .then(()=>{
-              //console.log('at findOneAndUpdate');
-              //next();
+            .then(()=>{              
               res.status(200).json({id: req.params.id});
             })
             .catch(err=>{
