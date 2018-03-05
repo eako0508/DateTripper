@@ -4,47 +4,32 @@
 .cormorant {
 	font-family: 'Cormorant Garamond', serif;
 }
-/*
-#register-btn:hover{
+.card-container-result {
+	max-width: 350px;
+}
+.login-page .btn {
 	text-decoration: none;
 }
-*/
-#login-page .btn {
-	text-decoration: none;
-}
-#register-page label,
-#announcement .modal-body,
-#users_saved_list .modal-body,
-#confirmation .modal-body,
-#login-page .modal-body {
+.modal-body {
 	font-family: 'Cormorant Garamond', serif;
 	font-weight: bold;
 }
 .btn {
-	font-family: 'Cormorant Garamond', serif;
-	//font-weight: bold;
+	font-family: 'Cormorant Garamond', serif;	
 }
-#page-title{
-	//color: darkred;
-	//color: darkgoldenrod;
+.page-title{	
 	color: black;
 	text-decoration: none;
+	font-family: 'Amatic SC', cursive;
 }
-#page-title:hover {
-	//color: darkred;
-	//color: black;
+.page-title:hover {	
 	color: darkgoldenrod;
 	text-decoration: none;
 	transition: color .5s ease-in;
 }
-.nav {
-	//background-color: #ccc;
+.nav {	
 	width: 100%;
 	top: 0;
-}
-#nav-option{
-	width: inherit;
-	height: inherit;
 }
 #map {
 	width: 100%;
@@ -54,12 +39,6 @@
 	padding-left: 0;
 	padding-right: 0;
 }
-#place-list-list {
-	overflow-x: hidden;
-	overflow-y: scroll;
-
-}
-
 .flex-row-wrap{
 	display: flex;
 	flex-direction: row;
@@ -70,14 +49,13 @@
 	overflow-x: hidden;	
 }
 
-#place-list::-webkit-scrollbar {	
+.place-list::-webkit-scrollbar {
 	width: 5px;	
 }
 .flex-column{
 	flex-direction: column;
 }
-#place-list::-webkit-scrollbar-thumb {
-	//background-color: sandybrown;
+.place-list::-webkit-scrollbar-thumb {	
 	background-color: darkgray;
 }
 
@@ -98,30 +76,16 @@
 .btn-delete {
 	align-self: stretch;
 }
-#title-container{
-	//position: fixed;
-	//width: 100%;
+.title-container{
 	z-index: 4;
 }
-#curtain{
-	//height: -webkit-fill-available;
+.curtain{	
 	position: absolute;
 	z-index: 3;
 }
-/*
-.list-container > .row,
-#place-list,
-.list,
-.list > .row {
-	border-radius: .25rem;
-}
-*/
 .result-img{
 	max-width: 350px;
 	max-height: 200px;				
-}
-#page-title {
-	font-family: 'Amatic SC', cursive;
 }
 .rank-container {
 	width: 100%;
@@ -133,21 +97,10 @@
 .autocomplete-form{
 	bottom: 20px!important;
 }
-
-html::-webkit-scrollbar {
-	//width: 0px;
-}
-body, #curtain {
-	//background-image: url('https://c.wallhere.com/photos/84/4a/blurred-179731.jpg!d');
-	//background-image: url('https://cdn.wallpapersafari.com/24/39/MI7mA0.jpg');
-	//background-image: url('http://sfwallpaper.com/images/background-hd-4.jpg');
-	//background-image: url('http://witl.com/files/2018/02/RS16438_504222934.jpg?w=980&q=75');
-	//background-image: url('http://eskipaper.com/images/cute-love-wallpaper-6.jpg');
-
+body, .curtain {
 	background-image: url('http://wallscollection.net/wp-content/uploads/2017/01/Cute-Couple-Wallpaper-In-High-Definition-.jpg');
 	background-repeat: no-repeat;
-	background-attachment: fixed;
-	//background-attachment: scroll;	
+	background-attachment: fixed;	
 	background-position: center;
 	background-size: cover;
 }

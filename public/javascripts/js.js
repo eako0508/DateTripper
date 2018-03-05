@@ -2,37 +2,37 @@
 /**
 		G L O B A L   V A R I A B L E S
 **/
-//let markerStorage = [];
-let marker_arr = [];
 
-let localToken = ''; //token
+	//Authentication variables
+let localToken = '';
 let local_username = '';
 
-//let isLogged = false;
 
-//maps, used for map and markers
+	//Google Services
 var map;
+let service;
+//auto-complete feature
+let user_input = document.getElementById('autocomplete-input');
+let autocomplete_form = document.getElementById('autoform');
+let autocomplete;
 
-//google places, used for nearby search(with or w/o text)
-let service;			
+
+	//Databases
+//markers and infowindow
+const mapinfo_results = [];
+const mapinfo_lists = [];
+
+//detailed place informations
+const resultDB = [];
+const listDB = [];
+
+//currently loaded user's saved date lists.
+let loaded_saved_list;
 
 
-let markers = [];		//array of markers objects(lat, lng)
-
-
-//array of objects(name, imgUrl(small&large), id, place_id)
-const resultDB = [];	//for search results
-const listDB = [];		//for added destinations
-
-let info = []; //array of infowindow
-
-let rank = 0;
-//remove rank
-
-//list of options to append for 'search nearby query'
-const checked_options = [];
-
+	//Filter
 //array of options for search nearby
+const checked_options = [];
 const arr_options = [
 	{ id: "amusement_park", name: "Amusement Park" },
 	{ id: "aquarium", name: "Aquarium" },
@@ -53,25 +53,7 @@ let base_url = 'http://localhost:8080/';
 //let base_url = 'http://192.168.1.100:8080';
 
 
-/**
-	GOOGLE MAP
-**/
-let user_input = document.getElementById('autocomplete-input');
-let autocomplete_form = document.getElementById('autoform');
-let autocomplete;
-
-$('.autocomplete-form').on('submit', event=>{
-	event.preventDefault();
-	
-	let auto_string = autocomplete.getPlace();
-	
-	//keep getting undefined on first submit
-	//ASK: async callback
-	const place_lat = auto_string.geometry.location.lat();
-	const place_lng = auto_string.geometry.location.lng();
-	const targetLocation = new google.maps.LatLng(place_lat, place_lng);
-	map.panTo(targetLocation);
-});
+	//Map
 
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
@@ -84,63 +66,11 @@ function initMap() {
 			position: google.maps.ControlPosition.RIGHT_CENTER
 		}
 	});
-
 	map.set('styles', mapStyles.blue_essense);
-
 	service = new google.maps.places.PlacesService(map);
-
-	
 	map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(autocomplete_form);
-
 	autocomplete = new google.maps.places.Autocomplete(user_input);
-
 }
-function clearMarkers(mapinfo_arr){
-	let pop;
-	while(mapinfo_arr.length){
-		pop = mapinfo_arr.pop();		
-		pop.marker.setMap(null);
-		pop = null;
-	}
-	return;
-}
-
-$('#announcement-close').on('click', ()=>{
-	$('#announcement').modal('hide');
-});
-
-function alertMessage(msg){
-	$('#announcement').find('.modal-body').html(msg);
-	$('#announcement').modal('show');
-}
-
-/*
-function runPromises(results, arr){
-	return Promise(function (resolve, reject){
-		buildDB(results, arr);
-		resolve(arr);
-	});
-}
-*/
-function placeServiceProcessor(results, status) {
-	
-	if (status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-		alertMessage('no results');
-		return;
-	}
-	if (status == google.maps.places.PlacesServiceStatus.OK) {
-		clearMarkers(mapinfo_results);	
-
-	    buildDB(results, resultDB);	    
-	    setTimeout(showResults,500);	    
-	}
-}
-
-function showResults(){
-	renderPlaces(resultDB);
-    bounds(resultDB);
-}
-
 function bounds(arr){
 	if(arr.length<1) return;
 	const bounds = new google.maps.LatLngBounds();
@@ -149,36 +79,44 @@ function bounds(arr){
     });
     map.fitBounds(bounds);
 }
+function setBound(arr){
+	const bounds = new google.maps.LatLngBounds();
+    arr.forEach(item=>{
+    	bounds.extend(item.mapObj);
+    });    
+}
 
-		//SEARCH NEARBY
 
-$('#search-nearby').on('click', function(event){
+/**
+	AJAX Requests
+**/
+
+function ajaxlogin(item){
+	$.ajax({
+		url: base_url+'api/auth/login',
+		method: "POST",
+		contentType: 'application/json',
+		dataType: 'json',
+		data: JSON.stringify(item)		
+	})
+	.done((data)=>{
+		local_username = item.username;
+		logmein(data);
+	})
+	.fail(alertFail);
+}
+function logmein(data){	
+	localToken = data.authToken;	
+	//local_username = $('#user_id').val();
 	
-	const query = {
-		location: map.getCenter(),
-		radius: 500,
-		type: checked_options[0]
-	}
-	service.nearbySearch(query, placeServiceProcessor);
-});
-		//SEARCH KEYWORD
-$('#custom-form').on('submit', event=>{
-//$('#custom_query_submit').on('click', event=>{
-	event.preventDefault();
-	const keyword = $('#custom_query').val();	
-
-	const search_query = {
-		location: map.getCenter(),
-		radius: 500,
-		query: keyword
-	}
-	service.textSearch(search_query, placeServiceProcessor);
-});
-$('.submit-go').on('submit', event=>{
-	event.preventDefault();
-
-});
-
+	isLogged = true;
+	
+	$('#login-btn').hide();
+	$('#savedlist-btn').show();
+	$('#logout-btn').show();
+	getSavedLists();
+}
+//POST
 function saveTheDate(date_title){	
 	let post_url = base_url+'api/destination/' + local_username;
 	listDB.forEach((item,index)=>{
@@ -205,6 +143,16 @@ function saveTheDate(date_title){
 	.done(saveSuccess)
 	.fail(alertFail);
 }
+function saveSuccess(xhr_sent, status, resFromServer){
+	const newEntry = renderSaved_card(xhr_sent);
+	alertMessage('save success');
+	$('#users_saved_list_modal').append(newEntry);
+	$('#date-btn-save').html('<i class="fas fa-save"></i> UPDATE');
+	getSavedLists();	
+	return;
+}
+
+//PUT
 function updateTheDate(targetID, item_title){
 	let post_url = base_url+'api/destination/';
 	listDB.forEach((item,index)=>{
@@ -231,7 +179,6 @@ function updateTheDate(targetID, item_title){
 	.done(updateSuccess)
 	.fail(alertFail);
 }
-
 function updateSuccess(xhr_sent, status, resFromServer){	
 	$('#date-btn-save').html('<i class="fas fa-save"></i> UPDATE');	
 	getSavedLists();
@@ -239,7 +186,162 @@ function updateSuccess(xhr_sent, status, resFromServer){
 	
 	return;
 }
-/*
+
+//GET
+function getDetailedSavedList(loadID){
+	$.ajax({
+		url: base_url+'api/destination/'+loadID,
+		method: 'GET',
+		contentType: 'application/json',
+		dataType: 'json',
+		beforeSend: function(xhr, settings) { 
+			xhr.setRequestHeader('Authorization','Bearer ' + localToken); 
+		}
+	})
+	.done(loadDestination)
+	.fail(alertFail);
+}
+function getSavedLists(){		
+	$.ajax({
+		url: base_url+'api/destination/user/'+local_username,
+		method: 'GET',
+		contentType: 'application/json',
+		dataType: 'json',	
+		beforeSend: function(xhr, settings) { 
+			xhr.setRequestHeader('Authorization','Bearer ' + localToken); 
+		}
+	})
+	.done(loadSavedLists)
+	.fail(alertFail);		
+}
+
+function placeServiceProcessor(results, status) {
+	
+	if (status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+		alertMessage('no results');
+		return;
+	}
+	if (status == google.maps.places.PlacesServiceStatus.OK) {
+		clearMarkers(mapinfo_results);	
+
+	    buildDB(results, resultDB);	    
+	    setTimeout(showResults,500);	    
+	}
+}
+
+
+/**
+	RENDERING
+**/
+
+function renderOptions(arr){
+	const items = arr.map((item, index)=>{
+		return `
+		<li class='dropdown-item' option-num=${item.id}>
+			<i class="fas fa-check invisible text-light"></i>
+			<a href="#" option-num=${item.id} tabIndex="-1" class='options-item btn'>
+				${item.name}
+			</a>
+		</li>`;
+	});
+	$('#display-options').html(items);
+}
+function renderPlaces(arr){	
+	const myPlaces = arr.map((item,index)=>{
+		return renderSinglePlace(item, index);
+	});
+	
+	$('.results').html(myPlaces);
+	return;	
+}
+function renderSinglePlace(item, index){	
+	let result = `
+		<div class='card res col-12 col-lg-4 justify-content-start no-paddings' item-ID='${item.id}'>`;
+	if(item.photos_large) {
+		result+= `
+		<img class='card-img-top img-thumbnail img-responsive mh-25 d-flex align-self-center result-img' src='${item.photos_large}' alt='card img'>
+		`;
+	}		
+	result += `	
+		<div class='card-body text-center'>
+			<div class='card-container-result d-inline'>
+				<h5 class='card-title text-center'>${item.name}</h5>
+				<div class='text-center'>${item.hours}</div>
+				<br>
+				<div>${item.vicinity}</div>
+				<a href='${item.website} class='d-block text-center'>Webiste</a>
+			</div>
+		</div>
+		<div class='card-footer'>
+			<button class='col-12 btn btn-primary btn-add' targetID='${item.id}' result-index='${index}'><i class="fas fa-plus-square"></i> ADD</button>
+		</div>
+	</div>`;
+	return result;
+}
+function renderHours(arr){
+	let string = `<div>`;
+	arr.forEach(item=>{
+		string += `<div class='div-info-hours-element'>${item}</div>`;
+	});
+	string += `</div>`;
+	return string;
+}
+function renderList(item){	
+	let place = `
+	<div class='list' list-id='${item.id}'>
+		<div class='row no-gutters align-items-center justify-content-between bg-light'>
+			<div class='btn-group-vertical bg-light' id="updown">				
+				<button type='button' class='btn btn-outline-primary align-self-center btn-up' id='up-${item.id}'>
+					<i class="fas fa-angle-up"></i>
+				</button>
+				<button type='button' class='btn btn-outline-primary align-self-center btn-dn' id='dn-${item.id}'>
+					<i class="fas fa-angle-down" id='up-${item.id}'></i>
+				</button>
+			</div>
+			<div class='list-name col-8 text-truncate'>
+				${item.name}
+					
+				
+			</div>
+			<button type='button' class='btn btn-danger btn-delete' place-list-id='${item.id}'>
+				<i class="fas fa-times"></i>
+			</button>
+		</div>
+	</div>`;
+	$('.place-list').append(place);
+}
+function renderDestination(){
+	$('.place-list').html('');	
+	for(let i=0;i<listDB.length;i++){
+		renderList(listDB[i]);
+	}
+}
+function makeContent(element){
+	let content = '';
+	content += `<div class='info-div d-flex flex-column text-center' item-id='${element.id}'>`;
+	content += `<div class='div-info-title font-weight-bold text-center'>${element.name}</div>`;
+	content += `<img class='d-none d-lg-block' src='${element.photos_small}'/>`;
+	content += `<div class='div-info-hours d-none d-lg-block'>`;
+	content += element.hours;
+	content += `</div>`;
+	content += `<div>${element.vicinity}</div>`;	
+	content += `<a class='badge badge-primary col-12' href='${element.website}'>Website</a>`;
+	content += '</div>';
+	return content;
+}
+function renderSaved_card(item){
+	
+	let thething = `
+	<div class='card col-12 col-sm-6 col-md-4 no-paddings text-center' savedLists-id=${item.id}>
+		<div class='card-body cormorant font-weight-bold'>${item.title}</div>
+		<div class='card-footer'>
+			<button type='button' class='btn btn-primary save-load-btn'><i class="fas fa-folder-open"></i></button>
+			<button type='button' class='btn btn-danger delete-load-btn'><i class="fas fa-trash-alt"></i></button>
+		</div>
+	</div>`;
+	
+	return thething;
+}
 function loadSavedLists(data){	
 	loaded_saved_list = data[0].savedLists;
 	const completeCards = 
@@ -247,51 +349,9 @@ function loadSavedLists(data){
 			return renderSaved_card(item);			
 		});	
 	$('#users_saved_list_modal').html(completeCards);
-}*/
-
-
-//date-btn-save
-//save the date
-$('#save-form').on('click', '#date-btn-save', event=>{
-	event.preventDefault();
-	if(listDB.length<2){
-		alert('Need at least 2 places!');
-		return;
-	}
-	if(localToken==='') {	
-		$('#login-page').modal('show');
-		return;
-	}
-	
-	let item_title = $('#date-title').val();
-
-	for(let i=0;i<loaded_saved_list.length;i++){
-		if(loaded_saved_list[i].title === item_title){
-			alertMessage('same name found!');
-			updateTheDate(loaded_saved_list[i].id, item_title);
-			return;
-		}
-	}
-	saveTheDate(item_title);	
-});
-
-function saveSuccess(xhr_sent, status, resFromServer){
-	const newEntry = renderSaved_card(xhr_sent);
-	alertMessage('save success');
-	$('#users_saved_list_modal').append(newEntry);
-	$('#date-btn-save').html('<i class="fas fa-save"></i> UPDATE');
-	getSavedLists();
-	////
-	//Save success!
-	return;
 }
 
-function setBound(arr){
-	const bounds = new google.maps.LatLngBounds();
-    arr.forEach(item=>{
-    	bounds.extend(item.mapObj);
-    });    
-}
+	//making DB
 
 function buildDB(data, database){
 	clearArray(database);
@@ -300,55 +360,6 @@ function buildDB(data, database){
 	}
 	return database;
 }
-
-function makeContent(element){
-	let content = '';
-	content += `<div class='info-div d-flex flex-column' item-id='${element.id}'>`;
-	content += `<div class='div-info-title font-weight-bold text-center'>${element.name}</div>`;
-	content += `<img class='d-none d-lg-block' src='${element.photos_small}'/>`;
-	content += `<div class='div-info-hours d-none d-lg-block'>`;
-	content += element.hours;
-	content += `</div>`;
-	content += `<div>${element.vicinity}</div>`;
-	//content += `<div class='btns d-flex'>`;
-	content += `<a class='badge badge-primary col-12' href='${element.website}'>Website</a>`;
-	//content += `<a href='#' class='badge badge-primary add-btn col-12 item-id='${element.id}'>ADD</a>`;
-	//content += `</div>`;
-	content += '</div>';
-	return content;
-}
-
-function makeMapInfo(element, map_arr, iconUrl){
-	const mapinfo_item = {};
-	let icon_ = {
-		url: iconUrl,
-		scaledSize: new google.maps.Size(50,50)		
-	};
-	let marker = new google.maps.Marker({
-	    position: element.mapObj,
-	    icon: icon_,
-	    map: map
-    });
-	
-    let content = makeContent(element);
-    let infowindow = new google.maps.InfoWindow();
-    infowindow.setContent(content);
-
-    marker.addListener('click', function(){
-    	clearAllInfoWindow();
-    	infowindow.open(map, marker);
-    });
-    mapinfo_item.id = element.id;
-    mapinfo_item.marker = marker;
-    mapinfo_item.infowindow = infowindow;
-    mapinfo_item.mapObj = element.mapObj;
-    map_arr.push(mapinfo_item);	
-}
-
-const mapinfo_results = [];
-const mapinfo_lists = [];
-
-
 function getPlaceDetail(item, database){
 	let request = {
 		"placeId": item.place_id
@@ -396,95 +407,89 @@ function getPlaceDetail(item, database){
 		}
 	})
 }
-
-
-/**
-	RENDERING
-**/
-
-
-
-/**
-	FILTER OPTIONS
-**/
-$('.dropdown-menu').on('click', '.options-item, li', event=>{
-   	let target = $(event.currentTarget);
-   	let val = target.attr('option-num');
-    
-    let idx;
-
-    target.toggleClass('bg-success');
-    target.children('i').toggleClass('invisible');
-    target.children('a').toggleClass('text-light');
-    
-   	if((idx = checked_options.indexOf(val))> -1){
-		checked_options.splice(idx, 1);
-   	}else {
-		checked_options.push(val);
-   	}
-   	$(event.target).blur();     
-   	return false;
-});
-
-function renderOptions(arr){
-	const items = arr.map((item, index)=>{
-		return `
-		<li class='dropdown-item' option-num=${item.id}>
-			<i class="fas fa-check invisible text-light"></i>
-			<a href="#" option-num=${item.id} tabIndex="-1" class='options-item btn'>
-				${item.name}
-			</a>
-		</li>`;
-	});
-	$('#display-options').html(items);
-}
-
-/**
-	RESULTS
-**/
-//renderPlaces->renderSinglePlace->$('.results').html
-function renderPlaces(arr){	
-	const myPlaces = arr.map((item,index)=>{
-		return renderSinglePlace(item, index);
-	});
+function makeMapInfo(element, map_arr, iconUrl){
+	const mapinfo_item = {};
+	let icon_ = {
+		url: iconUrl,
+		scaledSize: new google.maps.Size(50,50)		
+	};
+	let marker = new google.maps.Marker({
+	    position: element.mapObj,
+	    icon: icon_,
+	    map: map
+    });
 	
-	$('.results').html(myPlaces);
-	return;	
-}
-/*
-<div class='text-center text-lg-left'>${item.hours}</div>
+    let content = makeContent(element);
+    let infowindow = new google.maps.InfoWindow();
+    infowindow.setContent(content);
 
-<a href='${item.website} class='d-block text-center'>Webiste</a>
-*/
-
-function renderSinglePlace(item, index){	
-	let result = `
-		<div class='card res col-12 col-lg-4 justify-content-start no-paddings' item-ID='${item.id}'>`;
-	if(item.photos_large) {
-		result+= `
-		<img class='card-img-top img-thumbnail img-responsive mh-25 d-flex align-self-center result-img' src='${item.photos_large}' alt='card img'>
-		`;
-	}		
-	result += `	
-		<div class='card-body'>
-			<h5 class='card-title text-center text-lg-left'>${item.name}</h5>
-			<div class='text-center text-lg-left'>${item.hours}</div>
-			<div>${item.vicinity}</div>
-			<a href='${item.website} class='d-block text-center'>Webiste</a>
-		</div>
-		<div class='card-footer'>
-			<button class='col-12 btn btn-primary btn-add' targetID='${item.id}' result-index='${index}'><i class="fas fa-plus-square"></i> ADD</button>
-		</div>
-	</div>`;
-	return result;
+    marker.addListener('click', function(){
+    	clearAllInfoWindow();
+    	infowindow.open(map, marker);
+    });
+    mapinfo_item.id = element.id;
+    mapinfo_item.marker = marker;
+    mapinfo_item.infowindow = infowindow;
+    mapinfo_item.mapObj = element.mapObj;
+    map_arr.push(mapinfo_item);	
 }
-function renderHours(arr){
-	let string = `<div>`;
-	arr.forEach(item=>{
-		string += `<div class='div-info-hours-element'>${item}</div>`;
+function makeMarkerAndSaveDB(element, database){
+	let iconUrl = '/images/icon/red1.png';
+    makeMapInfo(element, database, iconUrl);
+    listDB.push(element);
+    renderList(element);
+    showList();
+}
+function addFromResults(targetID){
+	for(let i=0;i<resultDB.length;i++){
+		if(resultDB[i].id == targetID){
+			removeSingleInfo(targetID, mapinfo_results);
+			makeMarkerAndSaveDB(resultDB[i], mapinfo_lists);
+			break;
+		}
+	}
+}
+function loadDestination(data){	
+	//clear lists on the right
+	clearDate();
+	//build new DB for the list
+	data[0].destinations.forEach((item)=>{
+		makeMarkerAndSaveDB(item, mapinfo_lists);
 	});
-	string += `</div>`;
-	return string;
+	//render places based on listDB
+	renderPlaces(listDB);
+    
+    //clear search results to display loaded items on the result section
+    clearArray(resultDB);
+    clearMarkers(mapinfo_results);
+
+    //sync DBs
+    transferArray(listDB, resultDB);
+    transferArray(mapinfo_lists, mapinfo_results);
+    
+    //wait for the transfer to finish...
+    setTimeout(function(){
+    	bounds(listDB);
+    }, 1000);
+    
+    //display title on title section in case the user wants to update
+    $('#date-title').val(data[0].title);
+    $('#date-btn-save').html('<i class="fas fa-save"></i> UPDATE');
+	$('#users_saved_list').modal('hide');
+}
+
+
+	//Clearing / Removing
+
+function clearDate(){
+	clearMarkers(mapinfo_lists);	
+	clearArray(listDB);	
+	$('.place-list').html('');
+	hideList();
+}
+function clearArray(arr){
+	while(arr.length) arr.pop();
+	return;
 }
 function clearAllInfoWindow(){
 	clearInfoWindow(mapinfo_results);
@@ -495,8 +500,218 @@ function clearInfoWindow(arr){
 		arr[i].infowindow.close();
 	}
 }
+function removeSingleInfo(targetID, mapinfo_arr){
+	for(let i=0;i<mapinfo_arr.length;i++){
+		if(mapinfo_arr[i].id === targetID){
+			let temp = mapinfo_arr.splice(i,1);			
+			temp[0].marker.setMap(null);
+			delete temp.map;
+			delete temp.mapObj;
+			delete temp.infowindow;
+			break;
+		}
+	}
+	return;
+}
+function clearMarkers(mapinfo_arr){
+	let pop;
+	while(mapinfo_arr.length){
+		pop = mapinfo_arr.pop();		
+		pop.marker.setMap(null);
+		pop = null;
+	}
+	return;
+}
+function deleteSavedListItem(loadID){	
+	$.ajax({
+		url: base_url+'api/destination/'+loadID,
+		method: 'DELETE',
+		contentType: 'application/json',
+		dataType: 'json',
+		beforeSend: function(xhr, settings) { 
+			xhr.setRequestHeader('Authorization','Bearer ' + localToken); 
+		}
+	})
+	.done(removeSavedList)
+	.fail(alertFail);
+}
+function removeSavedList(res){
+	//remove item from the savedList
+	let targetID = res.id;
+	$('#users_saved_list_modal')
+		.find(`[savedlists-id='${targetID}']`).remove();
+	alertMessage(`Successfully removed ${res.title}.`);
+}
+function transferArray(transmitter, receiver){	
+	//copy one array to other array
+	//pre-condition: receiver is empty
+	for(let i=0;i<transmitter.length;i++){
+		receiver[i] = transmitter[i];
+	}
+	return;
+}
+
+
+
+	//displaying functions
+
+function showList(){
+	if($('#map-container').hasClass('col-lg-10')){
+		$('#map-container').removeClass('col-lg-10');
+		$('#map-container').addClass('col-lg-7');
+		$('#list-container').removeClass('d-none');
+		$('.save-btn-container').removeClass('d-none');
+	}
+}
+function showResults(){
+	renderPlaces(resultDB);
+    bounds(resultDB);
+}
+function hideList(){
+	$('#map-container').removeClass('col-lg-7');
+	$('#map-container').addClass('col-lg-10');
+	$('#list-container').addClass('d-none');
+}
+
+
+
+
+	//Alert / announcement
+
+function alertFail(xhr, textStatus, errThrown){	
+	let msg = JSON.parse(xhr.responseText);	
+	alertMessage(`${msg.message}!`);
+}
+function alertMessage(msg){
+	$('#announcement').find('.modal-body').html(msg);
+	$('#announcement').modal('show');
+}
+
+
+	/**
+		Event Listeners
+	**/
+
+
+
+		//Date Lists section
+
+//click item from list on right to pan to the location with info window
+$('.place-list').on('click', '.list-name', event=>{
+	let targetID = $(event.currentTarget).parents('.list').attr('list-id');
+
+	for(let i=0;i<mapinfo_lists.length;i++){		
+		if(mapinfo_lists[i].id == targetID){			
+			let targetObj = mapinfo_lists[i];
+			clearAllInfoWindow();
+			targetObj.infowindow.open(map, targetObj.marker);
+			map.panTo(targetObj.mapObj);
+			if(map.getZoom()<=15) map.setZoom(15);
+			
+		}
+	}
+});
+//change the order of the item up
+$('.place-list').on('click', '.btn-up', event=>{
+	let targetID = $(event.currentTarget).parents('.list').attr('list-id');	
+	let temp;
+	if(listDB.length<2){
+		return;
+	}
+	for(let i=1;i<listDB.length;i++){
+		if(targetID === listDB[i].id){
+			temp = listDB.splice(i,1);
+			listDB.splice(i-1,0,temp[0]);
+			break;
+		}
+	}
+	renderDestination();
+});
+//change the order of the item down
+$('.place-list').on('click', '.btn-dn', event=>{	
+	let targetID = $(event.currentTarget).parents('.list').attr('list-id');	
+	let temp;
+	if(listDB.length<2){
+		return;
+	}
+	for(let i=0;i<listDB.length-1;i++){
+		if(targetID === listDB[i].id){
+			temp = listDB.splice(i,1);
+			listDB.splice(i+1,0,temp[0]);
+			break;
+		}
+	}
+	renderDestination();
+});
+//remove an item on the list
+$('.place-list').on('click', '.btn-delete', event=>{
+	let targetID = $(event.currentTarget).parents('.list').attr('list-id');	
+	listDB.forEach((item,index)=>{
+		if(targetID === item.id){
+			listDB.splice(index, 1);
+		}
+	});	
+	removeSingleInfo(targetID, mapinfo_lists);	
+	$(event.currentTarget).closest('.list').remove();
+	if(listDB.length<1) clearDate();		
+});
+//Remove all save list(s) on right side
+$('#date-btn-clear').on('click', event=>{	
+	$('#confirmation').find('#confirm-confirm').addClass('clearConfirm');
+	$('#confirmation').modal('show');
+});
+
+$('#save-form').on('click', '#date-btn-save', event=>{
+	event.preventDefault();
+	if(listDB.length<2){
+		alert('Need at least 2 places!');
+		return;
+	}
+	if(localToken==='') {	
+		$('#login-page').modal('show');
+		return;
+	}
+	
+	let item_title = $('#date-title').val();
+
+	for(let i=0;i<loaded_saved_list.length;i++){
+		if(loaded_saved_list[i].title === item_title){
+			alertMessage('same name found!');
+			updateTheDate(loaded_saved_list[i].id, item_title);
+			return;
+		}
+	}
+	saveTheDate(item_title);	
+});
+
+$('#users_saved_list_close').on('click', ()=>{
+	$('#users_saved_list').modal('hide');
+});
+		//Result Section
+
+//add item from result to list on right side.
+$('.results').on('click', '.btn-add', event=>{	
+	//add item from results and save to list db and render list.
+	showList();	
+	const targetID = $(event.currentTarget).parents('.card').attr('item-id');
+	addFromResults(targetID);	
+	//replace add button to check icon button
+	const theButton = `<button class='col-12 btn btn-success btn-add' result-index='' disabled>
+	<i class="fas fa-check"></i> ADDED</button>`
+	$(event.currentTarget).replaceWith(theButton);	
+});
+
+//clear search results displayed as well as markers on map along with infowindow
+$('#clear-search').on('click', function(){
+	clearMarkers(mapinfo_results);
+	clearArray(resultDB);
+	//clearResultDB();	
+	$('.results').html('');
+});
+
+
 $('.results').on('click', `.card > .card-body, .card > img`, event=>{
-	let targetID = $(event.currentTarget).parents('.card').attr('item-ID');		
+	let targetID = $(event.currentTarget).parents('.card').attr('item-ID');
 	for(let i=0;i<mapinfo_results.length;i++){		
 		if(mapinfo_results[i].id == targetID){			
 			let targetObj = mapinfo_results[i];
@@ -518,203 +733,94 @@ $('.results').on('click', `.card > .card-body, .card > img`, event=>{
 	$('html, body').animate({ scrollTop: 0});
 });
 
-function makeMarkerAndSaveDB(element, database){
-	let iconUrl = '/images/icon/red1.png';
-    makeMapInfo(element, database, iconUrl);
-    listDB.push(element);
-    renderList(element);
-    showList();
-}
-function showList(){
-	if($('#map-container').hasClass('col-lg-10')){
-		$('#map-container').removeClass('col-lg-10');
-		$('#map-container').addClass('col-lg-7');
-		$('#list-container').removeClass('d-none');
-		$('.save-btn-container').removeClass('d-none');
-	}
-}
+		//Filter
 
-function removeSingleInfo(targetID, mapinfo_arr){
-	for(let i=0;i<mapinfo_arr.length;i++){
-		if(mapinfo_arr[i].id === targetID){
-			let temp = mapinfo_arr.splice(i,1);			
-			temp[0].marker.setMap(null);
-			delete temp.map;
-			delete temp.mapObj;
-			delete temp.infowindow;
-			break;
-		}
-	}
-	return;
-}
+$('.dropdown-menu').on('click', '.options-item, li', event=>{
+   	let target = $(event.currentTarget);
+   	let val = target.attr('option-num');
+    
+    let idx;
 
-function addFromResults(targetID){
-	for(let i=0;i<resultDB.length;i++){
-		if(resultDB[i].id == targetID){
-			removeSingleInfo(targetID, mapinfo_results);
-			makeMarkerAndSaveDB(resultDB[i], mapinfo_lists);
-			break;
-		}
-	}
-}
-
-$('.results').on('click', '.btn-add', event=>{	
-	//add item from results and save to list db and render list.
-	showList();	
-	const targetID = $(event.currentTarget).parents('.card').attr('item-id');
-	addFromResults(targetID);	
-	//replace add button to check icon button
-	const theButton = `<button class='col-12 btn btn-success btn-add' result-index='' disabled>
-	<i class="fas fa-check"></i> ADDED</button>`
-	$(event.currentTarget).replaceWith(theButton);	
+    target.toggleClass('bg-success');
+    target.children('i').toggleClass('invisible');
+    target.children('a').toggleClass('text-light');
+    
+   	if((idx = checked_options.indexOf(val))> -1){
+		checked_options.splice(idx, 1);
+   	}else {
+		checked_options.push(val);
+   	}
+   	$(event.target).blur();     
+   	return false;
 });
 
 
-$('#clear-search').on('click', function(){
-	clearMarkers(mapinfo_results);
-	clearArray(resultDB);
-	//clearResultDB();	
-	$('.results').html('');
-});
-function clearArray(arr){
-	while(arr.length) arr.pop();
-	return;
-}
 
 
-/**
-	PLACE LIST
-**/
-$('#place-list').on('click', '.list-name', event=>{
+		//SEARCH NEARBY
 
-	let targetID = $(event.currentTarget).parents('.list').attr('list-id');
-
-	for(let i=0;i<mapinfo_lists.length;i++){		
-		if(mapinfo_lists[i].id == targetID){			
-			let targetObj = mapinfo_lists[i];
-			clearAllInfoWindow();
-			targetObj.infowindow.open(map, targetObj.marker);
-			map.panTo(targetObj.mapObj);
-			if(map.getZoom()<=15) map.setZoom(15);
-			
-		}
+$('#search-nearby').on('click', function(event){
+	
+	const query = {
+		location: map.getCenter(),
+		radius: 500,
+		type: checked_options[0]
 	}
+	service.nearbySearch(query, placeServiceProcessor);
+});
+		//SEARCH KEYWORD
+$('#custom-form').on('submit', event=>{
+	event.preventDefault();
+	const keyword = $('#custom_query').val();	
+
+	const search_query = {
+		location: map.getCenter(),
+		radius: 500,
+		query: keyword
+	}
+	service.textSearch(search_query, placeServiceProcessor);
 });
 
-function renderList(item){	
-	let place = `
-	<div class='list' list-id='${item.id}'>
-		<div class='row no-gutters align-items-center justify-content-between bg-light'>
-			<div class='btn-group-vertical bg-light' id="updown">				
-				<button type='button' class='btn btn-outline-primary align-self-center btn-up' id='up-${item.id}'>
-					<i class="fas fa-angle-up"></i>
-				</button>
-				<button type='button' class='btn btn-outline-primary align-self-center btn-dn' id='dn-${item.id}'>
-					<i class="fas fa-angle-down" id='up-${item.id}'></i>
-				</button>
-			</div>
-			<div class='list-name col-8 text-truncate'>
-				${item.name}
-					
-				
-			</div>
-			<button type='button' class='btn btn-danger btn-delete' place-list-id='${item.id}'>
-				<i class="fas fa-times"></i>
-			</button>
-		</div>
-	</div>`;
-	$('#place-list').append(place);
-}
 
-$('#place-list').on('click', '.btn-up', event=>{
-	let targetID = $(event.currentTarget).parents('.list').attr('list-id');	
-	let temp;
-	if(listDB.length<2){
-		return;
-	}
-	for(let i=1;i<listDB.length;i++){
-		if(targetID === listDB[i].id){
-			temp = listDB.splice(i,1);
-			listDB.splice(i-1,0,temp[0]);
-			break;
-		}
-	}
-	renderDestination();
-});
-
-$('#place-list').on('click', '.btn-dn', event=>{	
-	let targetID = $(event.currentTarget).parents('.list').attr('list-id');	
-	let temp;
-	if(listDB.length<2){
-		return;
-	}
-	for(let i=0;i<listDB.length-1;i++){
-		if(targetID === listDB[i].id){
-			temp = listDB.splice(i,1);
-			listDB.splice(i+1,0,temp[0]);
-			break;
-		}
-	}
-	renderDestination();
-});
-
-function promptConfirm(){
-
-}
+		//Confirmation
 
 $('#confirmation').on('click', '#confirm-close', event=>{
 	$('#confirmation').modal('hide');
 });
-
-$('#date-btn-clear').on('click', event=>{	
-	$('#confirmation').find('#confirm-confirm').addClass('clearConfirm');
-	$('#confirmation').modal('show');
-});
-
 $('#confirmation').on('click', '.clearConfirm', function(event){
 	$(event.currentTarget).removeClass('clearConfirm');
 	clearDate();
 	$('#date-btn-save').html('<i class="fas fa-save"></i> SAVE');
 	$('#confirmation').modal('hide');
 });
+$('#confirmation').on('click', '.removeSavedListConfirm', event=>{
+	$(event.currentTarget).removeClass('removeSavedListConfirm');
+	let loadID = $(event.currentTarget).attr('rm-id');
+	$(event.currentTarget).attr('rm-id', '');
+	deleteSavedListItem(loadID);
+	$('#confirmation').modal('hide');
+	$('#date-btn-save').html('<i class="fas fa-save"></i> SAVE');
+});
 
+$('#users_saved_list_modal').on('click', '.delete-load-btn', event=>{
+	let loadID = $(event.currentTarget).parents('.card').attr('savedLists-id');
+	$('#confirmation').find('#confirm-confirm').addClass('removeSavedListConfirm');
+	$('#confirmation').find('#confirm-confirm').attr('rm-id', loadID);
+	$('#confirmation').modal('show');
+});
 
+$('#users_saved_list_modal').on('click', '.save-load-btn', event=>{
+	let loadID = $(event.currentTarget).parents('.card').attr('savedLists-id');
+	getDetailedSavedList(loadID);
+});
 
-function hideList(){
-	$('#map-container').removeClass('col-lg-7');
-	$('#map-container').addClass('col-lg-10');
-	$('#list-container').addClass('d-none');
-}
-function clearDate(){
-	clearMarkers(mapinfo_lists);	
-	clearArray(listDB);	
-	$('#place-list').html('');
-	hideList();
-}
-function renderDestination(){
-	$('#place-list').html('');	
-	for(let i=0;i<listDB.length;i++){
-		renderList(listDB[i]);
-	}
-}
-
-$('#place-list').on('click', '.btn-delete', event=>{
-	let targetID = $(event.currentTarget).parents('.list').attr('list-id');	
-	listDB.forEach((item,index)=>{
-		if(targetID === item.id){
-			listDB.splice(index, 1);
-		}
-	});	
-	removeSingleInfo(targetID, mapinfo_lists);	
-	$(event.currentTarget).closest('.list').remove();
-	if(listDB.length<1) clearDate();		
+$('#announcement-close').on('click', ()=>{
+	$('#announcement').modal('hide');
 });
 
 
-function alertFail(xhr, textStatus, errThrown){	
-	let msg = JSON.parse(xhr.responseText);	
-	alertMessage(`${msg.message}!`);
-}
+
+
 
 //login
 
@@ -735,154 +841,6 @@ $('.login-submit').on('click', event=>{
 
 	ajaxlogin(item);
 });
-
-function ajaxlogin(item){
-	$.ajax({
-		url: base_url+'api/auth/login',
-		method: "POST",
-		contentType: 'application/json',
-		dataType: 'json',
-		data: JSON.stringify(item)		
-	})
-	.done((data)=>{
-		local_username = item.username;
-		logmein(data);
-	})
-	.fail(alertFail);
-}
-
-function removeSavedList(res){
-	//remove item from the savedList
-	let targetID = res.id;
-	$('#users_saved_list_modal')
-		.find(`[savedlists-id='${targetID}']`).remove();
-	alertMessage(`Successfully removed ${res.title}.`);
-}
-
-function deleteSavedListItem(loadID){
-	
-	$.ajax({
-		url: base_url+'api/destination/'+loadID,
-		method: 'DELETE',
-		contentType: 'application/json',
-		dataType: 'json',
-		beforeSend: function(xhr, settings) { 
-			xhr.setRequestHeader('Authorization','Bearer ' + localToken); 
-		}
-	})
-	.done(removeSavedList)
-	.fail(alertFail);
-
-	
-}
-
-$('#confirmation').on('click', '.removeSavedListConfirm', event=>{
-	$(event.currentTarget).removeClass('removeSavedListConfirm');
-	let loadID = $(event.currentTarget).attr('rm-id');
-	$(event.currentTarget).attr('rm-id', '');
-	deleteSavedListItem(loadID);
-	$('#confirmation').modal('hide');
-	$('#date-btn-save').html('<i class="fas fa-save"></i> SAVE');
-});
-
-$('#users_saved_list_modal').on('click', '.delete-load-btn', event=>{
-	let loadID = $(event.currentTarget).parents('.card').attr('savedLists-id');
-	$('#confirmation').find('#confirm-confirm').addClass('removeSavedListConfirm');
-	$('#confirmation').find('#confirm-confirm').attr('rm-id', loadID);
-	$('#confirmation').modal('show');
-});
-
-let loaded_saved_list;
-
-function loadDestination(data){	
-	clearDate();	
-	data[0].destinations.forEach((item)=>{
-		makeMarkerAndSaveDB(item, mapinfo_lists);
-	});
-	renderPlaces(listDB);
-    
-    clearArray(resultDB);
-    clearMarkers(mapinfo_results);
-    
-    bounds(listDB);
-    $('#date-title').val(data[0].title);
-    $('#date-btn-save').html('<i class="fas fa-save"></i> UPDATE');
-	$('#users_saved_list').modal('hide');
-}
-
-function getDetailedSavedList(loadID){
-	$.ajax({
-		url: base_url+'api/destination/'+loadID,
-		method: 'GET',
-		contentType: 'application/json',
-		dataType: 'json',
-		beforeSend: function(xhr, settings) { 
-			xhr.setRequestHeader('Authorization','Bearer ' + localToken); 
-		}
-	})
-	.done(loadDestination)
-	.fail(alertFail);
-}
-
-$('#users_saved_list_modal').on('click', '.save-load-btn', event=>{
-	let loadID = $(event.currentTarget).parents('.card').attr('savedLists-id');
-	getDetailedSavedList(loadID);
-});
-
-
-
-$('#users_saved_list_close').on('click', ()=>{
-	$('#users_saved_list').modal('hide');
-});
-
-function renderSaved_card(item){
-	
-	let thething = `
-	<div class='card col-12 col-sm-6 col-md-4 no-paddings text-center' savedLists-id=${item.id}>
-		<div class='card-body cormorant font-weight-bold'>${item.title}</div>
-		<div class='card-footer'>
-			<button type='button' class='btn btn-primary save-load-btn'><i class="fas fa-folder-open"></i></button>
-			<button type='button' class='btn btn-danger delete-load-btn'><i class="fas fa-trash-alt"></i></button>
-		</div>
-	</div>`;
-	
-	return thething;
-}
-
-function loadSavedLists(data){	
-	loaded_saved_list = data[0].savedLists;
-	const completeCards = 
-		data[0].savedLists.map(item=>{
-			return renderSaved_card(item);			
-		});	
-	$('#users_saved_list_modal').html(completeCards);
-}
-
-function getSavedLists(){		
-	$.ajax({
-		url: base_url+'api/destination/user/'+local_username,
-		method: 'GET',
-		contentType: 'application/json',
-		dataType: 'json',	
-		beforeSend: function(xhr, settings) { 
-			xhr.setRequestHeader('Authorization','Bearer ' + localToken); 
-		}
-	})
-	.done(loadSavedLists)
-	.fail(alertFail);		
-}
-
-function logmein(data){	
-	localToken = data.authToken;	
-	//local_username = $('#user_id').val();
-	
-	isLogged = true;
-	
-	$('#login-btn').hide();
-	$('#savedlist-btn').show();
-	$('#logout-btn').show();
-	getSavedLists();
-}
 
 $('#reg-userpw-confirm').on('blur', function(){
 	let pw = $('#reg-userpw').val();
@@ -925,8 +883,6 @@ $('#register-submit').on('click', event=>{
 	.fail(alertFail);
 });
 
-
-
 $('#register-btn, #login-cancel').on('click', ()=>{
 	$('#login-page').modal('hide');
 });
@@ -937,14 +893,32 @@ $('#logout-btn').on('click', ()=>{
 	$('#login-btn').show();	
 });
 
+
+//First Page
 $('#btn-starttrippin').on('click', function(){
-	$('#curtain').animate({
+	$('.curtain').animate({
 		bottom: `${$(window).height()}px`,
 		opacity: '0'
 	}, 1000, 'swing', function(){
-		$('#curtain').hide();
+		$('.curtain').hide();
 	});
 });
+
+
+
+//auto complete
+$('.autocomplete-form').on('submit', event=>{
+	event.preventDefault();
+	let auto_string = autocomplete.getPlace();
+	const place_lat = auto_string.geometry.location.lat();
+	const place_lng = auto_string.geometry.location.lng();
+	const targetLocation = new google.maps.LatLng(place_lat, place_lng);
+	map.panTo(targetLocation);
+});
+
+
+
+
 //INITIALIZATION
 function firstLoad(){
 	resizeWindow();	
@@ -963,13 +937,13 @@ $(window).on('resize', function(){
 function resizeWindow(){
 	let window_height = $(window).height();
 	let window_width = $(window).width();
-	$('#curtain').height(window_height*.87);
+	$('.curtain').height(window_height*.87);
 	let resized_height = (window_height*.6);
 
 	$('#map').height(resized_height);
 	
 	if(window_width>=991){		
-		$('#place-list').css("maxHeight", resized_height+"px");
+		$('.place-list').css("maxHeight", resized_height+"px");
 	}	
 }
 

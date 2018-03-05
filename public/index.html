@@ -15,11 +15,11 @@
 
 </head>
 <body>
-	<div id='title-container'>
-		<a class='text-font-bold d-flex justify-content-center display-4' id='page-title' href='#'>Date Tripper</a>
+	<div class='title-container'>
+		<a class='text-font-bold d-flex justify-content-center display-4 page-title' href='#'>Date Tripper</a>
 	</div>
 
-	<div id='curtain' class='col-12'>		
+	<div class='curtain col-12'>
 		<div class='d-flex justify-content-end justify-content-lg-center h-100 align-items-center flex-column'>
 			<div class='text-light font-weight-bold d-flex'>Plan your date</div>
 			<br>
@@ -68,7 +68,7 @@
 
 			<div class='col-10 offset-1 col-lg-3 offset-lg-0 d-none' id='list-container'>
 				<div class='row'>
-					<div id='place-list' class='col-sm-12 no-paddings overflow-hidden'>
+					<div class='place-list col-sm-12 no-paddings overflow-hidden'>
 
 					</div>
 				</div>
@@ -108,8 +108,11 @@
 <div id='login-page' class='modal fade login-page' tabindex='-1'>
 	<div class='modal-dialog modal-sm'>
 		<div class='modal-content'>
-			<div class='modal-body'>
+			
+			<div class='modal-body'>				
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
+				<br>
+				<div class='font-weight-bold cormorant text-center'>Log in</div>
 				<form class='js-form-login'>
 					<div class='form-group'>
 						<label for='userid'>Username</label>
@@ -119,26 +122,14 @@
 						<label for='userpw'>Password</label>
 						<input type="password" class='form-control' id='user_pw' name='userpw' required>
 					</div>					
-					<div class='row justify-content-around'>
-						<!--
-						<a href='#' class='login-submit font-weight-bold text-dark'><i class="fas fa-sign-in-alt"></i>Login</a>
-						-->
-						
-						<button type='submit' class='login-submit btn btn-outline-dark font-weight-bold' data-dismiss='modal'><i class="fas fa-sign-in-alt"></i> Login</button>
-						
-
+					<div class='row justify-content-around'>						
+						<button type='submit' class='login-submit btn btn-outline-dark font-weight-bold' data-dismiss='modal'><i class="fas fa-sign-in-alt"></i> Login</button>					
 						<button type='button' class='demo-submit btn btn-outline-success font-weight-bold' data-dismiss='modal'><i class="fas fa-sign-in-alt"></i> Demo</button>
 					</div>
-					<br>
-					<div class='row justify-content-center'>
-						<!--
-						<a href='#' id='register-btn' data-toggle='modal' data-target='#register-page'>Sign up</a>
-						-->
-						
-						<button type='button' class='btn btn-link text-primary font-weight-bold' id='register-btn' data-toggle='modal' data-target='#register-page'><i class="fas fa-user-plus"></i> Register</button>
-						
-					</div>							
 				</form>
+			</div>
+			<div class='modal-footer justify-content-center'>				
+				<button type='button' class='btn btn-link text-primary font-weight-bold' id='register-btn' data-toggle='modal' data-target='#register-page'><i class="fas fa-user-plus"></i> Register</button>
 			</div>
 		</div>
 	</div>
