@@ -232,11 +232,8 @@ function updateTheDate(targetID, item_title){
 	.fail(alertFail);
 }
 
-function updateSuccess(xhr_sent, status, resFromServer){
-	//const newEntry = renderSaved_card(xhr_sent);
-	console.log(xhr_sent);
-	$('#date-btn-save').html('<i class="fas fa-save"></i> UPDATE');
-	console.log('before getsavedlists');
+function updateSuccess(xhr_sent, status, resFromServer){	
+	$('#date-btn-save').html('<i class="fas fa-save"></i> UPDATE');	
 	getSavedLists();
 	alertMessage('update success');
 	
@@ -540,8 +537,7 @@ function showList(){
 function removeSingleInfo(targetID, mapinfo_arr){
 	for(let i=0;i<mapinfo_arr.length;i++){
 		if(mapinfo_arr[i].id === targetID){
-			let temp = mapinfo_arr.splice(i,1);
-			//console.log(temp);
+			let temp = mapinfo_arr.splice(i,1);			
 			temp[0].marker.setMap(null);
 			delete temp.map;
 			delete temp.mapObj;
@@ -798,8 +794,7 @@ $('#users_saved_list_modal').on('click', '.delete-load-btn', event=>{
 
 let loaded_saved_list;
 
-function loadDestination(data){
-	//console.log(data);
+function loadDestination(data){	
 	clearDate();	
 	data[0].destinations.forEach((item)=>{
 		makeMarkerAndSaveDB(item, mapinfo_lists);
@@ -843,10 +838,10 @@ $('#users_saved_list_close').on('click', ()=>{
 function renderSaved_card(item){
 	
 	let thething = `
-	<div class='card col-12 col-lg-6 no-paddings' savedLists-id=${item.id}>
+	<div class='card col-12 col-sm-6 col-md-4 no-paddings text-center' savedLists-id=${item.id}>
 		<div class='card-body cormorant font-weight-bold'>${item.title}</div>
-		<div class='card-footer justify-content-around'>
-			<button type='button' class='btn btn-primary save-load-btn'><i class="fas fa-folder-open"></i> LOAD</button>
+		<div class='card-footer'>
+			<button type='button' class='btn btn-primary save-load-btn'><i class="fas fa-folder-open"></i></button>
 			<button type='button' class='btn btn-danger delete-load-btn'><i class="fas fa-trash-alt"></i></button>
 		</div>
 	</div>`;
@@ -854,8 +849,7 @@ function renderSaved_card(item){
 	return thething;
 }
 
-function loadSavedLists(data){
-	console.log('at loadSavedLists');
+function loadSavedLists(data){	
 	loaded_saved_list = data[0].savedLists;
 	const completeCards = 
 		data[0].savedLists.map(item=>{
@@ -864,8 +858,7 @@ function loadSavedLists(data){
 	$('#users_saved_list_modal').html(completeCards);
 }
 
-function getSavedLists(){	
-	console.log('at getSavedLists');
+function getSavedLists(){		
 	$.ajax({
 		url: base_url+'api/destination/user/'+local_username,
 		method: 'GET',

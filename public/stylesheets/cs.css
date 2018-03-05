@@ -4,7 +4,12 @@
 .cormorant {
 	font-family: 'Cormorant Garamond', serif;
 }
+/*
 #register-btn:hover{
+	text-decoration: none;
+}
+*/
+#login-page .btn {
 	text-decoration: none;
 }
 #register-page label,
