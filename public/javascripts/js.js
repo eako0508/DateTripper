@@ -46,10 +46,10 @@ const arr_options = [
 	{ id: "shopping_mall", name: "Shopping Mall" },
 	{ id: "zoo", name: "Zoo" }
 ];
-
+//let base_url = 'https:whispering-oasis-17118.herokuapp.com/'
 //let base_url = 'http://100.33.50.170:8080/';
-//let base_url = 'http://192.168.2.199:8080/';
-let base_url = 'http://localhost:8080/';
+let base_url = 'http://192.168.2.199:8080/';
+//let base_url = 'http://localhost:8080/';
 //let base_url = 'http://192.168.1.100:8080';
 
 
@@ -607,7 +607,7 @@ $('.place-list').on('click', '.list-name', event=>{
 			targetObj.infowindow.open(map, targetObj.marker);
 			map.panTo(targetObj.mapObj);
 			if(map.getZoom()<=15) map.setZoom(15);
-			
+			$('html, body').animate({ scrollTop: 0});
 		}
 	}
 });
@@ -717,19 +717,10 @@ $('.results').on('click', `.card > .card-body, .card > img`, event=>{
 			let targetObj = mapinfo_results[i];
 			clearAllInfoWindow();
 			targetObj.infowindow.open(map, targetObj.marker);
-			map.panTo(targetObj.mapObj);
-			//map.setZoom(15);
+			map.panTo(targetObj.mapObj);			
 			if(map.getZoom()<=15) map.setZoom(15);
 		}
-	}
-	
-	/* this feature zooms in too much...
-		Nearby button already bounds nearby area before anyway.
-
-	const bounds = new google.maps.LatLngBounds();
-	bounds.extend(target_map_obj);
-	map.fitBounds(bounds);
-	*/
+	}	
 	$('html, body').animate({ scrollTop: 0});
 });
 
