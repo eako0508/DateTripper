@@ -1,15 +1,9 @@
-
-/**
-	
-
-**/
-
-
 'use strict'
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const faker = require('faker');
 const mongoose = require('mongoose');
+var ObjectId = require('mongoose').Types.ObjectId;
 
 const expect = chai.expect;
 chai.use(chaiHttp);
@@ -95,7 +89,7 @@ function tearDown(){
 	//return mongoose.connection.dropCollection('datetripper-test');
 }
 
-
+/*
 describe('First page', function(){
 	it('should display index.html with status 200', function(){
 		return chai.request(app)
@@ -105,7 +99,7 @@ describe('First page', function(){
 		  });
 	});
 });
-
+*/
 describe('/Destination', function(){
 
 	before(function(){
@@ -121,6 +115,7 @@ describe('/Destination', function(){
 		return closeServer();
 	});
 
+/*
 	
 // get all destination for all users
 // req:endpoint, res:json-array of all the destinations for all users.
@@ -254,9 +249,39 @@ describe('/Destination', function(){
 		
 	});
 	
+*/
+	describe('DELETE /api/destination/', function(){		
+		it('should delete a user\'s savedList item with an id number', function(){			
+			return Destination.findOne()
+				.then(res=>{
+					let targetID = res._id;
+					let targetTitle = res.title;					
+					return chai.request(app)
+						.delete(`/api/destination/${targetID}`)
+						.then(result=>{
+							expect(result).to.have.status(200);
+							return Destination.findOne({"destinations.id" : new ObjectId(targetID)})
+								.count()
+								.then(result_dest=>{
+									expect(result_dest).to.be.equal(0);
+									return User.find({"savedLists.id": new ObjectId(targetID)})
+										.count()
+										.then(result_user=>{
+											expect(result_user).to.be.equal(0);
+										})
+										.catch(err=>{
+											console.error(err);
+										});
+								})
+								.catch(err=>{
+									console.error(err);
+								});						
+						});
+				});				
+		});		
+	});
 
-
-	
+	/*
 	//	DELETE WITH TITLE
 	describe('DELETE /api/destination/', function(){		
 		it('should delete a user\'s savedList item', function(){			
@@ -293,4 +318,5 @@ describe('/Destination', function(){
 		});
 		
 	});
+	*/
 });

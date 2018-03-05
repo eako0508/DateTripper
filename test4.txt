@@ -4,56 +4,13 @@
 
 
 
-  First page
-::ffff:127.0.0.1 - - [05/Mar/2018:00:34:09 +0000] "GET / HTTP/1.1" 200 9622
-    √ should display index.html with status 200
-
   /Destination
 Your app is listening on port 8080
-    GET /api/destination
-::ffff:127.0.0.1 - - [05/Mar/2018:00:34:10 +0000] "GET /api/destination HTTP/1.1" 200 16365
-      √ should return all the saved dates for every users (80ms)
-    GET /api/destination/all/:username
-::ffff:127.0.0.1 - - [05/Mar/2018:00:34:10 +0000] "GET /api/destination/all/Gilbert HTTP/1.1" 200 1461
-TypeError: apiResult.forEach is not a function
-    at chai.request.get.then.apiResult (D:\Documents\datetripper\test\test.js:158:18)
-    at <anonymous>
-    at process._tickCallback (internal/process/next_tick.js:188:7)
-      √ should return all the saved dates for a designated user (41ms)
-    GET /api/destination/user/:username
-{ firstName: 'Lorenza',
-  lastName: 'Wiegand',
-  savedLists: 
-   [ { username: 'Tyrique',
-       title: 'occaecati nostrum ratione',
-       destinations: [Array] },
-     { username: 'Tyrique',
-       title: 'numquam in similique',
-       destinations: [Array] } ],
-  _id: 5a9c908208ec21035879bc3f,
-  username: 'Tyrique',
-  password: '123456789',
-  __v: 0 }
-resUser
-::ffff:127.0.0.1 - - [05/Mar/2018:00:34:10 +0000] "GET /api/destination/user/Tyrique HTTP/1.1" 200 1715
-      √ should return short version of the user's saved dates (58ms)
-    POST /api/destination/
-::ffff:127.0.0.1 - - [05/Mar/2018:00:34:10 +0000] "POST /api/destination/Danika HTTP/1.1" 201 424
-      √ should add date to user's savedLists (80ms)
     DELETE /api/destination/
-::ffff:127.0.0.1 - - [05/Mar/2018:00:34:11 +0000] "DELETE /api/destination/ HTTP/1.1" 200 31
-      √ should delete a user's savedList item
-result_user: 1
-{ AssertionError: expected 1 to equal 0
-    at User.find.count.then.result_user (D:\Documents\datetripper\test\test.js:316:36)
-    at <anonymous>
-    at process._tickCallback (internal/process/next_tick.js:188:7)
-  message: 'expected 1 to equal 0',
-  showDiff: true,
-  actual: 1,
-  expected: 0 }
+::ffff:127.0.0.1 - - [05/Mar/2018:01:21:58 +0000] "DELETE /api/destination/5a9c9bb62a5b7c1e48c82c19 HTTP/1.1" 200 33
+      √ should delete a user's savedList item with an id number (111ms)
 Closing server
 
 
-  6 passing (2s)
+  1 passing (693ms)
 

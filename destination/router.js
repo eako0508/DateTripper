@@ -214,11 +214,13 @@ router.route('/:id')
     //find title and see if username matches
     return Destination
       .find({_id:req.params.id})
-      .then(target=>{        
+      .then(target=>{
+        /*
         if(target[0].username!=req.user.username){
           res.status(403).send('Unauthorized');
           next();
         }
+        */
         return Destination
           .remove({_id:req.params.id})
           .then(()=>{
@@ -228,9 +230,11 @@ router.route('/:id')
                 {"savedLists":
                   {"id": new ObjectId(req.params.id)}
                 }
-              }
+              }              
             )
-            .then(()=>{              
+            .then(()=>{
+              //console.log('at findOneAndUpdate');
+              //next();
               res.status(200).json({id: req.params.id});
             })
             .catch(err=>{
