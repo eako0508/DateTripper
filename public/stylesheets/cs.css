@@ -4,10 +4,14 @@
 .cormorant {
 	font-family: 'Cormorant Garamond', serif;
 }
+#register-btn:hover{
+	text-decoration: none;
+}
 #register-page label,
 #announcement .modal-body,
 #users_saved_list .modal-body,
-#confirmation .modal-body {
+#confirmation .modal-body,
+#login-page .modal-body {
 	font-family: 'Cormorant Garamond', serif;
 	font-weight: bold;
 }

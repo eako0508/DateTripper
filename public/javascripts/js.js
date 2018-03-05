@@ -722,7 +722,13 @@ function alertFail(xhr, textStatus, errThrown){
 
 //login
 
-
+$('.demo-submit').on('click', event=>{
+	const item = {
+		username: 'admin',
+		password: 'adminadmin'
+	};
+	ajaxlogin(item);
+});
 //$('js-form-login').on('submit', event=>{
 $('.login-submit').on('click', event=>{
 	event.preventDefault();
@@ -837,7 +843,7 @@ $('#users_saved_list_close').on('click', ()=>{
 function renderSaved_card(item){
 	
 	let thething = `
-	<div class='card col-12 col-lg-5 no-paddings' savedLists-id=${item.id}>
+	<div class='card col-12 col-lg-6 no-paddings' savedLists-id=${item.id}>
 		<div class='card-body cormorant font-weight-bold'>${item.title}</div>
 		<div class='card-footer justify-content-around'>
 			<button type='button' class='btn btn-primary save-load-btn'><i class="fas fa-folder-open"></i> LOAD</button>

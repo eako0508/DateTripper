@@ -85,8 +85,7 @@
 								</div>
 							</div>
 							<div class='row no-gutters justify-content-end'>
-								<button type='reset' class='btn btn-danger col-12' id='date-btn-clear'><i class="fas fa-trash"></i> Clear</button>
-								<!--ask are you sure??-->
+								<button type='reset' class='btn btn-danger col-12' id='date-btn-clear'><i class="fas fa-trash"></i> Clear</button>								
 							</div>							
 						</form>
 					</div>
@@ -107,9 +106,10 @@
 </body>
 
 <div id='login-page' class='modal fade login-page' tabindex='-1'>
-	<div class='modal-dialog'>
+	<div class='modal-dialog modal-sm'>
 		<div class='modal-content'>
 			<div class='modal-body'>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
 				<form class='js-form-login'>
 					<div class='form-group'>
 						<label for='userid'>Username</label>
@@ -121,9 +121,16 @@
 					</div>					
 					<div class='row justify-content-around'>
 						<button type='submit' class='login-submit btn btn-outline-dark font-weight-bold' data-dismiss='modal'><i class="fas fa-sign-in-alt"></i> Login</button>
-						<button type='button' class='btn btn-outline-primary font-weight-bold' id='register-btn' data-toggle='modal' data-target='#register-page'><i class="fas fa-user-plus"></i> Register</button>
-						<button type='button' class='btn btn-outline-danger font-weight-bold' id='login-cancel'>Cancel</button>
+
+						<button type='button' class='demo-submit btn btn-outline-success font-weight-bold' data-dismiss='modal'><i class="fas fa-sign-in-alt"></i> Demo</button>
 					</div>
+					<br>
+					<div class='row justify-content-center'>
+						<button type='button' class='btn btn-link font-weight-bold' id='register-btn' data-toggle='modal' data-target='#register-page'><i class="fas fa-user-plus"></i> Register</button>
+					</div>
+						<!--
+						<button type='button' class='btn btn-outline-danger font-weight-bold' id='login-cancel'>Cancel</button>
+						-->					
 				</form>
 			</div>
 		</div>
@@ -179,8 +186,9 @@
 <div class='fade modal' id='users_saved_list' tabindex='-1'>
 	<div class='modal-dialog' id='savedList-modal-dialog'>
 		<div class='modal-content'>
-			<div class='modal-body flex-row-wrap justify-content-around' id='users_saved_list_modal'>				
-				
+			<div class='modal-header justify-content-center'><span class='cormorant font-weight-bold text-center h2'>Saved Dates</span></div>
+			<div class='modal-body'>
+				<div class='flex-row-wrap' id='users_saved_list_modal'></div>
 			</div>
 			<div class='modal-footer'>
 				<button type='button' class='btn btn-primary' id='users_saved_list_close'>Close</button>
