@@ -1,8 +1,39 @@
+.landing-para:before {	
+	content: "";
+	position: fixed;
+	left:0;
+	right:0;
+	top: 0;
+	z-index:-1;
+
+	display:block;
+	background-image: url('http://wallscollection.net/wp-content/uploads/2017/01/Cute-Couple-Wallpaper-In-High-Definition-.jpg');
+	background-repeat: no-repeat;
+	background-attachment: fixed;	
+	background-position: center;
+	background-size: cover;
+	width: 100%;
+	height: 100%;
+
+	overflow: hidden;
+	overflow-x: hidden;
+	-webkit-filter: blur(5px);
+	filter: blur(5px);
+}
+body {
+	overflow-x: hidden;
+}
 .indie-flower {
 	font-family: 'Indie Flower', cursive;
 }
 .cormorant {
 	font-family: 'Cormorant Garamond', serif;
+}
+.landing-para-container{
+	//justify-content: space-between;
+}
+.landing-para {
+	//margin-top: 50px;
 }
 .card-container-result {
 	max-width: 350px;
@@ -80,8 +111,9 @@
 	z-index: 4;
 }
 .curtain{	
-	position: absolute;
+	position: fixed;
 	z-index: 3;
+	top: 0;
 }
 .result-img{
 	max-width: 350px;
@@ -102,5 +134,5 @@ body, .curtain {
 	background-repeat: no-repeat;
 	background-attachment: fixed;	
 	background-position: center;
-	background-size: cover;
+	background-size: cover;	
 }

@@ -48,8 +48,8 @@ const arr_options = [
 ];
 //let base_url = 'https:whispering-oasis-17118.herokuapp.com/'
 //let base_url = 'http://100.33.50.170:8080/';
-let base_url = 'http://192.168.2.199:8080/';
-//let base_url = 'http://localhost:8080/';
+//let base_url = 'http://192.168.2.199:8080/';
+let base_url = 'http://localhost:8080/';
 //let base_url = 'http://192.168.1.100:8080';
 
 
@@ -887,10 +887,9 @@ $('#logout-btn').on('click', ()=>{
 
 //First Page
 $('#btn-starttrippin').on('click', function(){
-	$('.curtain').animate({
-		bottom: `${$(window).height()}px`,
+	$('.curtain').animate({		
 		opacity: '0'
-	}, 1000, 'swing', function(){
+	}, 1000, function(){
 		$('.curtain').hide();
 	});
 });
@@ -927,8 +926,8 @@ $(window).on('resize', function(){
 
 function resizeWindow(){
 	let window_height = $(window).height();
-	let window_width = $(window).width();
-	$('.curtain').height(window_height*.87);
+	let window_width = $(window).width();	
+	$('.curtain').height(window_height-$('.title-container').height());	
 	let resized_height = (window_height*.6);
 
 	$('#map').height(resized_height);
