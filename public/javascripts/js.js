@@ -890,11 +890,11 @@ $('#btn-starttrippin').on('click', function(){
 	$('.curtain').animate({		
 		opacity: '0'
 	}, 1000, function(){
-		$('.curtain').hide();
-	});
+		$('.curtain').remove();
+	});	
 });
 
-
+//landing-para:before
 
 //auto complete
 $('.autocomplete-form').on('submit', event=>{
@@ -934,7 +934,8 @@ function resizeWindow(){
 	
 	if(window_width>=991){		
 		$('.place-list').css("maxHeight", resized_height+"px");
-	}	
+	}
+	//$(body).width(window_width);
 }
 
 $(firstLoad);
