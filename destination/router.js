@@ -107,7 +107,8 @@ router.route('/:id')
 router.route('/')
   .put((req,res)=>{
     Destination.findOneAndUpdate(
-      {$and: [{username: req.user.username}, {title: req.body.title}]},
+      {$and: [{username: req.body.username}, {title: req.body.title}]},
+      //{$and: [{username: req.user.username}, {title: req.body.title}]},
       {$set: {
         destinations: req.body.destinations
       }},

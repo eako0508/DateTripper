@@ -48,8 +48,8 @@ const arr_options = [
 ];
 //let base_url = 'https:whispering-oasis-17118.herokuapp.com/'
 //let base_url = 'http://100.33.50.170:8080/';
-//let base_url = 'http://192.168.2.199:8080/';
-let base_url = 'http://localhost:8080/';
+let base_url = 'http://192.168.2.199:8080/';
+//let base_url = 'http://localhost:8080/';
 //let base_url = 'http://192.168.1.100:8080';
 
 
@@ -154,6 +154,7 @@ function saveSuccess(xhr_sent, status, resFromServer){
 
 //PUT
 function updateTheDate(targetID, item_title){
+	console.log('at update');
 	let post_url = base_url+'api/destination/';
 	listDB.forEach((item,index)=>{
 		if(item.marker!=null){
@@ -164,6 +165,7 @@ function updateTheDate(targetID, item_title){
 	});
 	const item = {
 		"title": item_title,
+		"username": local_username,
 		"destinations": listDB
 	}	
 	$.ajax({
@@ -675,8 +677,7 @@ $('#save-form').on('click', '#date-btn-save', event=>{
 	let item_title = $('#date-title').val();
 
 	for(let i=0;i<loaded_saved_list.length;i++){
-		if(loaded_saved_list[i].title === item_title){
-			alertMessage('same name found!');
+		if(loaded_saved_list[i].title === item_title){			
 			updateTheDate(loaded_saved_list[i].id, item_title);
 			return;
 		}
