@@ -751,11 +751,22 @@ $('.dropdown-menu').on('click', '.options-item, li', event=>{
 		//SEARCH NEARBY
 
 $('#search-nearby').on('click', function(event){
+	/*
+	let q_string = '';	
+	if(checked_options[0]) q_string = checked_options[0];
+	if(checked_options.length>1){
+		for(let i=1;i<checked_options.length;i++){
+			q_string += ` or ${checked_options[i]}`;
+		}	
+	}
 	
+	console.log(q_string);
+	*/
 	const query = {
 		location: map.getCenter(),
 		radius: 500,
 		type: checked_options[0]
+		//keyword: q_string
 	}
 	service.nearbySearch(query, placeServiceProcessor);
 });
@@ -893,9 +904,6 @@ $('#btn-starttrippin').on('click', function(){
 		$('.curtain').remove();
 	});	
 });
-
-//landing-para:before
-
 //auto complete
 $('.autocomplete-form').on('submit', event=>{
 	event.preventDefault();
@@ -926,8 +934,8 @@ $(window).on('resize', function(){
 
 function resizeWindow(){
 	let window_height = $(window).height();
-	let window_width = $(window).width();	
-	$('.curtain').height(window_height-$('.title-container').height());	
+	let window_width = $(window).width();		
+	$('.curtain').height(window_height);
 	let resized_height = (window_height*.6);
 
 	$('#map').height(resized_height);
@@ -935,7 +943,6 @@ function resizeWindow(){
 	if(window_width>=991){		
 		$('.place-list').css("maxHeight", resized_height+"px");
 	}
-	//$(body).width(window_width);
 }
 
 $(firstLoad);

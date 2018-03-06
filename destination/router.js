@@ -24,11 +24,11 @@ router.use(bodyParser.json());
 //  need: json({title})
 //  res: updated data 200
 
-//  POST /addDate:username
+//  POST /:username
 //  need: json({username, title, destinations})
 //  res: posted data 201
 
-//  DELETE /
+//  DELETE /:id
 //  need: json({title})
 //  res: 200
 
@@ -245,6 +245,7 @@ router.route('/:id')
 
 //db.users.findOneAndUpdate({"savedLists.title": "test1"},{"$pull": {"savedLists": {"id": ObjectId("5a8f090e017b311c96e9d906")}}});
 //  Delete All
+/*
 router.route('/')
   .delete((req,res)=>{
     Destination
@@ -255,5 +256,5 @@ router.route('/')
         res.status(500).send('Server Error');
       });
   });
-
+*/
 module.exports = {router};

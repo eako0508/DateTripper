@@ -4,46 +4,34 @@ Heroku:
 https:whispering-oasis-17118.herokuapp.com/
 
 
+Date Tripper will look for point of interests, such as cafe, restaurant and shopping malls nearby a specific locations or by keywords to help users to plan the dates ahead of time.
+If the user wishes to save the current date routine, they can save them for the future plans or as a memory to look back.
+
+
 ## End points
 
 GET /
 res: all user's saved destinations in detail
 
 GET /all/:username
-res: all username's saved destinations in detail
+res: all username's saved destinations in short
 
 GET /user/:username
 res: brief user's list
 
 GET /:id 
-res: list of destinations
+res: get detailed information of the date
+(username, title and destinations object)
 
 PUT /
-need: json({title, modifiying destination})
+need: 
+ - json({title, modifiying destination})
+ - username
 res: updated data
 
-POST /addDate:username
+POST /:username
 need: json({username, title, destinations})
 res: posted data
 
-DELETE /
-need: json({title})
-
-
-## TODO
-- custom keyword search should limit near the current center of the map
-
-## misc.
-- add location's website & phone number
-- display opening hours.
-- click item from results and display detailed info in lightbox.
-- click item from results to show place on the map.
-- From cards, move card-contents to the bottom.
-
-## Thoughts
-- add saved destination to current build?
-- have 'save the date' add new item or updated list?
-
-
-## issues
-- background for mobile app is chainging when more items are generated below
+DELETE /:id
+need: id of the entry to remove
