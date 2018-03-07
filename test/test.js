@@ -68,7 +68,6 @@ function generateDestinationStack(username_){
 }
 
 function establishDB(){
-	//establish destinationDB
 	const userStack = [];
 	
 	for(let i=0;i<10;i++){
@@ -87,8 +86,7 @@ function establishDB(){
 }
 
 function tearDown(){
-	return mongoose.connection.dropDatabase();
-	//return mongoose.connection.dropCollection('datetripper-test');
+	return mongoose.connection.dropDatabase();	
 }
 
 
@@ -122,8 +120,7 @@ describe('/Destination', function(){
 // get all destination for all users
 // req:endpoint, res:json-array of all the destinations for all users.
 	describe('GET /api/destination', function(){
-		it('should return all the saved dates for every users', function(){
-			
+		it('should return all the saved dates for every users', function(){			
 			let res;
 			return chai.request(app)
 				.get('/api/destination')
@@ -142,20 +139,18 @@ describe('/Destination', function(){
 	
 	//dest result vs get result
 	describe('GET /api/destination/all/:username', function(){		
-		it('should return all the saved dates for a designated user', function(){
-			
-			let destResult;
-			return Destination.findOne().then(destResult_=>{
-				destResult = destResult_;
+		it('should return all the saved dates for a designated user', function(){			
+			const resultCheck = function(apiResult){
+				expect(apiResult).to.be.status(200);
+				expect(apiResult.body).to.be.a('Array');
+				apiResult.body.forEach(item=>{
+  					expect(item).to.include.keys('username', 'title', 'destinations');
+			  	});
+			}			
+			return Destination.findOne().then(destResult=>{				
 				return chai.request(app)
 				  .get(`/api/destination/all/${destResult.username}`)
-				  .then(apiResult=>{
-				  	expect(apiResult).to.be.status(200);
-				  	expect(apiResult.body).to.be.a('Array');
-				  	apiResult.body.forEach(item=>{
-				  		expect(item).to.include.keys('username', 'title', 'destinations');
-				  	});			  		
-				  })				  
+				  .then(resultCheck);
 			});
 		});
 	});
@@ -165,26 +160,21 @@ describe('/Destination', function(){
 
 	describe('GET /api/destination/user/:username', function(){
 		it('should return short version of the user\'s saved dates', function(){
+			
+			const checkObj = function(apiResult){
+				expect(apiResult).to.be.a('object');
+				expect(apiResult).to.have.status(200);
+				apiResult.body.forEach(obj=>{
+					expect(obj).to.be.a('object');
+					expect(obj).to.include.keys('username', 'savedLists');
+				});
+			}
+
 			return User.findOne().then(resUser_=>{
 				let resUser = resUser_;
-				//console.log(resUser);
-				//console.log("resUser");
-				return Destination.findOne({username: resUser.username})
-					.then(theone=>{
-						return chai.request(app)
-							.get(`/api/destination/user/${resUser.username}`)
-							.then(apiResult=>{
-								expect(apiResult).to.be.a('object');
-								expect(apiResult).to.have.status(200);
-								apiResult.body.forEach(obj=>{
-									expect(obj).to.be.a('object');
-									expect(obj).to.include.keys('username', 'savedLists');
-								});
-							})
-							.catch(err=>{
-								console.error(err);
-							});
-					});
+				return chai.request(app)
+				  .get(`/api/destination/user/${resUser.username}`)
+				  .then(checkObj);
 			});
 		});
 	});
@@ -199,16 +189,16 @@ describe('/Destination', function(){
 			//add the date to the user's savedList
 			let temp;
 			let newID;
-			//Q: return User vs return chai
-			return User.findOne().then(res=>{	//res is list of the users
+			
+
+			return User.findOne().then(res=>{	//res is list of the users				
 				temp = res;
-				
 				const entry = {
-					username: temp.username,
+					username: temp.username,					
 					title: faker.lorem.words(),
 					destinations: [{
 						id: faker.random.number(),
-						username: temp.username,
+						username: temp.username,						
 						place_id: faker.random.number(),
 						location: {
 							lat: faker.random.number(),
@@ -216,13 +206,7 @@ describe('/Destination', function(){
 						},
 						photos_large: 'https://some-url/'+faker.random.word()+faker.random.number(),
 						photos_small: 'https://some-url/'+faker.random.word()+faker.random.number(),
-						hours: [
-							faker.random.words(),
-							faker.random.words(),
-							faker.random.words(),
-							faker.random.words(),
-							faker.random.words(),
-							faker.random.words(),
+						hours: [						
 							faker.random.words()
 						]
 					}]
@@ -235,90 +219,40 @@ describe('/Destination', function(){
 						expect(res).to.be.status(201);
 						expect(res).to.be.a('object');
 						expect(res.body).to.include.keys('username','title','destinations');
-					})
-					.catch(err=>{
-						console.error(err);
-					});
-
-			});
-			//look for the same user again
-			//and check if savedList array is updated with new entry
-			
-		});
-		
+					});					
+			});						
+		});		
 	});
 	
 
 	describe('DELETE /api/destination/', function(){		
-		it('should delete a user\'s savedList item with an id number', function(){			
+		it('should delete a user\'s savedList item with an id number', function(){
+
 			return Destination.findOne()
 				.then(res=>{
 					let targetID = res._id;
 					let targetTitle = res.title;
 					let targetUser = res.username;
 
+					const removeResult = function(result){
+						expect(result).to.have.status(200);
+						return Destination.findOne({"destinations.id" : new ObjectId(targetID)})
+							.count()
+							.then(confirmRemoved);
+					};
+					const confirmRemoved = function(result_dest){
+						expect(result_dest).to.be.equal(0);
+						return User.find({"savedLists.id": new ObjectId(targetID)})
+							.count()
+							.then(result_user=>{
+								expect(result_user).to.be.equal(0);
+							});
+					};
+
 					return chai.request(app)
 						.delete(`/api/destination/${targetID}`)
-						.then(result=>{
-							expect(result).to.have.status(200);
-							return Destination.findOne({"destinations.id" : new ObjectId(targetID)})
-								.count()
-								.then(result_dest=>{
-									expect(result_dest).to.be.equal(0);
-									return User.find({"savedLists.id": new ObjectId(targetID)})
-										.count()
-										.then(result_user=>{
-											expect(result_user).to.be.equal(0);
-										})
-										.catch(err=>{
-											console.error(err);
-										});
-								})
-								.catch(err=>{
-									console.error(err);
-								});						
-						});
-				});				
-		});		
-	});
-
-
-	/*
-	//	DELETE WITH TITLE
-	describe('DELETE /api/destination/', function(){		
-		it('should delete a user\'s savedList item', function(){			
-			return User.findOne()
-				.then(res=>{
-					let targetItem = {
-						title: res.savedLists[0].title
-					}
-					return chai.request(app)
-						.delete(`/api/destination/`)
-						.send(targetItem)
-						.then(result=>{
-							expect(result).to.have.status(200);
-							Destination.findOne({title: targetItem.title})
-								.count()
-								.then(result_dest=>{
-									expect(result_dest).to.be.equal(0);
-								})
-								.catch(err=>{
-									console.error(err);
-								})
-							User.find({"savedLists.title": targetItem.title})
-								.count()
-								.then(result_user=>{
-									console.log('result_user: '+result_user);
-									expect(result_user).to.be.equal(0);
-								})
-								.catch(err=>{
-									console.error(err);
-								})
-						});
+						.then(removeResult);
 				});
-
 		});
-		
 	});
-	*/
 });
