@@ -484,6 +484,7 @@ function clearDate(){
 	clearArray(listDB);	
 	$('.place-list').html('');
 	hideList();
+	$('#date-btn-save').html('<i class="fas fa-save"></i> SAVE');
 }
 function clearArray(arr){
 	while(arr.length) arr.pop();
@@ -789,7 +790,7 @@ $('#confirmation').on('click', '#confirm-close', event=>{
 $('#confirmation').on('click', '.clearConfirm', function(event){
 	$(event.currentTarget).removeClass('clearConfirm');
 	clearDate();
-	$('#date-btn-save').html('<i class="fas fa-save"></i> SAVE');
+	//$('#date-btn-save').html('<i class="fas fa-save"></i> SAVE');
 	$('#confirmation').modal('hide');
 });
 $('#confirmation').on('click', '.removeSavedListConfirm', event=>{
@@ -886,6 +887,7 @@ $('#register-btn, #login-cancel').on('click', ()=>{
 	$('#login-page').modal('hide');
 });
 $('#logout-btn').on('click', ()=>{
+	clearDate();
 	localToken = '';
 	$('#logout-btn').hide();
 	$('#savedlist-btn').hide();
