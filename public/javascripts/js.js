@@ -46,12 +46,7 @@ const arr_options = [
 	{ id: "shopping_mall", name: "Shopping Mall" },
 	{ id: "zoo", name: "Zoo" }
 ];
-//let base_url = 'https:whispering-oasis-17118.herokuapp.com/'
-//let base_url = 'http://100.33.50.170:8080/';
-let base_url = 'http://192.168.2.199:8080/';
-//let base_url = 'http://localhost:8080/';
-//let base_url = 'http://192.168.1.100:8080';
-
+let base_url = 'https:whispering-oasis-17118.herokuapp.com/'
 
 	//Map
 
