@@ -7,7 +7,7 @@
 	z-index:-1;
 
 	display:block;
-	background-image: url('http://wallscollection.net/wp-content/uploads/2017/01/Cute-Couple-Wallpaper-In-High-Definition-.jpg');
+	background-image: url('../images/background/couple.jpg');
 	background-repeat: no-repeat;
 	background-attachment: fixed;	
 	background-position: center;
@@ -130,7 +130,7 @@ body {
 	bottom: 20px!important;
 }
 body, .curtain {
-	background-image: url('http://wallscollection.net/wp-content/uploads/2017/01/Cute-Couple-Wallpaper-In-High-Definition-.jpg');
+	background-image: url('../images/background/couple.jpg');
 	background-repeat: no-repeat;
 	background-attachment: fixed;	
 	background-position: center;

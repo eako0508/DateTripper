@@ -46,7 +46,8 @@ const arr_options = [
 	{ id: "zoo", name: "Zoo" }
 ];
 
-let base_url = 'whispering-oasis-17118.herokuapp.com/';
+//let base_url = 'whispering-oasis-17118.herokuapp.com/';
+let base_url = '';
 
 	//Map
 
