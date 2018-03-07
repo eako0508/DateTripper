@@ -1,4 +1,3 @@
-
 /**
 		G L O B A L   V A R I A B L E S
 **/
@@ -46,7 +45,8 @@ const arr_options = [
 	{ id: "shopping_mall", name: "Shopping Mall" },
 	{ id: "zoo", name: "Zoo" }
 ];
-let base_url = 'https:whispering-oasis-17118.herokuapp.com/'
+
+let base_url = 'whispering-oasis-17118.herokuapp.com/';
 
 	//Map
 
