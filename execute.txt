@@ -1,1 +1,0 @@
-mongod --dbpath='/hddb/mongo_db/'
