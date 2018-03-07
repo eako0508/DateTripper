@@ -23,7 +23,7 @@ npm install
 
 ## End points
 
-**GET /*
+**GET /**
 
 res: all user's saved destinations in detail
 
@@ -64,6 +64,6 @@ res: posted data
 need: id of the entry to remove
 
 
-## Authors
+## Author
 
 Eugene A. Ko

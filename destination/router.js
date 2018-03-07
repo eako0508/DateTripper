@@ -64,7 +64,7 @@ router.route('/all/:username')
       //res.status(200).json(entries);
   	}).catch((err)=>{
   		console.error(err);
-  		res.status(500).send('Server error');
+  		res.status(500).send('User not found.');
   	});
   });
 
@@ -177,7 +177,7 @@ router.route('/:username')
       .count()
       .then(result=>{
         if(result>0){
-          return res.status(500).json({
+          return res.status(409).json({
             reason: 'Duplicate title detected under your account. Try using different title'
           });
         }

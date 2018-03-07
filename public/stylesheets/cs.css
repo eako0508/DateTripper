@@ -23,6 +23,12 @@
 body {
 	overflow-x: hidden;
 }
+.carousel-inner img {
+	margin: auto;
+}
+.carousel-caption {
+	background-color: rgba(0,0,0,.7);
+}
 .indie-flower {
 	font-family: 'Indie Flower', cursive;
 }

@@ -4,7 +4,7 @@ const chaiHttp = require('chai-http');
 const faker = require('faker');
 const mongoose = require('mongoose');
 var ObjectId = require('mongoose').Types.ObjectId;
-const chaiJWT = require('chai-jwt');
+//const chaiJWT = require('chai-jwt');
 
 const expect = chai.expect;
 chai.use(chaiHttp);
@@ -137,7 +137,7 @@ describe('/Destination', function(){
 		});
 	});
 	
-	//dest result vs get result
+	//user's saved destinations in short
 	describe('GET /api/destination/all/:username', function(){		
 		it('should return all the saved dates for a designated user', function(){			
 			const resultCheck = function(apiResult){
@@ -146,21 +146,32 @@ describe('/Destination', function(){
 				apiResult.body.forEach(item=>{
   					expect(item).to.include.keys('username', 'title', 'destinations');
 			  	});
-			}			
+			}
 			return Destination.findOne().then(destResult=>{				
 				return chai.request(app)
 				  .get(`/api/destination/all/${destResult.username}`)
 				  .then(resultCheck);
 			});
 		});
+
+		it('should return empty if a matching username is not found', function(){
+			const countNum = function(num){
+				expect(num.body).to.have.lengthOf(0);
+			}
+			let dummyUsername = 'dummydummy';
+			return chai.request(app)
+				.get(`/api/destination/all/${dummyUsername}`)
+				.then(countNum)
+		});
 	});
+
+
 
 // get all destination for userID
 // req:endpoint, res:json-array of all the destinations for userID.
 
 	describe('GET /api/destination/user/:username', function(){
-		it('should return short version of the user\'s saved dates', function(){
-			
+		it('should return short version of the user\'s saved dates', function(){			
 			const checkObj = function(apiResult){
 				expect(apiResult).to.be.a('object');
 				expect(apiResult).to.have.status(200);
@@ -169,7 +180,6 @@ describe('/Destination', function(){
 					expect(obj).to.include.keys('username', 'savedLists');
 				});
 			}
-
 			return User.findOne().then(resUser_=>{
 				let resUser = resUser_;
 				return chai.request(app)
@@ -177,20 +187,17 @@ describe('/Destination', function(){
 				  .then(checkObj);
 			});
 		});
+
+
 	});
 	
 //Create a new list of destinations for a single user
 //req:(username, title, DB), res: json-OK message
 	describe('POST /api/destination/', function(){
 
-		it('should add date to user\'s savedLists', function(){
-			
-			//get a single user's id
-			//add the date to the user's savedList
+		it('should add date to user\'s savedLists', function(){						
 			let temp;
-			let newID;
-			
-
+			let newID;			
 			return User.findOne().then(res=>{	//res is list of the users				
 				temp = res;
 				const entry = {
@@ -215,13 +222,47 @@ describe('/Destination', function(){
 					.post(`/api/destination/${temp.username}`)
 					.send(entry)
 					.then(res=>{
-						newID = res.body.id;
+						//newID = res.body.id;
 						expect(res).to.be.status(201);
 						expect(res).to.be.a('object');
 						expect(res.body).to.include.keys('username','title','destinations');
 					});					
 			});						
-		});		
+		});
+
+		/* ASK: expected conflict, and got Conflict error but not for chai expect
+		it('should return status 409 on title conflict', function(){
+			return User.findOne().then(result=>{				
+				const dupEntry = {
+					username: result.username,					
+					title: result.savedLists[0].title,
+					destinations: [{
+						id: faker.random.number(),
+						username: result.username,						
+						place_id: faker.random.number(),
+						location: {
+							lat: faker.random.number(),
+							lng: faker.random.number(),
+						},
+						photos_large: 'https://some-url/'+faker.random.word()+faker.random.number(),
+						photos_small: 'https://some-url/'+faker.random.word()+faker.random.number(),
+						hours: [						
+							faker.random.words()
+						]
+					}]
+				};
+				return chai.request(app)
+				  .post(`/api/destination/${result.username}`)
+				  .send(dupEntry)
+				  .then(res=>{
+				  	console.log("res: *****");
+				  	console.log(res);
+				  	expect(res).to.be.status(409);
+				  });
+			})
+		})
+		*/
+
 	});
 	
 

@@ -923,7 +923,7 @@ function firstLoad(){
 
 	$('#logout-btn').hide();
 	$('#savedlist-btn').hide();
-
+	//$('#carousel-help').carousel('pause');
 	$.ajaxSetup({cache:false});
 }
 
