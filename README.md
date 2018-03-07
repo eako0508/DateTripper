@@ -1,11 +1,17 @@
 # DateTripper
 
-Heroku:
-https:whispering-oasis-17118.herokuapp.com/
-
+![desktop](https://github.com/eako0508/DateTripper/blob/feature/mvp-client-with-mock-data/img/Screenshots/desktop/adding_places_desktop.png)
+![mobile](https://github.com/eako0508/DateTripper/blob/feature/mvp-client-with-mock-data/img/Screenshots/mobile/Main_mobile.PNG)
 
 Date Tripper will look for point of interests, such as cafe, restaurant and shopping malls nearby a specific locations or by keywords to help users to plan the dates ahead of time.
 If the user wishes to save the current date routine, they can save them for the future plans or as a memory to look back.
+
+## Live Demo
+
+https:whispering-oasis-17118.herokuapp.com/
+
+
+
 
 
 ## End points
