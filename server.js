@@ -15,10 +15,8 @@ const { PORT, DATABASE_URL } = require('./config');
 
 const app = express();
 
-// Logging
 app.use(morgan('common'));
 
-// CORS
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
@@ -39,7 +37,6 @@ const jwtAuth = passport.authenticate('jwt', { session: false });
 
 app.use('/api/users/', usersRouter);
 app.use('/api/auth/', authRouter);
-//app.use('/api/destination', jwtAuth, destinationRouter);
 app.use('/api/destination', destinationRouter);
 
 let server;

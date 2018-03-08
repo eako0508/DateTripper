@@ -4,7 +4,6 @@ const chaiHttp = require('chai-http');
 const faker = require('faker');
 const mongoose = require('mongoose');
 var ObjectId = require('mongoose').Types.ObjectId;
-//const chaiJWT = require('chai-jwt');
 
 const expect = chai.expect;
 chai.use(chaiHttp);
@@ -221,48 +220,13 @@ describe('/Destination', function(){
 				return chai.request(app)
 					.post(`/api/destination/${temp.username}`)
 					.send(entry)
-					.then(res=>{
-						//newID = res.body.id;
+					.then(res=>{						
 						expect(res).to.be.status(201);
 						expect(res).to.be.a('object');
 						expect(res.body).to.include.keys('username','title','destinations');
 					});					
 			});						
 		});
-
-		/* ASK: expected conflict, and got Conflict error but not for chai expect
-		it('should return status 409 on title conflict', function(){
-			return User.findOne().then(result=>{				
-				const dupEntry = {
-					username: result.username,					
-					title: result.savedLists[0].title,
-					destinations: [{
-						id: faker.random.number(),
-						username: result.username,						
-						place_id: faker.random.number(),
-						location: {
-							lat: faker.random.number(),
-							lng: faker.random.number(),
-						},
-						photos_large: 'https://some-url/'+faker.random.word()+faker.random.number(),
-						photos_small: 'https://some-url/'+faker.random.word()+faker.random.number(),
-						hours: [						
-							faker.random.words()
-						]
-					}]
-				};
-				return chai.request(app)
-				  .post(`/api/destination/${result.username}`)
-				  .send(dupEntry)
-				  .then(res=>{
-				  	console.log("res: *****");
-				  	console.log(res);
-				  	expect(res).to.be.status(409);
-				  });
-			})
-		})
-		*/
-
 	});
 	
 
@@ -289,7 +253,6 @@ describe('/Destination', function(){
 								expect(result_user).to.be.equal(0);
 							});
 					};
-
 					return chai.request(app)
 						.delete(`/api/destination/${targetID}`)
 						.then(removeResult);

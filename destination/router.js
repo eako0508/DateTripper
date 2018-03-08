@@ -47,21 +47,13 @@ router.route('/')
   	});
   });
 
-
 //  GET /all/:username
-router.route('/all/:username')
-  
-  .get((req,res)=>{
-    /*
-    if(req.user.username!=req.params.username){
-      res.status(403).send('Unauthorized');
-    }
-    */
+router.route('/all/:username')  
+  .get((req,res)=>{    
   	Destination.find({
   		username: req.params.username
   	}).then(entries=>{
-  		res.status(200).json(entries.map(entry=>entry.serialize()));
-      //res.status(200).json(entries);
+  		res.status(200).json(entries.map(entry=>entry.serialize()));      
   	}).catch((err)=>{
   		console.error(err);
   		res.status(500).send('User not found.');
@@ -70,22 +62,12 @@ router.route('/all/:username')
 
 //  GET /user/:username
 router.route('/user/:username')
-  .get((req,res)=>{
-    /*
-    if(req.user.username!=req.params.username){
-      res.status(403).send('Unauthorized to view other user\'s list.');
-
-    }
-    */
+  .get((req,res)=>{    
     return User.find({username: req.params.username})
       .then(users => res.json(users.map(user => user.serialize())))
       .catch(err => res.status(500).json({message: 'Internal server error'}));
   });
-/*
-if(req.user.username!=result.username){
-          res.status(403).send(`${req.user.username}, ${result}, ${x}`);
-        }
-*/
+
 //  GET /:id
 router.route('/:id')
   .get((req,res)=>{
@@ -99,44 +81,12 @@ router.route('/:id')
       });
   });
 
-
-
-
-
 // PUT
 router.route('/')
   .put((req,res)=>{
     Destination.findOneAndUpdate(
-      {$and: [{username: req.body.username}, {title: req.body.title}]},
-      //{$and: [{username: req.user.username}, {title: req.body.title}]},
+      {$and: [{username: req.body.username}, {title: req.body.title}]},      
       {$set: {
-        destinations: req.body.destinations
-      }},
-      {new: true}
-      )
-      .then(updated=>{
-        console.log(updated);
-        /*
-        User.findOneAndUpdate(
-            {$and: {username: addedItem.username,savedLists.title:req.body.title}},
-            {savedLists.$.title: },
-            {new:true}
-          )
-        */
-        res.status(200).json(updated.serialize());
-      })
-      .catch(err=>{
-        console.error(err);
-        res.status(500).send('Server Error on PUT');
-      })
-  })
-/*
-router.route('/:id')
-  .put((req,res)=>{
-    Destination.findOneAndUpdate(
-      {_id: req.params.id},
-      {$set: {
-        title: req.body.title,
         destinations: req.body.destinations
       }},
       {new: true}
@@ -149,27 +99,10 @@ router.route('/:id')
         res.status(500).send('Server Error on PUT');
       })
   })
-  */
-
-
 
 //  POST /addDate:username
-//  Strategy
-//check if the user exists
-//check if the same title exists
-//if not, create an entry
-
-router.route('/:username')
-  //Check if the user exists 
-  .post((req,res)=>{
-    /*
-    if(req.params.username != req.user.username){
-      res.status(400).json({
-        reason: `Username does not match.`
-      });
-    }
-    */
-  //Check if the same title exists for the same user.
+router.route('/:username')  
+  .post((req,res)=>{      
   	Destination
       .find({
         title: req.body.title, username:req.params.username
@@ -208,20 +141,12 @@ router.route('/:username')
       })
   });
   
-
 //  DELETE /:id
 router.route('/:id')
-  .delete((req, res)=>{
-    //find title and see if username matches
+  .delete((req, res)=>{    
     return Destination
       .find({_id:req.params.id})
-      .then(target=>{
-        /*
-        if(target[0].username!=req.user.username){
-          res.status(403).send('Unauthorized');
-          next();
-        }
-        */
+      .then(target=>{        
         return Destination
           .remove({_id:req.params.id})
           .then(()=>{
@@ -244,18 +169,4 @@ router.route('/:id')
       });
   });
 
-//db.users.findOneAndUpdate({"savedLists.title": "test1"},{"$pull": {"savedLists": {"id": ObjectId("5a8f090e017b311c96e9d906")}}});
-//  Delete All
-/*
-router.route('/')
-  .delete((req,res)=>{
-    Destination
-      .remove({})
-      .then(res.status(200).send('Successfully removed all dates.'))
-      .catch(err=>{
-        console.error(err);
-        res.status(500).send('Server Error');
-      });
-  });
-*/
 module.exports = {router};

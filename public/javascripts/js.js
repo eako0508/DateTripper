@@ -145,8 +145,7 @@ function saveSuccess(xhr_sent, status, resFromServer){
 }
 
 //PUT
-function updateTheDate(targetID, item_title){
-	console.log('at update');
+function updateTheDate(targetID, item_title){	
 	let post_url = 'api/destination/';
 	listDB.forEach((item,index)=>{
 		if(item.marker!=null){
