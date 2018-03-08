@@ -106,7 +106,7 @@ function logmein(data){
 	//local_username = $('#user_id').val();
 	
 	isLogged = true;
-	
+	$('#nav-menu-btn').collapse('hide');
 	$('#login-btn').hide();
 	$('#savedlist-btn').show();
 	$('#logout-btn').show();
@@ -267,7 +267,7 @@ function renderSinglePlace(item, index){
 				<div class='text-center'>${item.hours}</div>
 				<br>
 				<div>${item.vicinity}</div>
-				<a href='${item.website} class='d-block text-center'>Webiste</a>
+				<a href='${item.website} class='d-block text-center'>Webiste</a>				
 			</div>
 		</div>
 		<div class='card-footer'>
@@ -447,7 +447,9 @@ function addFromResults(targetID){
 		}
 	}
 }
-function loadDestination(data){	
+function loadDestination(data){
+	//hide menu
+	$('#nav-menu-btn').collapse('hide');
 	//clear lists on the right
 	clearDate();
 	//build new DB for the list
@@ -891,7 +893,8 @@ $('#logout-btn').on('click', ()=>{
 	localToken = '';
 	$('#logout-btn').hide();
 	$('#savedlist-btn').hide();
-	$('#login-btn').show();	
+	$('#login-btn').show();
+	$('#nav-menu-btn').collapse('hide');
 });
 
 
@@ -901,6 +904,7 @@ $('#btn-starttrippin').on('click', function(){
 		opacity: '0'
 	}, 1000, function(){
 		$('.curtain').remove();
+		$('#help').modal('show');
 	});	
 });
 //auto complete
