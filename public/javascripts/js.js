@@ -103,8 +103,7 @@ function ajaxlogin(item){
 }
 function logmein(data){	
 	localToken = data.authToken;	
-	//local_username = $('#user_id').val();
-	
+	alertMessage(`Welcome ${local_username}!`);
 	isLogged = true;
 	$('#nav-menu-btn').collapse('hide');
 	$('#login-btn').hide();
@@ -268,8 +267,8 @@ function renderSinglePlace(item, index){
 					<div class='text-center'>${item.hours}</div>
 					<br>
 					<div>${item.vicinity}</div>
-					<a href='${item.website}' class='d-block text-center'>Webiste</a>
-					<button class='btn btn-info showonmap d-blo col-8'>Show on map</button>
+					<a href='${item.website}' class='d-block text-center btn btn-link font-weight-bold'><i class="fas fa-globe"></i> Webiste</a>
+					<button class='btn btn-info showonmap d-blo col-8'>Show from map</button>
 				</div>
 			</div>
 		</div>
@@ -858,7 +857,7 @@ $('#reg-userpw-confirm').on('blur', function(){
 	let pw = $('#reg-userpw').val();
 	let pwc = $('#reg-userpw-confirm').val();	
 	if($('#reg-userpw-confirm').val() != $('#reg-userpw').val()){
-		alertMessage('check');
+		alertMessage('Password and confirm password doesn\'t match!');
 	}
 });
 
@@ -901,10 +900,12 @@ $('#register-btn, #login-cancel').on('click', ()=>{
 $('#logout-btn').on('click', ()=>{
 	clearDate();
 	localToken = '';
+	local_username = '';
 	$('#logout-btn').hide();
 	$('#savedlist-btn').hide();
 	$('#login-btn').show();
 	$('#nav-menu-btn').collapse('hide');
+	alertMessage('Successfully logged out.');
 });
 
 
