@@ -46,9 +46,6 @@ const arr_options = [
 	{ id: "zoo", name: "Zoo" }
 ];
 
-//let base_url = 'whispering-oasis-17118.herokuapp.com/';
-let base_url = '';
-
 	//Map
 
 function initMap() {
@@ -89,7 +86,7 @@ function setBound(arr){
 
 function ajaxlogin(item){
 	$.ajax({
-		url: base_url+'api/auth/login',
+		url: 'api/auth/login',
 		method: "POST",
 		contentType: 'application/json',
 		dataType: 'json',
@@ -113,7 +110,7 @@ function logmein(data){
 }
 //POST
 function saveTheDate(date_title){	
-	let post_url = base_url+'api/destination/' + local_username;
+	let post_url = 'api/destination/' + local_username;
 	listDB.forEach((item,index)=>{
 		if(item.marker!=null){
 			item.marker.setMap(null);
@@ -150,7 +147,7 @@ function saveSuccess(xhr_sent, status, resFromServer){
 //PUT
 function updateTheDate(targetID, item_title){
 	console.log('at update');
-	let post_url = base_url+'api/destination/';
+	let post_url = 'api/destination/';
 	listDB.forEach((item,index)=>{
 		if(item.marker!=null){
 			item.marker.setMap(null);
@@ -187,7 +184,7 @@ function updateSuccess(xhr_sent, status, resFromServer){
 //GET
 function getDetailedSavedList(loadID){
 	$.ajax({
-		url: base_url+'api/destination/'+loadID,
+		url: 'api/destination/'+loadID,
 		method: 'GET',
 		contentType: 'application/json',
 		dataType: 'json',
@@ -200,7 +197,7 @@ function getDetailedSavedList(loadID){
 }
 function getSavedLists(){		
 	$.ajax({
-		url: base_url+'api/destination/user/'+local_username,
+		url: 'api/destination/user/'+local_username,
 		method: 'GET',
 		contentType: 'application/json',
 		dataType: 'json',	
@@ -299,9 +296,7 @@ function renderList(item){
 				</button>
 			</div>
 			<div class='list-name col-8 text-truncate'>
-				${item.name}
-					
-				
+				${item.name}				
 			</div>
 			<button type='button' class='btn btn-danger btn-delete' place-list-id='${item.id}'>
 				<i class="fas fa-times"></i>
@@ -320,12 +315,7 @@ function makeContent(element){
 	let content = '';
 	content += `<div class='info-div d-flex flex-column text-center' item-id='${element.id}'>`;
 	content += `<div class='div-info-title font-weight-bold text-center'>${element.name}</div>`;
-	content += `<img class='d-none d-lg-block' src='${element.photos_small}'/>`;
-	/*
-	content += `<div class='div-info-hours d-none d-lg-block'>`;
-	content += element.hours;
-	content += `</div>`;
-	*/
+	content += `<img class='d-none d-lg-block' src='${element.photos_small}'/>`;	
 	content += `<div>${element.vicinity}</div>`;	
 	content += `<a class='badge badge-primary col-12' href='${element.website}'>Website</a>`;
 	content += '</div>';
@@ -529,7 +519,7 @@ function clearMarkers(mapinfo_arr){
 }
 function deleteSavedListItem(loadID){	
 	$.ajax({
-		url: base_url+'api/destination/'+loadID,
+		url: 'api/destination/'+loadID,
 		method: 'DELETE',
 		contentType: 'application/json',
 		dataType: 'json',
@@ -691,6 +681,7 @@ $('#save-form').on('click', '#date-btn-save', event=>{
 $('#users_saved_list_close').on('click', ()=>{
 	$('#users_saved_list').modal('hide');
 });
+
 		//Result Section
 
 //add item from result to list on right side.
@@ -708,8 +699,7 @@ $('.results').on('click', '.btn-add', event=>{
 //clear search results displayed as well as markers on map along with infowindow
 $('#clear-search').on('click', function(){
 	clearMarkers(mapinfo_results);
-	clearArray(resultDB);
-	//clearResultDB();	
+	clearArray(resultDB);	
 	$('.results').html('');
 });
 
@@ -759,23 +749,11 @@ $('.dropdown-menu').on('click', '.options-item, li', event=>{
 
 		//SEARCH NEARBY
 
-$('#search-nearby').on('click', function(event){
-	/*
-	let q_string = '';	
-	if(checked_options[0]) q_string = checked_options[0];
-	if(checked_options.length>1){
-		for(let i=1;i<checked_options.length;i++){
-			q_string += ` or ${checked_options[i]}`;
-		}	
-	}
-	
-	console.log(q_string);
-	*/
+$('#search-nearby').on('click', function(event){	
 	const query = {
 		location: map.getCenter(),
 		radius: 500,
-		type: checked_options[0]
-		//keyword: q_string
+		type: checked_options[0]		
 	}
 	service.nearbySearch(query, placeServiceProcessor);
 });
@@ -800,8 +778,7 @@ $('#confirmation').on('click', '#confirm-close', event=>{
 });
 $('#confirmation').on('click', '.clearConfirm', function(event){
 	$(event.currentTarget).removeClass('clearConfirm');
-	clearDate();
-	//$('#date-btn-save').html('<i class="fas fa-save"></i> SAVE');
+	clearDate();	
 	$('#confirmation').modal('hide');
 });
 $('#confirmation').on('click', '.removeSavedListConfirm', event=>{
@@ -842,7 +819,7 @@ $('.demo-submit').on('click', event=>{
 	};
 	ajaxlogin(item);
 });
-//$('js-form-login').on('submit', event=>{
+
 $('.login-submit').on('click', event=>{
 	event.preventDefault();
 	const item = {
@@ -880,7 +857,7 @@ $('#register-submit').on('click', event=>{
 		password: item.password
 	}
 	$.ajax({
-		url: base_url+'api/users',
+		url: 'api/users',
 		method: 'POST',
 		contentType: 'application/json',
 		dataType: 'json',
@@ -905,7 +882,7 @@ $('#logout-btn').on('click', ()=>{
 	$('#savedlist-btn').hide();
 	$('#login-btn').show();
 	$('#nav-menu-btn').collapse('hide');
-	alertMessage('Successfully logged out.');
+	alertMessage('Successfully logged out');
 });
 
 
@@ -937,8 +914,7 @@ function firstLoad(){
 	renderOptions(arr_options);
 
 	$('#logout-btn').hide();
-	$('#savedlist-btn').hide();
-	//$('#carousel-help').carousel('pause');
+	$('#savedlist-btn').hide();	
 	$.ajaxSetup({cache:false});
 }
 

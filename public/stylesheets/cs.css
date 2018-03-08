@@ -1,4 +1,20 @@
-.landing-para:before {	
+
+.indie-flower {
+	font-family: 'Indie Flower', cursive;
+}
+.cormorant {
+	font-family: 'Cormorant Garamond', serif;
+}
+.amatic {
+	font-family: 'Amatic SC', cursive;
+}
+
+.curtain{	
+	position: fixed;
+	z-index: 3;
+	top: 0;
+}
+.landing-para:before {
 	content: "";
 	position: fixed;
 	left:0;
@@ -20,38 +36,25 @@
 	-webkit-filter: blur(5px);
 	filter: blur(5px);
 }
+.landing-para{
+	background-color: rgba(222, 206, 183, 0.29);
+    border-radius: .25rem;
+    padding: 20px;
+}
+
 body {
 	overflow-x: hidden;
-}
-.carousel-inner img {
-	margin: auto;
 }
 .nav {
 	background-color: rgba(0,0,0,.7);
 }
-.navbar-toggler {
-	//background-color: rgba(255, 255, 255, 0.76);
-}
-.main-logo {
-	//position: absolute;
-	//left: 0;
-	//right: 0;	
+.carousel-inner img {
+	margin: auto;
 }
 .carousel-caption {
 	background-color: rgba(0,0,0,.7);
 }
-.indie-flower {
-	font-family: 'Indie Flower', cursive;
-}
-.cormorant {
-	font-family: 'Cormorant Garamond', serif;
-}
-.landing-para-container{
-	//justify-content: space-between;
-}
-.landing-para {
-	//margin-top: 50px;
-}
+
 .card-container-result {
 	max-width: 350px;
 }
@@ -65,13 +68,12 @@ body {
 .btn {
 	font-family: 'Cormorant Garamond', serif;	
 }
-.amatic {
-	font-family: 'Amatic SC', cursive;
+.title-container{
+	z-index: 4;
 }
 .page-title{	
 	color: black;
-	text-decoration: none;
-	
+	text-decoration: none;	
 }
 .page-title:hover {	
 	color: darkgoldenrod;
@@ -95,6 +97,9 @@ body {
 	flex-direction: row;
 	flex-wrap: wrap;
 }
+.flex-column{
+	flex-direction: column;
+}
 .overflow-hidden{
 	overflow: auto;	
 	overflow-x: hidden;	
@@ -103,9 +108,7 @@ body {
 .place-list::-webkit-scrollbar {
 	width: 5px;	
 }
-.flex-column{
-	flex-direction: column;
-}
+
 .place-list::-webkit-scrollbar-thumb {	
 	background-color: darkgray;
 }
@@ -127,14 +130,8 @@ body {
 .btn-delete {
 	align-self: stretch;
 }
-.title-container{
-	z-index: 4;
-}
-.curtain{	
-	position: fixed;
-	z-index: 3;
-	top: 0;
-}
+
+
 .result-img{
 	max-width: 350px;
 	max-height: 200px;				
