@@ -257,17 +257,20 @@ function renderSinglePlace(item, index){
 		<div class='card res col-12 col-lg-4 justify-content-start no-paddings' item-ID='${item.id}'>`;
 	if(item.photos_large) {
 		result+= `
-		<img class='card-img-top img-thumbnail img-responsive mh-25 d-flex align-self-center result-img' src='${item.photos_large}' alt='card img'>
+		<img class='card-img-top img-thumbnail img-responsive mh-25 d-flex align-self-center result-img' src='${item.photos_large}' alt='card img' idx=${index}>
 		`;
 	}		
 	result += `	
 		<div class='card-body text-center'>
 			<div class='card-container-result d-inline'>
-				<h5 class='card-title text-center'>${item.name}</h5>
-				<div class='text-center'>${item.hours}</div>
-				<br>
-				<div>${item.vicinity}</div>
-				<a href='${item.website} class='d-block text-center'>Webiste</a>				
+				<h5 class='card-title text-center'>${item.name}</h5>				
+				<div class='collapse' id='result-collapse-${index}'>
+					<div class='text-center'>${item.hours}</div>
+					<br>
+					<div>${item.vicinity}</div>
+					<a href='${item.website}' class='d-block text-center'>Webiste</a>
+					<button class='btn btn-info showonmap d-blo col-8'>Show on map</button>
+				</div>
 			</div>
 		</div>
 		<div class='card-footer'>
@@ -319,9 +322,11 @@ function makeContent(element){
 	content += `<div class='info-div d-flex flex-column text-center' item-id='${element.id}'>`;
 	content += `<div class='div-info-title font-weight-bold text-center'>${element.name}</div>`;
 	content += `<img class='d-none d-lg-block' src='${element.photos_small}'/>`;
+	/*
 	content += `<div class='div-info-hours d-none d-lg-block'>`;
 	content += element.hours;
 	content += `</div>`;
+	*/
 	content += `<div>${element.vicinity}</div>`;	
 	content += `<a class='badge badge-primary col-12' href='${element.website}'>Website</a>`;
 	content += '</div>';
@@ -709,8 +714,7 @@ $('#clear-search').on('click', function(){
 	$('.results').html('');
 });
 
-
-$('.results').on('click', `.card > .card-body, .card > img`, event=>{
+$('.results').on('click', '.showonmap', event=>{
 	let targetID = $(event.currentTarget).parents('.card').attr('item-ID');
 	for(let i=0;i<mapinfo_results.length;i++){		
 		if(mapinfo_results[i].id == targetID){			
@@ -722,6 +726,12 @@ $('.results').on('click', `.card > .card-body, .card > img`, event=>{
 		}
 	}	
 	$('html, body').animate({ scrollTop: 0});
+});
+
+
+$('.results').on('click', `.card > img`, event=>{
+	let targetIndex = $(event.currentTarget).attr('idx');	
+	$(`#result-collapse-${targetIndex}`).collapse('toggle');
 });
 
 		//Filter
