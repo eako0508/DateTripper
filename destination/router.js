@@ -43,7 +43,7 @@ router.route('/')
   		res.status(200).json(entries);
   	}).catch((err)=>{
   		console.error(err);
-  		res.status(500).send('Server error');
+  		res.status(500).json({message: 'Server Error on GET /'});
   	});
   });
 
@@ -54,9 +54,8 @@ router.route('/all/:username')
   		username: req.params.username
   	}).then(entries=>{
   		res.status(200).json(entries.map(entry=>entry.serialize()));      
-  	}).catch((err)=>{
-  		console.error(err);
-  		res.status(500).send('User not found.');
+  	}).catch((err)=>{  		
+  		res.status(500).json({message: 'Server Error on GET /all:username'});
   	});
   });
 
@@ -65,7 +64,7 @@ router.route('/user/:username')
   .get((req,res)=>{    
     return User.find({username: req.params.username})
       .then(users => res.json(users.map(user => user.serialize())))
-      .catch(err => res.status(500).json({message: 'Internal server error'}));
+      .catch(err => res.status(500).json({message: 'Server Error on GET /user/:username'}));
   });
 
 //  GET /:id
@@ -75,9 +74,8 @@ router.route('/:id')
       .then(result=>{
         res.status(200).json(result.map(entry=>entry.serialize()));
       })
-      .catch(err=>{
-        console.error(err);
-        res.status(500).send('Server Error');
+      .catch(err=>{        
+        res.status(500).json({message: 'Server Error on GET /:id'});
       });
   });
 
@@ -96,7 +94,7 @@ router.route('/')
       })
       .catch(err=>{
         console.error(err);
-        res.status(500).send('Server Error on PUT');
+        res.status(500).json({message: 'Server Error on PUT'});
       })
   })
 
@@ -134,7 +132,7 @@ router.route('/:username')
           )
           .catch(err => {
             console.error(err);
-            res.status(500).send('Server error');
+            res.status(500).json({message: 'Server Error on POST /addDate:username'});
           });
           res.status(201).json(res_.serialize());
         });
@@ -163,7 +161,7 @@ router.route('/:id')
             })
             .catch(err=>{
               console.error(err);
-              res.status(500).send('Server Error');
+              res.status(500).json({message: 'Server Error on DELETE /:id'});
             });            
           });
       });

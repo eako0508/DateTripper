@@ -573,6 +573,9 @@ function hideList(){
 	//Alert / announcement
 
 function alertFail(xhr, textStatus, errThrown){	
+	console.log(xhr);
+	console.log(textStatus);
+	console.log(errThrown);
 	let msg = JSON.parse(xhr.responseText);	
 	alertMessage(`${msg.message}!`);
 }

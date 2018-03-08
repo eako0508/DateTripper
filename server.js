@@ -28,7 +28,6 @@ app.use(function (req, res, next) {
 });
 
 app.use('/', express.static('public'));
-app.use('/demo', express.static('public/demo.html'));
 
 passport.use(localStrategy);
 passport.use(jwtStrategy);

@@ -1,6 +1,7 @@
 'use strict';
 exports.DATABASE_URL = 	
 	'mongodb://admin:admin@ds155288.mlab.com:55288/datetripper';
+	//'mongodb://localhost/tripper';
 	/* ||
     process.env.DATABASE_URL ||
     global.DATABASE_URL;*/    
