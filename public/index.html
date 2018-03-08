@@ -19,36 +19,34 @@
 </head>
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light col-10 offset-1">
-	  <a class="navbar-brand amatic main-logo" href="#"><h1>Date Tripper</h1></a>
-	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
-	    <span class="navbar-toggler-icon"></span>
-	  </button>
-
-	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-	    <ul class="navbar-nav mr-auto">	    	
-	      <li class="nav-item">
-			<a href='#' class='nav-link btn btn-link font-weight-bold' id='savedlist-btn' data-toggle='modal' data-target='#users_saved_list'><i class="fas fa-folder"></i> Saved Lists</a>
-		  </li>
-		  <li class="nav-item">
-			<a href='#' class='nav-link btn btn-link font-weight-bold' id='logout-btn'><i class="fas fa-sign-out-alt"></i> Logout</a>
-		  </li>
-		  <li class="nav-item">
-		  	<a href='#' class='nav-link btn btn-link font-weight-bold' id='login-btn' data-toggle='modal' data-target='#login-page'>Login <i class="fas fa-sign-in-alt"></i></a>
-		  </li>
-		  <li class="nav-item">
-		  	
-		  	<a class="nav-link cormorant font-weight-bold" href="#" data-toggle='modal' data-target='#help'>HELP</a>
-		  </li>		
-	    </ul>
-	    <form class='autocomplete-form' id='autoform_1'>
-			<div class='input-group'>
-				<input type='text' id='autocomplete-input' class="form-control" placeholder="Place to go" required>
-				<div class='input-group-append'>
-					<button class='btn btn-primary' type='submit'><i class="fas fa-paper-plane"></i> Go</button>
+		<a class="navbar-brand amatic main-logo" href="#"><h1>Date Tripper</h1></a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<form class='autocomplete-form mr-auto' id='autoform_1'>
+				<div class='input-group'>
+					<input type='text' id='autocomplete-input' class="form-control" placeholder="Place to go" required>
+					<div class='input-group-append'>
+						<button class='btn btn-primary' type='submit'><i class="fas fa-paper-plane"></i> Go</button>
+					</div>
 				</div>
-			</div>
-		</form>
-	  </div>
+			</form>
+			<ul class="navbar-nav">
+				<li class="nav-item">
+					<a class="nav-link cormorant font-weight-bold text-dark" href="#" data-toggle='modal' data-target='#help'>HELP</a>
+				</li>
+				<li class="nav-item">
+					<a href='#' class='nav-link btn btn-link font-weight-bold' id='savedlist-btn' data-toggle='modal' data-target='#users_saved_list'><i class="fas fa-folder"></i> Saved Lists</a>
+				</li>
+				<li class="nav-item">
+					<a href='#' class='nav-link btn btn-link font-weight-bold' id='logout-btn'><i class="fas fa-sign-out-alt"></i> Logout</a>
+				</li>
+				<li class="nav-item">
+					<a href='#' class='nav-link btn btn-link font-weight-bold' id='login-btn' data-toggle='modal' data-target='#login-page'>Login <i class="fas fa-sign-in-alt"></i></a>
+				</li>
+			</ul>
+		</div>
 	</nav>
 	
 	<div class='curtain col-12 d-flex justify-content-center flex-column align-items-center'>
