@@ -18,40 +18,42 @@
 
 </head>
 <body>
-	<nav class="navbar navbar-expand-lg navbar-light col-10 offset-1">
-		<a class="navbar-brand amatic main-logo" href="https://datetripper.herokuapp.com"><h1>Date Tripper</h1></a>
-		<div class='row no-gutters'>
-			<a class="nav-link cormorant font-weight-bold text-secondary d-lg-none" href="#" data-toggle='modal' data-target='#help'><i class="far fa-question-circle"></i></a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav-menu-btn">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-		</div>
-		<div class="collapse navbar-collapse" id="nav-menu-btn">
-			<form class='autocomplete-form mr-auto' id='autoform_1'>
-				<div class='input-group'>
-					<input type='text' id='autocomplete-input' class="form-control" placeholder="Go to dating location" required>
-					<div class='input-group-append'>
-						<button class='btn btn-secondary' type='submit'><i class="fas fa-paper-plane"></i> Go</button>
+	<div class='row'>
+		<div class='empty col-1'></div>
+		<nav class="navbar navbar-expand-lg navbar-light col-10">
+			<a class="navbar-brand amatic main-logo" href="https://datetripper.herokuapp.com"><h1>Date Tripper</h1></a>
+			<div class='row no-gutters'>
+				<a class="nav-link cormorant font-weight-bold text-secondary d-lg-none" href="#" data-toggle='modal' data-target='#help'><i class="far fa-question-circle"></i></a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav-menu-btn">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+			</div>
+			<div class="collapse navbar-collapse" id="nav-menu-btn">
+				<form class='autocomplete-form mr-auto' id='autoform_1'>
+					<div class='input-group'>
+						<input type='text' id='autocomplete-input' class="form-control" placeholder="Go to dating location" required>
+						<div class='input-group-append'>
+							<button class='btn btn-secondary' type='submit'><i class="fas fa-paper-plane"></i> Go</button>
+						</div>
 					</div>
-				</div>
-			</form>
-			<ul class="navbar-nav">
-				<li class="nav-item">
-					<a class="nav-link cormorant font-weight-bold text-dark d-none d-lg-block" href="#" data-toggle='modal' data-target='#help'><i class="fas fa-question-circle"></i> How to use</a>
-				</li>
-				<li class="nav-item">
-					<a href='#' class='nav-link cormorant font-weight-bold' id='savedlist-btn' data-toggle='modal' data-target='#users_saved_list'><i class="fas fa-folder"></i> Load Dates</a>
-				</li>
-				<li class="nav-item">
-					<a href='#' class='nav-link cormorant font-weight-bold' id='logout-btn'><i class="fas fa-sign-out-alt"></i> Logout</a>
-				</li>
-				<li class="nav-item">
-					<a href='#' class='nav-link cormorant font-weight-bold' id='login-btn' data-toggle='modal' data-target='#login-page'>Login <i class="fas fa-sign-in-alt"></i></a>
-				</li>
-			</ul>
-		</div>
-	</nav>
-	
+				</form>
+				<ul class="navbar-nav">
+					<li class="nav-item">
+						<a class="nav-link cormorant font-weight-bold text-dark d-none d-lg-block" href="#" data-toggle='modal' data-target='#help'><i class="fas fa-question-circle"></i> How to use</a>
+					</li>
+					<li class="nav-item">
+						<a href='#' class='nav-link cormorant font-weight-bold' id='savedlist-btn' data-toggle='modal' data-target='#users_saved_list'><i class="fas fa-folder"></i> Load Dates</a>
+					</li>
+					<li class="nav-item">
+						<a href='#' class='nav-link cormorant font-weight-bold' id='logout-btn'><i class="fas fa-sign-out-alt"></i> Logout</a>
+					</li>
+					<li class="nav-item">
+						<a href='#' class='nav-link cormorant font-weight-bold' id='login-btn' data-toggle='modal' data-target='#login-page'>Login <i class="fas fa-sign-in-alt"></i></a>
+					</li>
+				</ul>
+			</div>
+		</nav>	
+	</div>
 	<div class='curtain col-12 d-flex justify-content-center flex-column align-items-center'>
 		<div class='display-4 page-title d-flex justify-content-center amatic' href='#'>Date Tripper</div>
 		<div class='text-light font-weight-bold col-10 col-md-8 col-lg-6 col-xl-4 d-flex flex-column align-items-center landing-para-container justify-content-around'>

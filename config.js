@@ -1,10 +1,6 @@
 'use strict';
-exports.DATABASE_URL = 	
-	'mongodb://admin:admin@ds155288.mlab.com:55288/datetripper';
-	//'mongodb://localhost/tripper';
-	/* ||
-    process.env.DATABASE_URL ||
-    global.DATABASE_URL;*/    
+//exports.DATABASE_URL = 'mongodb://admin:admin@ds155288.mlab.com:55288/datetripper';
+exports.DATABASE_URL = 'mongodb://localhost/datetripper';
 exports.PORT = process.env.PORT || 8080;
 exports.JWT_SECRET = process.env.JWT_SECRET;
 exports.JWT_EXPIRY = process.env.JWT_EXPIRY || '7d';

@@ -1,4 +1,7 @@
-
+.empty:after{
+	content: '.';
+	visibility: hidden;
+}
 .indie-flower {
 	font-family: 'Indie Flower', cursive;
 }

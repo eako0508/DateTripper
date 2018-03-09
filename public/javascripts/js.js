@@ -96,7 +96,9 @@ function ajaxlogin(item){
 		local_username = item.username;
 		logmein(data);
 	})
-	.fail(alertFail);
+	.fail(()=>{		
+		alertMessage('Invalid username or password');
+	});
 }
 function logmein(data){	
 	localToken = data.authToken;	
@@ -133,7 +135,9 @@ function saveTheDate(date_title){
 		}
 	})
 	.done(saveSuccess)
-	.fail(alertFail);
+	.fail(()=>{
+		alertMessage('Saved to save. Please try again.');
+	});
 }
 function saveSuccess(xhr_sent, status, resFromServer){
 	const newEntry = renderSaved_card(xhr_sent);
@@ -170,7 +174,9 @@ function updateTheDate(targetID, item_title){
 		}
 	})
 	.done(updateSuccess)
-	.fail(alertFail);
+	.fail(()=>{
+		alertMessage('Update Fail');
+	});
 }
 function updateSuccess(xhr_sent, status, resFromServer){	
 	$('#date-btn-save').html('<i class="fas fa-save"></i> UPDATE');	
@@ -191,8 +197,7 @@ function getDetailedSavedList(loadID){
 			xhr.setRequestHeader('Authorization','Bearer ' + localToken); 
 		}
 	})
-	.done(loadDestination)
-	.fail(alertFail);
+	.done(loadDestination);
 }
 function getSavedLists(){		
 	$.ajax({
@@ -204,8 +209,7 @@ function getSavedLists(){
 			xhr.setRequestHeader('Authorization','Bearer ' + localToken); 
 		}
 	})
-	.done(loadSavedLists)
-	.fail(alertFail);		
+	.done(loadSavedLists);	
 }
 
 function placeServiceProcessor(results, status) {
@@ -526,8 +530,7 @@ function deleteSavedListItem(loadID){
 			xhr.setRequestHeader('Authorization','Bearer ' + localToken); 
 		}
 	})
-	.done(removeSavedList)
-	.fail(alertFail);
+	.done(removeSavedList);
 }
 function removeSavedList(res){
 	//remove item from the savedList
@@ -571,14 +574,6 @@ function hideList(){
 
 
 	//Alert / announcement
-
-function alertFail(xhr, textStatus, errThrown){	
-	console.log(xhr);
-	console.log(textStatus);
-	console.log(errThrown);
-	let msg = JSON.parse(xhr.responseText);	
-	alertMessage(`${msg.message}!`);
-}
 function alertMessage(msg){
 	$('#announcement').find('.modal-body').html(msg);
 	$('#announcement').modal('show');
@@ -660,8 +655,8 @@ $('#date-btn-clear').on('click', event=>{
 
 $('#save-form').on('click', '#date-btn-save', event=>{
 	event.preventDefault();
-	if(listDB.length<2){
-		alert('Need at least 2 places!');
+	if(listDB.length<2){		
+		alertMessage('Need at least 2 places to save');
 		return;
 	}
 	if(localToken==='') {	
@@ -839,8 +834,7 @@ $('#reg-userpw-confirm').on('blur', function(){
 		alertMessage('Password and confirm password doesn\'t match!');
 	}
 });
-
-$('#register-submit').on('click', event=>{
+$('.js-register-form').on('submit', event=>{
 	event.preventDefault();	
 
 	if($('#reg-userpw-confirm').val() != $('#reg-userpw').val()){
@@ -870,7 +864,9 @@ $('#register-submit').on('click', event=>{
 		alertMessage(`A user ${item.username} is successfully created.`);
 		ajaxlogin(loginItem);
 	})
-	.fail(alertFail);
+	.fail(()=>{
+		alertMessage('Failed to register');
+	});
 });
 
 $('#register-btn, #login-cancel').on('click', ()=>{
