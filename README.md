@@ -3,6 +3,7 @@
 ![desktop](https://github.com/eako0508/DateTripper/blob/master/img/Screenshots/desktop/adding_places_desktop.png)
 ![mobile](https://github.com/eako0508/DateTripper/blob/master/img/Screenshots/mobile/mobile_demo.PNG)
 
+I like going out on a date for places such as concert, movie theater, ice links, and so on but not sure what to do before or after the event.  This application can help users to find out about nearby places and make a whole date planned out to have a good time.
 
 Date Tripper will look for point of interests, such as cafe, restaurant and shopping malls nearby a specific locations or by keywords to help users to plan the dates ahead of time.
 
