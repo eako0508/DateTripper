@@ -263,7 +263,7 @@ function renderSinglePlace(item, index){
 		<div class='card-body text-center'>
 			<div class='card-container-result d-inline'>
 				<h5 class='card-title text-center'>${item.name}</h5>				
-				<div class='collapse' id='result-collapse-${index}'>
+				<div class='collapse show' id='result-collapse-${index}'>
 					<div class='text-center'>${item.hours}</div>
 					<br>
 					<div>${item.vicinity}</div>
@@ -944,9 +944,13 @@ function resizeWindow(){
 
 	$('#map').height(resized_height);
 	
-	if(window_width>=991){		
-		$('.place-list').css("maxHeight", resized_height+"px");
+	if(window_width>=991){
+		$('.place-list').css("maxHeight", resized_height+"px");	
+		$('.collapse').collapse('show');
+	} else {
+		$('.collapse').collapse('hide');
 	}
+
 }
 
 $(firstLoad);
