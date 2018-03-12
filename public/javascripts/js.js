@@ -585,21 +585,13 @@ function alertMessage(msg){
 	$('#announcement').modal('show');
 }
 
-
+	//new tab
 function openNewTab(url){
 	let tab = window.open(url, '_blank');
 	tab.focus();
 }
 
-$('.results').on('click','.newtab', (event)=>{
-	let url = $(event.currentTarget).attr('url');
-	openNewTab(url);
-});
 
-$('.newtab').on('click', (event)=>{
-	let url = $(event.currentTarget).attr('url');
-	openNewTab(url);
-});
 
 	/**
 		Event Listeners
@@ -929,6 +921,18 @@ $('.autocomplete-form').on('submit', event=>{
 	const targetLocation = new google.maps.LatLng(place_lat, place_lng);
 	map.panTo(targetLocation);
 	map.setZoom(14);
+});
+
+
+		//new tab for websites link
+$('.results').on('click','.newtab', (event)=>{
+	let url = $(event.currentTarget).attr('url');
+	openNewTab(url);
+});
+
+$('.newtab').on('click', (event)=>{
+	let url = $(event.currentTarget).attr('url');
+	openNewTab(url);
 });
 
 //INITIALIZATION
