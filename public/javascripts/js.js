@@ -896,7 +896,11 @@ $('#btn-starttrippin').on('click', function(){
 //auto complete
 $('.autocomplete-form').on('submit', event=>{
 	event.preventDefault();
-	let auto_string = autocomplete.getPlace();
+	let auto_string = autocomplete.getPlace();	
+	if(!auto_string.place_id){
+		alertMessage('No results - Try using one of the Autocomplete results.');
+		return;
+	}
 	const place_lat = auto_string.geometry.location.lat();
 	const place_lng = auto_string.geometry.location.lng();
 	const targetLocation = new google.maps.LatLng(place_lat, place_lng);
