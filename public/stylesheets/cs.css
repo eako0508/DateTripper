@@ -1,3 +1,9 @@
+.myinfo{
+	background-color: transparent;
+}
+.myinfo a:first-child{
+	padding-left: 0;
+}
 .empty:after{
 	content: '.';
 	visibility: hidden;

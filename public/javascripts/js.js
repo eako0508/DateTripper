@@ -903,9 +903,6 @@ $('.autocomplete-form').on('submit', event=>{
 	map.panTo(targetLocation);
 });
 
-
-
-
 //INITIALIZATION
 function firstLoad(){
 	resizeWindow();	
@@ -914,6 +911,21 @@ function firstLoad(){
 	$('#logout-btn').hide();
 	$('#savedlist-btn').hide();	
 	$.ajaxSetup({cache:false});
+	$('input[rel="tooltip"]').tooltip({
+		/*
+		When a function is used to determine the placement, 
+		it is called with the tooltip DOM node as its first argument 
+		and the triggering element DOM node as its second. 
+		The this context is set to the tooltip instance.
+		*/
+		placement: function(message, target){
+			let window_width = $(window).width();
+			if(window_width < 992){
+				return "top";
+			}
+			return "left";
+		}		
+	});
 }
 
 $(window).on('resize', function(){
