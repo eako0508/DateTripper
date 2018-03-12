@@ -262,9 +262,15 @@ function renderSinglePlace(item, index){
 	result += `	
 		<div class='card-body text-center'>
 			<div class='card-container-result d-inline'>
-				<h5 class='card-title text-center'>${item.name}</h5>				
-				<div class='collapse show' id='result-collapse-${index}'>
-					<div class='text-center'>${item.hours}</div>
+				<h5 class='card-title text-center'>${item.name}</h5>`;
+
+	if($(window).width()>992){
+		result += `<div class='collapse show' id='result-collapse-${index}'>`;
+	} else {
+		result += `<div class='collapse' id='result-collapse-${index}'>`;
+	}
+				
+	result +=	`<div class='text-center'>${item.hours}</div>
 					<br>
 					<div>${item.vicinity}</div>
 					<a href='${item.website}' class='d-block text-center btn btn-link font-weight-bold'><i class="fas fa-globe"></i> Webiste</a>
