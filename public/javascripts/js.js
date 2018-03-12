@@ -273,7 +273,7 @@ function renderSinglePlace(item, index){
 	result +=	`<div class='text-center'>${item.hours}</div>
 					<br>
 					<div>${item.vicinity}</div>
-					<a href='${item.website}' class='d-block text-center btn btn-link font-weight-bold'><i class="fas fa-globe"></i> Webiste</a>
+					<a href='#' url='${item.website}' class='d-block text-center btn btn-link font-weight-bold newtab'><i class="fas fa-globe"></i> Webiste</a>
 					<button class='btn btn-info showonmap d-blo col-8'>Show from map</button>
 				</div>
 			</div>
@@ -326,7 +326,7 @@ function makeContent(element){
 	content += `<div class='div-info-title font-weight-bold text-center'>${element.name}</div>`;
 	content += `<img class='d-none d-lg-block' src='${element.photos_small}'/>`;	
 	content += `<div>${element.vicinity}</div>`;	
-	content += `<a class='badge badge-primary col-12' href='${element.website}'>Website</a>`;
+	//content += `<a class='badge badge-primary col-12' href='${element.website}'>Website</a>`;
 	content += '</div>';
 	return content;
 }
@@ -586,6 +586,21 @@ function alertMessage(msg){
 }
 
 
+function openNewTab(url){
+	let tab = window.open(url, '_blank');
+	tab.focus();
+}
+
+$('.results').on('click','.newtab', (event)=>{
+	let url = $(event.currentTarget).attr('url');
+	openNewTab(url);
+});
+
+$('.newtab').on('click', (event)=>{
+	let url = $(event.currentTarget).attr('url');
+	openNewTab(url);
+});
+
 	/**
 		Event Listeners
 	**/
@@ -719,7 +734,9 @@ $('.results').on('click', '.showonmap', event=>{
 	}	
 	$('html, body').animate({ scrollTop: 0});
 });
-
+$('.results').on('click', 'a', event=>{
+	event.preventDefault();
+});
 
 $('.results').on('click', `.card > img`, event=>{
 	let targetIndex = $(event.currentTarget).attr('idx');	
@@ -901,7 +918,7 @@ $('#btn-starttrippin').on('click', function(){
 });
 //auto complete
 $('.autocomplete-form').on('submit', event=>{
-	event.preventDefault();
+	event.preventDefault();	
 	let auto_string = autocomplete.getPlace();	
 	if(!auto_string.place_id){
 		alertMessage('No results - Try using one of the Autocomplete results.');
@@ -911,6 +928,7 @@ $('.autocomplete-form').on('submit', event=>{
 	const place_lng = auto_string.geometry.location.lng();
 	const targetLocation = new google.maps.LatLng(place_lat, place_lng);
 	map.panTo(targetLocation);
+	map.setZoom(14);
 });
 
 //INITIALIZATION
